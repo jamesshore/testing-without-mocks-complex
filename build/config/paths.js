@@ -17,6 +17,7 @@ exports.lintFiles = memoize(() => {
 
 exports.testFiles = memoize(() => {
 	return deglob([
+		"build/**/_*_test.js",
 		"src/**/_*_test.js",
 	], [
 	]);
@@ -24,8 +25,10 @@ exports.testFiles = memoize(() => {
 
 exports.testDependencies = memoize(() => {
 	return deglob([
+		"build/**/*.js",
 		"src/**/*.js",
 	], [
+		"build/util/dependency_analysis.js"
 	]);
 });
 
