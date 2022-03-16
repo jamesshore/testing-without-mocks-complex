@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2018 Titanium I.T. LLC. All rights reserved. For license, see "README" or "LICENSE" file.
+// Copyright Titanium I.T. LLC. All rights reserved. For license, see "README" or "LICENSE" file.
 "use strict";
 
 const ERROR = "error";
@@ -6,7 +6,7 @@ const IGNORE = "off";
 
 exports.options = {
 	"parserOptions": {
-		"ecmaVersion": 2018
+		"ecmaVersion": 2020
 	},
 
 	"env": {
