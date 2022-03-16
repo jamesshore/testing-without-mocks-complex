@@ -146,8 +146,8 @@ async function playSoundAsync(filename) {
 			// aplay is part of the alsa-utils package
 			await sh.runSilentlyAsync("aplay", [ path ]);
 		} else {
-			// Designed for MacOS, which has built-in 'afplay' command
-			await sh.runSilentlyAsync("afplay", [ path ]);
+			// MacOS has a built-in 'afplay' command
+			await sh.runSilentlyAsync("afplay", [ path, "--volume", "0.3" ]);
 		}
 	}
 	catch (err) {
