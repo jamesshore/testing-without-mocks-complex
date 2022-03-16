@@ -10,7 +10,6 @@ exports.options = {
 	},
 
 	"env": {
-		"browser": true,
 		"node": true,
 		"commonjs": true,
 		"mocha": true
