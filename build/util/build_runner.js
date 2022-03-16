@@ -103,9 +103,8 @@ module.exports = class Build {
 
 function showHelp(taskFns) {
 	const name = pathLib.basename(process.argv[1]).split(".")[0];
-	console.log(`usage: ${name} [-h|--help|-T|--tasks] [--perf] <tasks>`);
+	console.log(`usage: ${name} [-h|--help|-T|--tasks] <tasks>`);
 	console.log("--help  This message");
-	console.log("--perf  Show performance data");
 	if (taskFns !== undefined) {
 		console.log();
 		console.log("Available tasks:");
