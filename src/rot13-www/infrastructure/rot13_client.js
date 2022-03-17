@@ -3,7 +3,7 @@
 
 const ensure = require("util/ensure");
 const type = require("util/type");
-const HttpClient = require("./http_client");
+const HttpClient = require("http/http_client");
 const infrastructureHelper = require("util/infrastructure_helper");
 const EventEmitter = require("events");
 
