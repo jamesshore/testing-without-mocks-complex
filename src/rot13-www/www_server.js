@@ -5,7 +5,7 @@ const CommandLine = require("infrastructure/command_line");
 const ensure = require("util/ensure");
 const Rot13Client = require("./infrastructure/rot13_client");
 const Clock = require("infrastructure/clock");
-const HttpServer = require("infrastructure/http_server");
+const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
 
 const TIMEOUT_IN_MS = 5000;

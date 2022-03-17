@@ -2,7 +2,7 @@
 "use strict";
 
 const assert = require("util/assert");
-const HttpClient = require("./http_client");
+const HttpClient = require("http/http_client");
 const Rot13Client = require("./rot13_client");
 const testHelper = require("util/test_helper");
 

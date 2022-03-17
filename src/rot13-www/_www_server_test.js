@@ -6,8 +6,8 @@ const CommandLine = require("infrastructure/command_line");
 const Rot13Client = require("./infrastructure/rot13_client");
 const Clock = require("infrastructure/clock");
 const server = require("./www_server");
-const HttpServer = require("infrastructure/http_server");
-const HttpRequest = require("infrastructure/http_request");
+const HttpServer = require("http/http_server");
+const HttpRequest = require("http/http_request");
 
 const VALID_PORT = 5000;
 const VALID_TEXT = "my_text";
