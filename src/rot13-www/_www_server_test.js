@@ -5,7 +5,7 @@ const assert = require("util/assert");
 const CommandLine = require("infrastructure/command_line");
 const Rot13Client = require("./infrastructure/rot13_client");
 const Clock = require("infrastructure/clock");
-const cli = require("./rot13_cli");
+const cli = require("./www_server");
 
 const VALID_PORT = 5000;
 const VALID_TEXT = "my_text";
