@@ -17,7 +17,7 @@ describe("ROT-13 Router", function() {
 
 	describe("happy path", function() {
 
-		it("transforms requests when current timestamp is even", async function() {
+		it("transforms requests", async function() {
 			const response = await simulateRequestAsync({
 				url: VALID_URL,
 				method: VALID_METHOD,
@@ -28,7 +28,10 @@ describe("ROT-13 Router", function() {
 		});
 
 		it("ignores query parameters", async function() {
-			const response = await simulateRequestAsync({ url: VALID_URL + "?query", body: validBody("hello") });
+			const response = await simulateRequestAsync({
+				url: VALID_URL + "?query",
+				body: validBody("hello")
+			});
 			assertOkResponse(response, "hello");
 		});
 
