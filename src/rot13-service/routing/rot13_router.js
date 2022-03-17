@@ -9,12 +9,9 @@ const Clock = require("infrastructure/clock");
 
 const REQUEST_TYPE = { text: String };
 
-// when the timestamp is odd, we delay before returning the response.
-const DELAY_IN_MS = 30000;
-
 /** Top-level router for ROT-13 service */
-exports.routeAsync = async function(request, clock) {
-	ensure.signature(arguments, [ HttpRequest, Clock ]);
+exports.routeAsync = async function(request) {
+	ensure.signature(arguments, [ HttpRequest ]);
 
 	if (request.urlPathname !== "/rot13/transform") return rot13Response.notFound();
 	if (request.method !== "POST") return rot13Response.methodNotAllowed();
@@ -30,15 +27,7 @@ exports.routeAsync = async function(request, clock) {
 		return rot13Response.badRequest(err.message);
 	}
 
-	if (timestampIsOdd(clock)) {
-		await clock.waitAsync(DELAY_IN_MS);
-	}
-
 	const input = json.text;
 	const output = rot13.transform(input);
 	return rot13Response.ok(output);
 };
-
-function timestampIsOdd(clock) {
-	return (clock.now() % 2 === 1);
-}
