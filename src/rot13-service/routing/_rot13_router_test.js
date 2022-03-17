@@ -27,27 +27,6 @@ describe("ROT-13 Router", function() {
 			assertOkResponse(response, "hello");
 		});
 
-		it("delays for 30 seconds before transforming request when current timestamp is odd",  async function() {
-			const { responsePromise, clock } = simulateDelayedRequest({
-				url: VALID_URL,
-				method: VALID_METHOD,
-				headers: VALID_HEADERS,
-				body: validBody("hello"),
-			});
-
-			let promiseResolved = false;
-			responsePromise.then(() => {
-				promiseResolved = true;
-			});
-
-			await clock.advanceNullAsync(29999);
-			assert.equal(promiseResolved, false, "response should not resolve before 30 seconds");
-			await clock.advanceNullAsync(1);
-			assert.equal(promiseResolved, true, "response should resolve at 30 seconds");
-
-			assertOkResponse(await responsePromise, "hello");
-		});
-
 		it("ignores query parameters", async function() {
 			const response = await simulateImmediateRequestAsync({ url: VALID_URL + "?query", body: validBody("hello") });
 			assertOkResponse(response, "hello");
