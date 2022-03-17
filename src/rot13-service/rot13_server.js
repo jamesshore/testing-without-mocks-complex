@@ -3,7 +3,7 @@
 
 const ensure = require("util/ensure");
 const CommandLine = require("infrastructure/command_line");
-const HttpServer = require("./infrastructure/http_server");
+const HttpServer = require("infrastructure/http_server");
 const Log = require("infrastructure/log");
 const rot13Router = require("./routing/rot13_router");
 
