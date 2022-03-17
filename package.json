@@ -1,0 +1,28 @@
+{
+  "name": "livestream",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "16.14.1"
+  },
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@sinonjs/fake-timers": "^9.1.1"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "eslint": "^8.11.0",
+    "gaze": "^1.1.3",
+    "glob": "^7.2.0",
+    "minimist": "^1.2.5",
+    "mocha": "^9.2.2",
+    "shelljs": "^0.8.5"
+  },
+  "scripts": {
+    "test": "./build.sh",
+    "start": "./run.sh"
+  },
+  "author": "",
+  "license": "ISC"
+}
