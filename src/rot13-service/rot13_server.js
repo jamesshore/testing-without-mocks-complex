@@ -6,7 +6,6 @@ const CommandLine = require("infrastructure/command_line");
 const HttpServer = require("./infrastructure/http_server");
 const Log = require("infrastructure/log");
 const rot13Router = require("./routing/rot13_router");
-const Clock = require("infrastructure/clock");
 
 /** Top-level 'traffic cop' for ROT-13 service */
 module.exports = class Rot13Server {
@@ -17,16 +16,14 @@ module.exports = class Rot13Server {
 		return new Rot13Server(
 			CommandLine.create(),
 			HttpServer.create(Log.create()),
-			Clock.create(),
 		);
 	}
 
-	constructor(commandLine, httpServer, clock) {
-		ensure.signature(arguments, [ CommandLine, HttpServer, Clock ]);
+	constructor(commandLine, httpServer) {
+		ensure.signature(arguments, [ CommandLine, HttpServer ]);
 
 		this._commandLine = commandLine;
 		this._httpServer = httpServer;
-		this._clock = clock;
 	}
 
 	async startAsync() {
@@ -47,5 +44,5 @@ module.exports = class Rot13Server {
 
 async function onRequestAsync(self, request) {
 	self._commandLine.writeStdout("Received request\n");
-	return await rot13Router.routeAsync(request, self._clock);
+	return await rot13Router.routeAsync(request);
 }

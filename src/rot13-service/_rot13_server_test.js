@@ -7,7 +7,6 @@ const HttpServer = require("./infrastructure/http_server");
 const HttpRequest = require("./infrastructure/http_request");
 const Server = require("./rot13_server");
 const rot13Router = require("./routing/rot13_router");
-const Clock = require("infrastructure/clock");
 
 const USAGE = "Usage: serve PORT\n";
 
@@ -28,10 +27,10 @@ describe("ROT-13 Server", function() {
 	});
 
 	it("routes requests", async function() {
-		const { httpServer, clock } = await startServerAsync();
+		const { httpServer } = await startServerAsync();
 
 		const actualResponse = await httpServer.simulateRequestAsync(HttpRequest.createNull());
-		const expectedResponse = await rot13Router.routeAsync(HttpRequest.createNull(), clock);
+		const expectedResponse = await rot13Router.routeAsync(HttpRequest.createNull());
 		assert.deepEqual(actualResponse, expectedResponse);
 	});
 
@@ -56,12 +55,7 @@ async function startServerAsync({ args = [ "4242" ] } = {}) {
 	const commandLine = CommandLine.createNull({ args  });
 	const httpServer = HttpServer.createNull();
 
-	// Server only works properly when 'now' is an even number. Otherwise, it delays for 30 seconds.
-	// This was introduced solely for the purpose of the timeout exercise. The server code is a bit messy as a result.
-	// But it is tested. See rot13_router.js and its tests for details.
-	const clock = Clock.createNull({ now: 0 });
-
-	const app = new Server(commandLine, httpServer, clock);
+	const app = new Server(commandLine, httpServer);
 
 	const stdout = commandLine.trackStdout();
 	const stderr = commandLine.trackStderr();
@@ -70,7 +64,6 @@ async function startServerAsync({ args = [ "4242" ] } = {}) {
 
 	return {
 		httpServer,
-		clock,
 		stdout,
 		stderr,
 	};

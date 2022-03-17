@@ -10,8 +10,8 @@ const Clock = require("infrastructure/clock");
 const REQUEST_TYPE = { text: String };
 
 /** Top-level router for ROT-13 service */
-exports.routeAsync = async function(request, clock) {
-	ensure.signature(arguments, [ HttpRequest, Clock ]);
+exports.routeAsync = async function(request) {
+	ensure.signature(arguments, [ HttpRequest ]);
 
 	if (request.urlPathname !== "/rot13/transform") return rot13Response.notFound();
 	if (request.method !== "POST") return rot13Response.methodNotAllowed();
