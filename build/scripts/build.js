@@ -12,6 +12,7 @@ const pathLib = require("path");
 const shell = require("shelljs"); shell.config.fatal = true;
 const mochaRunner = require("../util/mocha_runner");
 const mochaConfig = require("../config/mocha.conf");
+const { brightRed, brightGreen } = require("../util/colors");
 
 const rootDir = pathLib.resolve(__dirname, "../..");
 
@@ -20,11 +21,11 @@ const analysis = new DependencyAnalysis(build, rootDir, paths.testDependencies()
 
 exports.runAsync = async function(args) {
 	try {
-		await build.runAsync(args, "✅  BUILD OK ✅");
+		await build.runAsync(args, brightGreen.inverse("   BUILD OK   "));
 		return null;
 	}
 	catch (err) {
-		console.log(`\n🚨  BUILD FAILURE 🚨\n${err.message}`);
+		console.log(`\n${brightRed.inverse("   BUILD FAILURE   ")}\n${brightRed.bold(err.message)}`);
 		return err.failedTask;
 	}
 };
