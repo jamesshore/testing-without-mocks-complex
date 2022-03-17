@@ -3,8 +3,8 @@
 
 const assert = require("util/assert");
 const CommandLine = require("infrastructure/command_line");
-const HttpServer = require("./infrastructure/http_server");
-const HttpRequest = require("./infrastructure/http_request");
+const HttpServer = require("infrastructure/http_server");
+const HttpRequest = require("infrastructure/http_request");
 const Server = require("./rot13_server");
 const rot13Router = require("./routing/rot13_router");
 

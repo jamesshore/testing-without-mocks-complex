@@ -5,7 +5,7 @@ const assert = require("util/assert");
 const rot13 = require("../logic/rot13");
 const rot13Response = require("./rot13_response");
 const rot13Router = require("./rot13_router");
-const HttpRequest = require("../infrastructure/http_request");
+const HttpRequest = require("infrastructure/http_request");
 
 const VALID_URL = "/rot13/transform";
 const VALID_METHOD = "POST";
