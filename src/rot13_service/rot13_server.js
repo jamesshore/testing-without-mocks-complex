@@ -2,7 +2,6 @@
 "use strict";
 
 const ensure = require("util/ensure");
-const CommandLine = require("infrastructure/command_line");
 const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
 const Rot13Router = require("./rot13_router");
@@ -13,14 +12,10 @@ module.exports = class Rot13Server {
 	static create() {
 		ensure.signature(arguments, []);
 
-		return new Rot13Server(
-			HttpServer.create(Log.create()),
-		);
+		return new Rot13Server(HttpServer.create(Log.create()));
 	}
 
 	constructor(httpServer) {
-		ensure.signature(arguments, [ HttpServer ]);
-
 		this._httpServer = httpServer;
 		this._router = Rot13Router.create();
 	}
@@ -28,11 +23,7 @@ module.exports = class Rot13Server {
 	async startAsync(port) {
 		ensure.signature(arguments, [ Number ]);
 
-		await this._httpServer.startAsync({ port, onRequestAsync: onRequestAsync.bind(null, this) });
+		await this._httpServer.startAsync(port, request => this._router.routeAsync(request));
 	}
 
 };
-
-async function onRequestAsync(self, request) {
-	return await self._router.routeAsync(request);
-}
