@@ -1,7 +1,11 @@
 // Copyright Titanium I.T. LLC.
 "use strict";
 
-const HttpResponse = require("http/http_response");
+const ensure = require("util/ensure");
+const HttpRequest = require("http/http_request");
+const wwwController = require("./home_page_controller");
+const wwwView = require("./www_view");
+const GenericRouter = require("http/generic_router");
 
 /** Router for user-facing www site */
 module.exports = class WwwRouter {
@@ -10,11 +14,19 @@ module.exports = class WwwRouter {
 		return new WwwRouter();
 	}
 
-	async routeAsync() {
-		return await HttpResponse.create({
-			status: 501,
-			body: "not yet implemented"
+	constructor() {
+		this._router = GenericRouter.create(errorHandler, {
+			"/": wwwController,
 		});
 	}
 
+	async routeAsync(request) {
+		return await this._router.routeAsync(request);
+	}
+
 };
+
+function errorHandler(status, errorMessage, request) {
+	ensure.signature(arguments, [ Number, String, HttpRequest ]);
+	return wwwView.errorPage(status, errorMessage);
+}
