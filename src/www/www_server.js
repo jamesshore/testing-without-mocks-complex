@@ -11,8 +11,12 @@ module.exports = class WwwServer {
 
 	static create() {
 		ensure.signature(arguments, []);
+		return new this(HttpServer.create(Log.create()));
+	}
 
-		return new WwwServer(HttpServer.create(Log.create()));
+	static createNull() {
+		ensure.signature(arguments, []);
+		return new this(HttpServer.createNull());
 	}
 
 	constructor(httpServer) {

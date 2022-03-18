@@ -11,8 +11,12 @@ module.exports = class Rot13Server {
 
 	static create() {
 		ensure.signature(arguments, []);
+		return new this(HttpServer.create(Log.create()));
+	}
 
-		return new Rot13Server(HttpServer.create(Log.create()));
+	static createNull() {
+		ensure.signature(arguments, []);
+		return new this(HttpServer.createNull());
 	}
 
 	constructor(httpServer) {
