@@ -5,7 +5,7 @@ const ensure = require("util/ensure");
 const CommandLine = require("infrastructure/command_line");
 const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
-const Rot13Router = require("./routing/rot13_router");
+const Rot13Router = require("./rot13_router");
 
 /** Top-level 'traffic cop' for ROT-13 service */
 module.exports = class Rot13Server {
