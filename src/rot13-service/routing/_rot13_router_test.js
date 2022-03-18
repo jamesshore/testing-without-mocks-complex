@@ -2,11 +2,10 @@
 "use strict";
 
 const assert = require("util/assert");
-const rot13 = require("../logic/rot13");
-const rot13Response = require("./rot13_response");
 const rot13Router = require("./rot13_router");
 const HttpRequest = require("http/http_request");
 const rot13Controller = require("./rot13_controller");
+const HttpResponse = require("http/http_response");
 
 const VALID_URL = "/rot13/transform";
 const VALID_METHOD = "POST";
@@ -40,12 +39,12 @@ describe("ROT-13 Router", () => {
 
 	it("returns 'not found' when URL is incorrect", async () => {
 		const response = await simulateRequestAsync({ url: "/no-such-url" });
-		assert.deepEqual(response, rot13Response.error(404, "not found"));
+		assert.deepEqual(response, errorResponse(404, "not found"));
 	});
 
 	it("returns 'method not allowed' when method isn't POST", async () => {
 		const response = await simulateRequestAsync({ method: "get" });
-		assert.deepEqual(response, rot13Response.error(405, "method not allowed"));
+		assert.deepEqual(response, errorResponse(405, "method not allowed"));
 	});
 
 });
@@ -69,4 +68,11 @@ function createNullRequest({
 } = {}) {
 	if (typeof body === "object") body = JSON.stringify(body);
 	return HttpRequest.createNull({ url, method, headers, body });
+}
+
+function errorResponse(status, error) {
+	return HttpResponse.createJsonResponse({
+		status,
+		body: { error }
+	});
 }

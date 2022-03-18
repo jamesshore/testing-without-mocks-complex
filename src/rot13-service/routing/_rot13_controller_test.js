@@ -3,9 +3,9 @@
 
 const assert = require("util/assert");
 const rot13 = require("../logic/rot13");
-const rot13Response = require("./rot13_response");
 const rot13Controller = require("./rot13_controller");
 const HttpRequest = require("http/http_request");
+const HttpResponse = require("http/http_response");
 
 const VALID_HEADERS = { "content-type": "application/json" };
 
@@ -31,18 +31,18 @@ describe("ROT-13 Controller", () => {
 		it("returns 'bad request' when content-type header isn't JSON", async () => {
 			const headers = { "content-type": "text/plain" };
 			const response = await simulateRequestAsync({ headers });
-			assert.deepEqual(response, rot13Response.badRequest("invalid content-type header"));
+			assertBadRequest(response, "invalid content-type header");
 		});
 
 		it("returns 'bad request' when JSON fails to parse", async () => {
 			const response = await simulateRequestAsync({ body: "not-json" });
-			assert.deepEqual(response, rot13Response.badRequest("Unexpected token o in JSON at position 1"));
+			assertBadRequest(response, "Unexpected token o in JSON at position 1");
 		});
 
 		it("returns 'bad request' when JSON doesn't have text field", async () => {
 			const body = { wrongField: "foo" };
 			const response = await simulateRequestAsync({ body });
-			assert.deepEqual(response, rot13Response.badRequest("request.text must be a string, but it was undefined"));
+			assertBadRequest(response, "request.text must be a string, but it was undefined");
 		});
 
 		it("ignores extraneous fields", async () => {
@@ -67,6 +67,17 @@ async function simulateRequestAsync({
 }
 
 function assertOkResponse(response, originalText) {
-	assert.deepEqual(response, rot13Response.ok(rot13.transform(originalText)));
+	const expectedResponse = HttpResponse.createJsonResponse({
+		status: 200,
+		body: { transformed: rot13.transform(originalText) }
+	});
 
+	assert.deepEqual(response, expectedResponse);
+}
+
+function assertBadRequest(response, error) {
+	assert.deepEqual(response, HttpResponse.createJsonResponse({
+		status: 400,
+		body: { error }
+	}));
 }

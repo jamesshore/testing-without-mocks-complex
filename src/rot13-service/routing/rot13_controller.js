@@ -2,9 +2,9 @@
 "use strict";
 
 const ensure = require("util/ensure");
-const HttpRequest = require("http/http_request");
-const rot13Response = require("./rot13_response");
 const rot13 = require("../logic/rot13");
+const HttpRequest = require("http/http_request");
+const HttpResponse = require("http/http_response");
 
 const REQUEST_TYPE = { text: String };
 
@@ -12,7 +12,7 @@ exports.postAsync = async function(request) {
 	ensure.signature(arguments, [ HttpRequest ]);
 
 	if (!request.hasContentType("application/json")) {
-		return rot13Response.badRequest("invalid content-type header");
+		return badRequest("invalid content-type header");
 	}
 	const jsonString = await request.readBodyAsync();
 	let json;
@@ -21,10 +21,24 @@ exports.postAsync = async function(request) {
 		ensure.typeMinimum(json, REQUEST_TYPE, "request");
 	}
 	catch(err) {
-		return rot13Response.badRequest(err.message);
+		return badRequest(err.message);
 	}
 
 	const input = json.text;
 	const output = rot13.transform(input);
-	return rot13Response.ok(output);
+	return ok(output);
 };
+
+function ok(output) {
+	return HttpResponse.createJsonResponse({
+		status: 200,
+		body: { transformed: output },
+	});
+}
+
+function badRequest(error) {
+	return HttpResponse.createJsonResponse({
+		status: 400,
+		body: { error }
+	});
+}
