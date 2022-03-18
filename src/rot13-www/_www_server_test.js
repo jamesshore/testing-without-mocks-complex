@@ -5,10 +5,11 @@ const assert = require("util/assert");
 const CommandLine = require("infrastructure/command_line");
 const Rot13Client = require("./infrastructure/rot13_client");
 const Clock = require("infrastructure/clock");
-const server = require("./www_server");
+const WwwServer = require("./www_server");
 const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
 const HttpResponse = require("http/http_response");
+const WwwRouter = require("./www_router");
 
 const VALID_PORT = 5000;
 const VALID_TEXT = "my_text";
@@ -20,43 +21,29 @@ const TIMEOUT_IN_MS = 5000;
 describe("WWW server", () => {
 
 	it("starts server", async () => {
-		const { httpServer } = await startServerAsync({ args: [ "5000" ]});
+		const { httpServer } = await startServerAsync();
 		assert.equal(httpServer.isStarted, true, "should start server");
-		assert.equal(httpServer.port, 5000, "server port");
+		assert.equal(httpServer.port, VALID_PORT, "server port");
 	});
 
 	it("routes requests", async () => {
 		const { httpServer } = await startServerAsync();
 
-		const request = HttpRequest.createNull({
-			url: "/",
-		});
-		const expectedResponse = HttpResponse.create({
-			status: 200,
-			headers: {
-				"content-type": "text/plain; charset=utf-8"
-			},
-			body: "placeholder"
-		});
-
-		assert.deepEqual(await httpServer.simulateRequestAsync(request), expectedResponse);
+		const actualResponse = await httpServer.simulateRequestAsync(HttpRequest.createNull());
+		const expectedResponse = await WwwRouter.create().routeAsync(HttpRequest.createNull());
+		assert.deepEqual(actualResponse, expectedResponse);
 	});
 
 });
 
-async function startServerAsync({ args = [ "4242" ] } = {}) {
-	const commandLine = CommandLine.createNull({ args  });
+async function startServerAsync() {
 	const httpServer = HttpServer.createNull();
+	const wwwServer = new WwwServer(httpServer);
 
-	const stdout = commandLine.trackStdout();
-	const stderr = commandLine.trackStderr();
-
-	await server.serveAsync({ commandLine, httpServer });
+	await wwwServer.serveAsync(VALID_PORT);
 
 	return {
 		httpServer,
-		stdout,
-		stderr,
 	};
 }
 
