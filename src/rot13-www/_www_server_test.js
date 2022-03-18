@@ -9,6 +9,7 @@ const WwwServer = require("./www_server");
 const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
 const HttpResponse = require("http/http_response");
+const WwwRouter = require("./www_router");
 
 const VALID_PORT = 5000;
 const VALID_TEXT = "my_text";
@@ -28,18 +29,9 @@ describe("WWW server", () => {
 	it("routes requests", async () => {
 		const { httpServer } = await startServerAsync();
 
-		const request = HttpRequest.createNull({
-			url: "/",
-		});
-		const expectedResponse = HttpResponse.create({
-			status: 200,
-			headers: {
-				"content-type": "text/plain; charset=utf-8"
-			},
-			body: "placeholder"
-		});
-
-		assert.deepEqual(await httpServer.simulateRequestAsync(request), expectedResponse);
+		const actualResponse = await httpServer.simulateRequestAsync(HttpRequest.createNull());
+		const expectedResponse = await WwwRouter.create().routeAsync(HttpRequest.createNull());
+		assert.deepEqual(actualResponse, expectedResponse);
 	});
 
 });

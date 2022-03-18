@@ -8,6 +8,7 @@ const Clock = require("infrastructure/clock");
 const HttpServer = require("http/http_server");
 const HttpResponse = require("http/http_response");
 const Log = require("infrastructure/log");
+const WwwRouter = require("./www_router");
 
 const TIMEOUT_IN_MS = 5000;
 
@@ -25,18 +26,15 @@ module.exports = class WwwServer {
 
 	constructor(httpServer) {
 		this._httpServer = httpServer;
+		this._router = WwwRouter.create();
 	}
 
 	async serveAsync(port) {
 		ensure.signature(arguments, [Number]);
 
-		function onRequestAsync() {
-			return HttpResponse.create({
-				status: 200,
-				headers: { "content-type": "text/plain; charset=utf-8" },
-				body: "placeholder",
-			});
-		}
+		const onRequestAsync = async (request) => {
+			return await this._router.routeAsync(request);
+		};
 
 		await this._httpServer.startAsync({ port, onRequestAsync });
 	}
