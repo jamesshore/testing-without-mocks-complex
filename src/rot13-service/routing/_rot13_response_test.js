@@ -12,6 +12,11 @@ describe("ROT-13 Response", () => {
 		assertResponseEquals(response, 200, { transformed: "my output" });
 	});
 
+	it("error", () => {
+		const response = rot13Response.error(555, "my error");
+		assertResponseEquals(response, 555, { error: "my error" });
+	});
+
 	it("not found", () => {
 		const response = rot13Response.notFound();
 		assertResponseEquals(response, 404, { error: "not found" });

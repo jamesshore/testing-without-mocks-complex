@@ -11,6 +11,11 @@ exports.ok = function(output) {
 	return response(200, { transformed: output });
 };
 
+exports.error = function(status, error) {
+	ensure.signature(arguments, [ Number, String ]);
+	return errorResponse(status, error);
+};
+
 exports.notFound = function() {
 	ensure.signature(arguments, []);
 	return errorResponse(404, "not found");
