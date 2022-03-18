@@ -16,15 +16,15 @@ const VALID_ARGS = [ VALID_PORT.toString(), VALID_TEXT ];
 const TIMEOUT_IN_MS = 5000;
 
 
-describe("WWW server", function() {
+describe("WWW server", () => {
 
-	it("starts server", async function() {
+	it("starts server", async () => {
 		const { httpServer } = await startServerAsync({ args: [ "5000" ]});
 		assert.equal(httpServer.isStarted, true, "should start server");
 		assert.equal(httpServer.port, 5000, "server port");
 	});
 
-	it("routes requests", async function() {
+	it("routes requests", async () => {
 		const { httpServer } = await startServerAsync();
 
 		const request = HttpRequest.createNull({
@@ -62,9 +62,9 @@ async function startServerAsync({ args = [ "4242" ] } = {}) {
 
 
 
-// describe("ROT-13 CLI", function() {
+// describe("ROT-13 CLI", () => {
 //
-// 	it("calls ROT-13 service", async function() {
+// 	it("calls ROT-13 service", async () => {
 // 		const { rot13Requests, clock, stdout } = await runAsync({
 // 			args: VALID_ARGS,
 // 			rot13Response: "transformed text",
@@ -80,7 +80,7 @@ async function startServerAsync({ args = [ "4242" ] } = {}) {
 // 		assert.equal(clock.now(), 0);
 // 	});
 //
-// 	it("outputs an error when ROT-13 service fails", async function() {
+// 	it("outputs an error when ROT-13 service fails", async () => {
 // 		const { stderr } = await runAsync({
 // 			args: VALID_ARGS,
 // 			rot13Error: "my error",
@@ -90,7 +90,7 @@ async function startServerAsync({ args = [ "4242" ] } = {}) {
 // 		assert.match(stderr[1], /my error/);
 // 	});
 //
-// 	it("times out ROT-13 service when service responds too slowly", async function() {
+// 	it("times out ROT-13 service when service responds too slowly", async () => {
 // 		const { runPromise, rot13Requests, clock, stderr } = run({
 // 			args: VALID_ARGS,
 // 			rot13Hang: true,
@@ -115,7 +115,7 @@ async function startServerAsync({ args = [ "4242" ] } = {}) {
 // 		]);
 // 	});
 //
-// 	it("writes usage to command-line when arguments not provided", async function() {
+// 	it("writes usage to command-line when arguments not provided", async () => {
 // 		const { stderr } = await runAsync({ args: [] });
 // 		assert.deepEqual(stderr, [ "Usage: run PORT TEXT\n" ]);
 // 	});
