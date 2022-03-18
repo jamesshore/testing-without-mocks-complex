@@ -15,11 +15,11 @@ const VALID_HEADERS = { "content-type": "application/json" };
 const VALID_BODY_TEXT = "transformed_text";
 const VALID_BODY = JSON.stringify({ transformed: VALID_BODY_TEXT });
 
-describe("ROT-13 Service client", function() {
+describe("ROT-13 Service client", () => {
 
-	describe("happy path", function() {
+	describe("happy path", () => {
 
-		it("makes request", async function() {
+		it("makes request", async () => {
 			const { httpRequests, rot13Client } = createClient();
 
 			await transformAsync(rot13Client, 9999, "text_to_transform");
@@ -34,7 +34,7 @@ describe("ROT-13 Service client", function() {
 			}]);
 		});
 
-		it("parses response", async function() {
+		it("parses response", async () => {
 			const { rot13Client } = createClient({
 				status: VALID_STATUS,
 				headers: VALID_HEADERS,
@@ -45,7 +45,7 @@ describe("ROT-13 Service client", function() {
 			assert.equal(response, VALID_BODY_TEXT);
 		});
 
-		it("tracks requests", async function() {
+		it("tracks requests", async () => {
 			const { rot13Client } = createClient();
 			const requests = rot13Client.trackRequests();
 
@@ -59,37 +59,37 @@ describe("ROT-13 Service client", function() {
 	});
 
 
-	describe("failure paths", function() {
+	describe("failure paths", () => {
 
-		it("fails gracefully when status code has unexpected value", async function() {
+		it("fails gracefully when status code has unexpected value", async () => {
 			await assertFailureAsync({
 				status: 400,
 				message: "Unexpected status from ROT-13 service",
 			});
 		});
 
-		it("fails gracefully if body doesn't exist", async function() {
+		it("fails gracefully if body doesn't exist", async () => {
 			await assertFailureAsync({
 				body: "",
 				message: "Body missing from ROT-13 service",
 			});
 		});
 
-		it("fails gracefully if body is unparseable", async function() {
+		it("fails gracefully if body is unparseable", async () => {
 			await assertFailureAsync({
 				body: "xxx",
 				message: "Unparseable body from ROT-13 service: Unexpected token x in JSON at position 0",
 			});
 		});
 
-		it("fails gracefully if body has unexpected value", async function() {
+		it("fails gracefully if body has unexpected value", async () => {
 			await assertFailureAsync({
 				body: JSON.stringify({ foo: "bar" }),
 				message: "Unexpected body from ROT-13 service: body.transformed must be a string, but it was undefined",
 			});
 		});
 
-		it("doesn't fail when body has more fields than we expect", async function() {
+		it("doesn't fail when body has more fields than we expect", async () => {
 			const { rot13Client } = createClient({
 				body: JSON.stringify({ transformed: "response", foo: "bar" }),
 			});
@@ -101,9 +101,9 @@ describe("ROT-13 Service client", function() {
 	});
 
 
-	describe("cancellation", function() {
+	describe("cancellation", () => {
 
-		it("can cancel requests", async function() {
+		it("can cancel requests", async () => {
 			const { rot13Client, httpRequests } = createClient({ hang: true });
 			const { transformPromise, cancelFn } = rot13Client.transform(9999, "text_to_transform");
 
@@ -136,7 +136,7 @@ describe("ROT-13 Service client", function() {
 			);
 		});
 
-		it("tracks requests that are cancelled", async function() {
+		it("tracks requests that are cancelled", async () => {
 			const { rot13Client } = createClient({ hang: true });
 			const requests = rot13Client.trackRequests();
 			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text");
@@ -157,7 +157,7 @@ describe("ROT-13 Service client", function() {
 			await testHelper.ignorePromiseErrorAsync(transformPromise);
 		});
 
-		it("doesn't track cancellations that happen after response received", async function() {
+		it("doesn't track cancellations that happen after response received", async () => {
 			const { rot13Client } = createClient();
 			const requests = rot13Client.trackRequests();
 			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text");
@@ -176,15 +176,15 @@ describe("ROT-13 Service client", function() {
 	});
 
 
-	describe("nullability", function() {
+	describe("nullability", () => {
 
-		it("provides default response", async function() {
+		it("provides default response", async () => {
 			const rot13Client = Rot13Client.createNull();
 			const response = await transformAsync(rot13Client, IRRELEVANT_PORT, IRRELEVANT_TEXT);
 			assert.equal(response, "Null Rot13Client response");
 		});
 
-		it("can configure multiple responses", async function() {
+		it("can configure multiple responses", async () => {
 			const rot13Client = Rot13Client.createNull([
 				{ response: "response 1" },
 				{ response: "response 2" },
@@ -197,7 +197,7 @@ describe("ROT-13 Service client", function() {
 			assert.equal(response2, "response 2");
 		});
 
-		it("can force an error", async function() {
+		it("can force an error", async () => {
 			const rot13Client = Rot13Client.createNull([{ error: "my error" }]);
 			await assert.throwsAsync(
 				() => transformAsync(rot13Client, IRRELEVANT_PORT, IRRELEVANT_TEXT),
@@ -205,7 +205,7 @@ describe("ROT-13 Service client", function() {
 			);
 		});
 
-		it("simulates hangs", async function() {
+		it("simulates hangs", async () => {
 			const rot13Client = Rot13Client.createNull([{ hang: true }]);
 			const { transformPromise } = rot13Client.transform(IRRELEVANT_PORT, IRRELEVANT_TEXT);
 			await assert.promiseDoesNotResolveAsync(transformPromise);

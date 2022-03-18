@@ -13,11 +13,11 @@ const VALID_HEADERS = { "content-type": "application/json" };
 
 function validBody(text) { return { text }; }
 
-describe("ROT-13 Router", function() {
+describe("ROT-13 Router", () => {
 
-	describe("happy path", function() {
+	describe("happy path", () => {
 
-		it("transforms requests", async function() {
+		it("transforms requests", async () => {
 			const response = await simulateRequestAsync({
 				url: VALID_URL,
 				method: VALID_METHOD,
@@ -27,7 +27,7 @@ describe("ROT-13 Router", function() {
 			assertOkResponse(response, "hello");
 		});
 
-		it("ignores query parameters", async function() {
+		it("ignores query parameters", async () => {
 			const response = await simulateRequestAsync({
 				url: VALID_URL + "?query",
 				body: validBody("hello")
@@ -38,19 +38,19 @@ describe("ROT-13 Router", function() {
 	});
 
 
-	describe("bad routing", function() {
+	describe("bad routing", () => {
 
-		it("returns 'not found' when URL is incorrect", async function() {
+		it("returns 'not found' when URL is incorrect", async () => {
 			const response = await simulateRequestAsync({ url: "/no-such-url" });
 			assert.deepEqual(response, rot13Response.notFound());
 		});
 
-		it("returns 'method not allowed' when method isn't POST", async function() {
+		it("returns 'method not allowed' when method isn't POST", async () => {
 			const response = await simulateRequestAsync({ method: "get" });
 			assert.deepEqual(response, rot13Response.methodNotAllowed());
 		});
 
-		it("returns 'bad request' when content-type header isn't JSON", async function() {
+		it("returns 'bad request' when content-type header isn't JSON", async () => {
 			const headers = { "content-type": "text/plain" };
 			const response = await simulateRequestAsync({ headers });
 			assert.deepEqual(response, rot13Response.badRequest("invalid content-type header"));
@@ -59,20 +59,20 @@ describe("ROT-13 Router", function() {
 	});
 
 
-	describe("body parsing", function() {
+	describe("body parsing", () => {
 
-		it("returns 'bad request' when JSON fails to parse", async function() {
+		it("returns 'bad request' when JSON fails to parse", async () => {
 			const response = await simulateRequestAsync({ body: "not-json" });
 			assert.deepEqual(response, rot13Response.badRequest("Unexpected token o in JSON at position 1"));
 		});
 
-		it("returns 'bad request' when JSON doesn't have text field", async function() {
+		it("returns 'bad request' when JSON doesn't have text field", async () => {
 			const body = { wrongField: "foo" };
 			const response = await simulateRequestAsync({ body });
 			assert.deepEqual(response, rot13Response.badRequest("request.text must be a string, but it was undefined"));
 		});
 
-		it("ignores extraneous fields", async function() {
+		it("ignores extraneous fields", async () => {
 			const body = { ignoreMe: "wrong field", text: "right field" };
 			const response = await simulateRequestAsync({ body });
 			assertOkResponse(response, "right field");

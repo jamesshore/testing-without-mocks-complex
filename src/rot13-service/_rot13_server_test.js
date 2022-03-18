@@ -10,15 +10,15 @@ const rot13Router = require("./routing/rot13_router");
 
 const USAGE = "Usage: serve PORT\n";
 
-describe("ROT-13 Server", function() {
+describe("ROT-13 Server", () => {
 
-	it("starts server", async function() {
+	it("starts server", async () => {
 		const { stdout, httpServer } = await startServerAsync({ args: [ "5000" ]});
 		assert.equal(httpServer.isStarted, true, "should start server");
 		assert.deepEqual(stdout, [ "Server started on port 5000\n" ]);
 	});
 
-	it("logs requests", async function() {
+	it("logs requests", async () => {
 		const { stdout, httpServer } = await startServerAsync();
 		stdout.consume();
 
@@ -26,7 +26,7 @@ describe("ROT-13 Server", function() {
 		assert.deepEqual(stdout, [ "Received request\n" ]);
 	});
 
-	it("routes requests", async function() {
+	it("routes requests", async () => {
 		const { httpServer } = await startServerAsync();
 
 		const actualResponse = await httpServer.simulateRequestAsync(HttpRequest.createNull());
@@ -35,14 +35,14 @@ describe("ROT-13 Server", function() {
 	});
 
 
-	describe("Command-line processing", function() {
+	describe("Command-line processing", () => {
 
-		it("Provides usage and exits with error when no command-line arguments provided", async function() {
+		it("Provides usage and exits with error when no command-line arguments provided", async () => {
 			const { stderr } = await startServerAsync({ args: [] });
 			assert.deepEqual(stderr, [ USAGE ]);
 		});
 
-		it("Provides usage and exits with error when too many command-line arguments provided", async function() {
+		it("Provides usage and exits with error when too many command-line arguments provided", async () => {
 			const { stderr } = await startServerAsync({ args: ["too", "many"] });
 			assert.deepEqual(stderr, [ USAGE ]);
 		});
