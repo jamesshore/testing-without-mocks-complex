@@ -2,28 +2,19 @@
 "use strict";
 
 const assert = require("util/assert");
-const CommandLine = require("infrastructure/command_line");
-const Rot13Client = require("./infrastructure/rot13_client");
-const Clock = require("infrastructure/clock");
 const WwwServer = require("./www_server");
 const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
-const HttpResponse = require("http/http_response");
 const WwwRouter = require("./www_router");
 
-const VALID_PORT = 5000;
-const VALID_TEXT = "my_text";
-const VALID_ARGS = [ VALID_PORT.toString(), VALID_TEXT ];
-
-const TIMEOUT_IN_MS = 5000;
-
+const PORT = 5000;
 
 describe("WWW server", () => {
 
 	it("starts server", async () => {
 		const { httpServer } = await startServerAsync();
 		assert.equal(httpServer.isStarted, true, "should start server");
-		assert.equal(httpServer.port, VALID_PORT, "server port");
+		assert.equal(httpServer.port, PORT, "server port");
 	});
 
 	it("routes requests", async () => {
@@ -40,7 +31,7 @@ async function startServerAsync() {
 	const httpServer = HttpServer.createNull();
 	const wwwServer = new WwwServer(httpServer);
 
-	await wwwServer.serveAsync(VALID_PORT);
+	await wwwServer.serveAsync(PORT);
 
 	return {
 		httpServer,

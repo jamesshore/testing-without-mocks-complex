@@ -2,28 +2,19 @@
 "use strict";
 
 const assert = require("util/assert");
-const CommandLine = require("infrastructure/command_line");
 const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
-const Server = require("./rot13_server");
+const Rot13Server = require("./rot13_server");
 const Rot13Router = require("./rot13_router");
 
-const USAGE = "Usage: serve PORT\n";
+const PORT = 5000;
 
 describe("ROT-13 Server", () => {
 
 	it("starts server", async () => {
-		const { stdout, httpServer } = await startServerAsync({ args: [ "5000" ]});
+		const { httpServer } = await startServerAsync();
 		assert.equal(httpServer.isStarted, true, "should start server");
-		assert.deepEqual(stdout, [ "Server started on port 5000\n" ]);
-	});
-
-	it("logs requests", async () => {
-		const { stdout, httpServer } = await startServerAsync();
-		stdout.consume();
-
-		await httpServer.simulateRequestAsync();
-		assert.deepEqual(stdout, [ "Received request\n" ]);
+		assert.equal(httpServer.port, PORT, "server port");
 	});
 
 	it("routes requests", async () => {
@@ -34,37 +25,15 @@ describe("ROT-13 Server", () => {
 		assert.deepEqual(actualResponse, expectedResponse);
 	});
 
-
-	describe("Command-line processing", () => {
-
-		it("Provides usage and exits with error when no command-line arguments provided", async () => {
-			const { stderr } = await startServerAsync({ args: [] });
-			assert.deepEqual(stderr, [ USAGE ]);
-		});
-
-		it("Provides usage and exits with error when too many command-line arguments provided", async () => {
-			const { stderr } = await startServerAsync({ args: ["too", "many"] });
-			assert.deepEqual(stderr, [ USAGE ]);
-		});
-
-	});
-
 });
 
-async function startServerAsync({ args = [ "4242" ] } = {}) {
-	const commandLine = CommandLine.createNull({ args  });
+async function startServerAsync() {
 	const httpServer = HttpServer.createNull();
+	const rot13Server = new Rot13Server(httpServer);
 
-	const app = new Server(commandLine, httpServer);
-
-	const stdout = commandLine.trackStdout();
-	const stderr = commandLine.trackStderr();
-
-	await app.startAsync();
+	await rot13Server.startAsync(PORT);
 
 	return {
 		httpServer,
-		stdout,
-		stderr,
 	};
 }

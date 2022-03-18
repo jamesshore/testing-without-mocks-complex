@@ -14,36 +14,25 @@ module.exports = class Rot13Server {
 		ensure.signature(arguments, []);
 
 		return new Rot13Server(
-			CommandLine.create(),
 			HttpServer.create(Log.create()),
 		);
 	}
 
-	constructor(commandLine, httpServer) {
-		ensure.signature(arguments, [ CommandLine, HttpServer ]);
+	constructor(httpServer) {
+		ensure.signature(arguments, [ HttpServer ]);
 
-		this._commandLine = commandLine;
 		this._httpServer = httpServer;
 		this._router = Rot13Router.create();
 	}
 
-	async startAsync() {
-		ensure.signature(arguments, []);
+	async startAsync(port) {
+		ensure.signature(arguments, [ Number ]);
 
-		const args = this._commandLine.args();
-		if (args.length !== 1) {
-			this._commandLine.writeStderr(`Usage: serve PORT\n`);
-			return;
-		}
-
-		const port = parseInt(args[0], 10);
 		await this._httpServer.startAsync({ port, onRequestAsync: onRequestAsync.bind(null, this) });
-		await this._commandLine.writeStdout(`Server started on port ${port}\n`);
 	}
 
 };
 
 async function onRequestAsync(self, request) {
-	self._commandLine.writeStdout("Received request\n");
 	return await self._router.routeAsync(request);
 }
