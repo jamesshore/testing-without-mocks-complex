@@ -21,9 +21,12 @@ exports.homePage = function() {
 
 /** error responses for user-facing www site */
 exports.errorPage = function(status, message) {
-	return HttpResponse.createPlainTextResponse({
-		status: 501,
-		body: `errorPage view not yet implemented (status: ${status})`,
+	const title = `${status}: ${message}`;
+	const body = `<p>${message}</p>`;
+
+	return HttpResponse.createHtmlResponse({
+		status,
+		body: pageTemplate(title, body),
 	});
 };
 
