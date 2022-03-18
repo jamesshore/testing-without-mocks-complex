@@ -11,31 +11,45 @@ const Log = require("infrastructure/log");
 
 const TIMEOUT_IN_MS = 5000;
 
-/** Top-level entry point for web server */
+/** Web server for user-facing www site */
+module.exports = class WwwServer {
 
-exports.serveAsync = async function({
-	commandLine = CommandLine.create(),
-	httpServer = HttpServer.create(Log.create()),
-} = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		commandLine: [ undefined, CommandLine ],
-		httpServer: [ undefined, HttpServer ],
-	}]]);
-
-	const args = commandLine.args();
-
-	const port = parseInt(args[0], 10);
-
-	function onRequestAsync() {
-		return HttpResponse.create({
-			status: 200,
-			headers: { "content-type": "text/plain; charset=utf-8" },
-			body: "placeholder",
-		});
+	static create({
+		commandLine = CommandLine.create(),
+		httpServer = HttpServer.create(Log.create()),
+	} = {}) {
+		ensure.signature(arguments, [{
+			commandLine: CommandLine,
+			httpServer: HttpServer,
+		}]);
+		return new WwwServer(commandLine, httpServer);
 	}
 
-	await httpServer.startAsync({ port, onRequestAsync });
+	constructor(commandLine, httpServer) {
+		this._commandLine = commandLine;
+		this._httpServer = httpServer;
+	}
+
+	async serveAsync() {
+		ensure.signature(arguments, []);
+
+		const args = this._commandLine.args();
+
+		const port = parseInt(args[0], 10);
+
+		function onRequestAsync() {
+			return HttpResponse.create({
+				status: 200,
+				headers: { "content-type": "text/plain; charset=utf-8" },
+				body: "placeholder",
+			});
+		}
+
+		await this._httpServer.startAsync({ port, onRequestAsync });
+	}
+
 };
+
 
 // exports.runAsync = async function({
 // 	commandLine = CommandLine.create(),

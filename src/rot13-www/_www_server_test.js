@@ -5,7 +5,7 @@ const assert = require("util/assert");
 const CommandLine = require("infrastructure/command_line");
 const Rot13Client = require("./infrastructure/rot13_client");
 const Clock = require("infrastructure/clock");
-const server = require("./www_server");
+const WwwServer = require("./www_server");
 const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
 const HttpResponse = require("http/http_response");
@@ -47,11 +47,12 @@ describe("WWW server", () => {
 async function startServerAsync({ args = [ "4242" ] } = {}) {
 	const commandLine = CommandLine.createNull({ args  });
 	const httpServer = HttpServer.createNull();
+	const wwwServer = new WwwServer(commandLine, httpServer);
 
 	const stdout = commandLine.trackStdout();
 	const stderr = commandLine.trackStderr();
 
-	await server.serveAsync({ commandLine, httpServer });
+	await wwwServer.serveAsync();
 
 	return {
 		httpServer,
