@@ -6,7 +6,7 @@ const CommandLine = require("infrastructure/command_line");
 const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
 const Server = require("./rot13_server");
-const Rot13Router = require("./routing/rot13_router");
+const Rot13Router = require("./rot13_router");
 
 const USAGE = "Usage: serve PORT\n";
 

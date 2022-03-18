@@ -2,7 +2,7 @@
 "use strict";
 
 const assert = require("util/assert");
-const rot13 = require("../logic/rot13");
+const rot13Logic = require("./rot13_logic");
 const rot13Controller = require("./rot13_controller");
 const HttpRequest = require("http/http_request");
 const HttpResponse = require("http/http_response");
@@ -69,7 +69,7 @@ async function simulateRequestAsync({
 function assertOkResponse(response, originalText) {
 	const expectedResponse = HttpResponse.createJsonResponse({
 		status: 200,
-		body: { transformed: rot13.transform(originalText) }
+		body: { transformed: rot13Logic.transform(originalText) }
 	});
 
 	assert.deepEqual(response, expectedResponse);
