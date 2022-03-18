@@ -3,14 +3,14 @@
 
 const assert = require("util/assert");
 const HttpRequest = require("http/http_request");
-const wwwController = require("./www_controller");
+const wwwController = require("./home_page_controller");
 const wwwView = require("./www_view");
 
-describe("WWW Controller", () => {
+describe("Home Page Controller", () => {
 
 	describe("happy paths", () => {
 
-		it("'GET /' renders home page", async () => {
+		it("renders home page", async () => {
 			const response = await simulateRequestAsync();
 			assert.deepEqual(response, wwwView.homePage());
 		});

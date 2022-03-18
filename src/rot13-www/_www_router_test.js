@@ -2,7 +2,7 @@
 "use strict";
 
 const assert = require("util/assert");
-const wwwController = require("./www_controller");
+const wwwController = require("./home_page_controller");
 const HttpRequest = require("http/http_request");
 const WwwRouter = require("./www_router");
 const wwwView = require("./www_view");
