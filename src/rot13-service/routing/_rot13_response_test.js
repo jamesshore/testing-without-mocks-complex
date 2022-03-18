@@ -17,16 +17,6 @@ describe("ROT-13 Response", () => {
 		assertResponseEquals(response, 555, { error: "my error" });
 	});
 
-	it("not found", () => {
-		const response = rot13Response.notFound();
-		assertResponseEquals(response, 404, { error: "not found" });
-	});
-
-	it("method not allowed", () => {
-		const response = rot13Response.methodNotAllowed();
-		assertResponseEquals(response, 405, { error: "method not allowed" });
-	});
-
 	it("bad request", () => {
 		const response = rot13Response.badRequest("my error");
 		assertResponseEquals(response, 400, { error: "my error" });

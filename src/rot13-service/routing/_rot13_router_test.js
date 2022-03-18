@@ -42,12 +42,12 @@ describe("ROT-13 Router", () => {
 
 		it("returns 'not found' when URL is incorrect", async () => {
 			const response = await simulateRequestAsync({ url: "/no-such-url" });
-			assert.deepEqual(response, rot13Response.notFound());
+			assert.deepEqual(response, rot13Response.error(404, "not found"));
 		});
 
 		it("returns 'method not allowed' when method isn't POST", async () => {
 			const response = await simulateRequestAsync({ method: "get" });
-			assert.deepEqual(response, rot13Response.methodNotAllowed());
+			assert.deepEqual(response, rot13Response.error(405, "method not allowed"));
 		});
 
 		it("returns 'bad request' when content-type header isn't JSON", async () => {

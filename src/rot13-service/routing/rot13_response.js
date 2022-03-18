@@ -13,27 +13,13 @@ exports.ok = function(output) {
 
 exports.error = function(status, error) {
 	ensure.signature(arguments, [ Number, String ]);
-	return errorResponse(status, error);
-};
-
-exports.notFound = function() {
-	ensure.signature(arguments, []);
-	return errorResponse(404, "not found");
-};
-
-exports.methodNotAllowed = function() {
-	ensure.signature(arguments, []);
-	return errorResponse(405, "method not allowed");
+	return response(status, { error });
 };
 
 exports.badRequest = function(errorMessage) {
 	ensure.signature(arguments, [ String ]);
-	return errorResponse(400, errorMessage);
+	return exports.error(400, errorMessage);
 };
-
-function errorResponse(status, error) {
-	return response(status, { error });
-}
 
 function response(status, body) {
 	return HttpResponse.createJsonResponse({ status, body });
