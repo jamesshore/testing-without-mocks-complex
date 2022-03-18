@@ -20,9 +20,9 @@ const TIMEOUT_IN_MS = 5000;
 describe("WWW server", () => {
 
 	it("starts server", async () => {
-		const { httpServer } = await startServerAsync({ args: [ "5000" ]});
+		const { httpServer } = await startServerAsync();
 		assert.equal(httpServer.isStarted, true, "should start server");
-		assert.equal(httpServer.port, 5000, "server port");
+		assert.equal(httpServer.port, VALID_PORT, "server port");
 	});
 
 	it("routes requests", async () => {
@@ -44,20 +44,14 @@ describe("WWW server", () => {
 
 });
 
-async function startServerAsync({ args = [ "4242" ] } = {}) {
-	const commandLine = CommandLine.createNull({ args  });
+async function startServerAsync() {
 	const httpServer = HttpServer.createNull();
-	const wwwServer = new WwwServer(commandLine, httpServer);
+	const wwwServer = new WwwServer(httpServer);
 
-	const stdout = commandLine.trackStdout();
-	const stderr = commandLine.trackStderr();
-
-	await wwwServer.serveAsync();
+	await wwwServer.serveAsync(VALID_PORT);
 
 	return {
 		httpServer,
-		stdout,
-		stderr,
 	};
 }
 

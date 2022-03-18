@@ -15,27 +15,20 @@ const TIMEOUT_IN_MS = 5000;
 module.exports = class WwwServer {
 
 	static create({
-		commandLine = CommandLine.create(),
-		httpServer = HttpServer.create(Log.create()),
+		httpServer,
 	} = {}) {
 		ensure.signature(arguments, [{
-			commandLine: CommandLine,
 			httpServer: HttpServer,
 		}]);
-		return new WwwServer(commandLine, httpServer);
+		return new WwwServer(httpServer);
 	}
 
-	constructor(commandLine, httpServer) {
-		this._commandLine = commandLine;
+	constructor(httpServer) {
 		this._httpServer = httpServer;
 	}
 
-	async serveAsync() {
-		ensure.signature(arguments, []);
-
-		const args = this._commandLine.args();
-
-		const port = parseInt(args[0], 10);
+	async serveAsync(port) {
+		ensure.signature(arguments, [Number]);
 
 		function onRequestAsync() {
 			return HttpResponse.create({
