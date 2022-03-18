@@ -11,23 +11,24 @@ const REQUEST_TYPE = { text: String };
 exports.postAsync = async function(request) {
 	ensure.signature(arguments, [ HttpRequest ]);
 
-	if (!request.hasContentType("application/json")) {
-		return badRequest("invalid content-type header");
-	}
-	const jsonString = await request.readBodyAsync();
-	let json;
 	try {
-		json = JSON.parse(jsonString);
-		ensure.typeMinimum(json, REQUEST_TYPE, "request");
+		const input = await parseRequestAsync(request);
+		const output = rot13.transform(input);
+		return ok(output);
 	}
-	catch(err) {
+	catch (err) {
 		return badRequest(err.message);
 	}
-
-	const input = json.text;
-	const output = rot13.transform(input);
-	return ok(output);
 };
+
+async function parseRequestAsync(request) {
+	if (!request.hasContentType("application/json")) throw new Error("invalid content-type header");
+
+	const json = JSON.parse(await request.readBodyAsync());
+	ensure.typeMinimum(json, REQUEST_TYPE, "request");
+
+	return json.text;
+}
 
 function ok(output) {
 	return HttpResponse.createJsonResponse({
