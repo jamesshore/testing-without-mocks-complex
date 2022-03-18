@@ -8,6 +8,7 @@ const HttpResponse = require("http/http_response");
 
 const REQUEST_TYPE = { text: String };
 
+/** POST endpoint for /rot13/transform */
 exports.postAsync = async function(request) {
 	ensure.signature(arguments, [ HttpRequest ]);
 
