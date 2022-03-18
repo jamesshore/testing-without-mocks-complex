@@ -8,6 +8,7 @@ const Clock = require("infrastructure/clock");
 const server = require("./www_server");
 const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
+const HttpResponse = require("http/http_response");
 
 const VALID_PORT = 5000;
 const VALID_TEXT = "my_text";
@@ -30,13 +31,13 @@ describe("WWW server", () => {
 		const request = HttpRequest.createNull({
 			url: "/",
 		});
-		const expectedResponse = {
+		const expectedResponse = HttpResponse.create({
 			status: 200,
 			headers: {
 				"content-type": "text/plain; charset=utf-8"
 			},
 			body: "placeholder"
-		};
+		});
 
 		assert.deepEqual(await httpServer.simulateRequestAsync(request), expectedResponse);
 	});
