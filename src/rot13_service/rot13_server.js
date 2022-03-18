@@ -20,6 +20,14 @@ module.exports = class Rot13Server {
 		this._router = Rot13Router.create();
 	}
 
+	get isStarted() {
+		return this._httpServer.isStarted;
+	}
+
+	get port() {
+		return this._httpServer.port;
+	}
+
 	async startAsync(port) {
 		ensure.signature(arguments, [ Number ]);
 

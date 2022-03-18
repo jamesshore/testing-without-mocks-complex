@@ -25,6 +25,13 @@ describe("ROT-13 Server", () => {
 		assert.deepEqual(actualResponse, expectedResponse);
 	});
 
+	it("provides server status", async () => {
+		const { rot13Server } = await startServerAsync();
+
+		assert.equal(rot13Server.isStarted, true, "isStarted");
+		assert.equal(rot13Server.port, PORT, "port");
+	});
+
 });
 
 async function startServerAsync() {
@@ -35,5 +42,6 @@ async function startServerAsync() {
 
 	return {
 		httpServer,
+		rot13Server,
 	};
 }

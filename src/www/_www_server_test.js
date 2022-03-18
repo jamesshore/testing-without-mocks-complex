@@ -25,6 +25,13 @@ describe("WWW server", () => {
 		assert.deepEqual(actualResponse, expectedResponse);
 	});
 
+	it("provides server status", async () => {
+		const { wwwServer } = await startServerAsync();
+
+		assert.equal(wwwServer.isStarted, true, "isStarted");
+		assert.equal(wwwServer.port, PORT, "port");
+	});
+
 });
 
 async function startServerAsync() {
@@ -35,5 +42,6 @@ async function startServerAsync() {
 
 	return {
 		httpServer,
+		wwwServer,
 	};
 }

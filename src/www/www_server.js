@@ -6,7 +6,7 @@ const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
 const WwwRouter = require("./www_router");
 
-/** Web server for user-facing www site */
+/** Server for user-facing www site */
 module.exports = class WwwServer {
 
 	static create() {
@@ -18,6 +18,14 @@ module.exports = class WwwServer {
 	constructor(httpServer) {
 		this._httpServer = httpServer;
 		this._router = WwwRouter.create();
+	}
+
+	get isStarted() {
+		return this._httpServer.isStarted;
+	}
+
+	get port() {
+		return this._httpServer.port;
 	}
 
 	async serveAsync(port) {
