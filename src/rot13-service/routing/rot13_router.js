@@ -3,20 +3,33 @@
 
 const ensure = require("util/ensure");
 const HttpRequest = require("http/http_request");
-const rot13Controller = require("./rot13_controller");
 const HttpResponse = require("http/http_response");
+const GenericRouter = require("http/generic_router");
+const rot13Controller = require("./rot13_controller");
 
-/** Top-level router for ROT-13 service */
-exports.routeAsync = async function(request) {
-	ensure.signature(arguments, [ HttpRequest ]);
+/** Router for ROT-13 service */
+module.exports = class Rot13Router {
 
-	if (request.urlPathname !== "/rot13/transform") return errorResponse(404, "not found");
-	if (request.method !== "POST") return errorResponse(405, "method not allowed");
+	static create() {
+		return new Rot13Router();
+	}
 
-	return await rot13Controller.postAsync(request);
+	constructor() {
+		this._router = GenericRouter.create(errorHandler, {
+			"/rot13/transform": rot13Controller,
+		});
+	}
+
+	async routeAsync(request) {
+		ensure.signature(arguments, [ HttpRequest ]);
+		return await this._router.routeAsync(request);
+	}
+
 };
 
-function errorResponse(status, error) {
+function errorHandler(status, error, request) {
+	ensure.signature(arguments, [ Number, String, HttpRequest ]);
+
 	return HttpResponse.createJsonResponse({
 		status,
 		body: { error }

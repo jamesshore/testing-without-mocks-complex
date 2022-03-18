@@ -5,7 +5,7 @@ const ensure = require("util/ensure");
 const CommandLine = require("infrastructure/command_line");
 const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
-const rot13Router = require("./routing/rot13_router");
+const Rot13Router = require("./routing/rot13_router");
 
 /** Top-level 'traffic cop' for ROT-13 service */
 module.exports = class Rot13Server {
@@ -24,6 +24,7 @@ module.exports = class Rot13Server {
 
 		this._commandLine = commandLine;
 		this._httpServer = httpServer;
+		this._router = Rot13Router.create();
 	}
 
 	async startAsync() {
@@ -44,5 +45,5 @@ module.exports = class Rot13Server {
 
 async function onRequestAsync(self, request) {
 	self._commandLine.writeStdout("Received request\n");
-	return await rot13Router.routeAsync(request);
+	return await self._router.routeAsync(request);
 }

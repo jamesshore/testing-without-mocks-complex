@@ -6,7 +6,7 @@ const CommandLine = require("infrastructure/command_line");
 const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
 const Server = require("./rot13_server");
-const rot13Router = require("./routing/rot13_router");
+const Rot13Router = require("./routing/rot13_router");
 
 const USAGE = "Usage: serve PORT\n";
 
@@ -30,7 +30,7 @@ describe("ROT-13 Server", () => {
 		const { httpServer } = await startServerAsync();
 
 		const actualResponse = await httpServer.simulateRequestAsync(HttpRequest.createNull());
-		const expectedResponse = await rot13Router.routeAsync(HttpRequest.createNull());
+		const expectedResponse = await Rot13Router.create().routeAsync(HttpRequest.createNull());
 		assert.deepEqual(actualResponse, expectedResponse);
 	});
 
