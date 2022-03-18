@@ -22,7 +22,7 @@ describe("ROT-13 Router", () => {
 			body: VALID_BODY,
 		};
 
-		const expected = await routerResponse(requestOptions);
+		const expected = await controllerResponse(requestOptions);
 		let actual = await simulateRequestAsync(requestOptions);
 		assert.deepEqual(actual, expected);
 	});
@@ -38,7 +38,7 @@ describe("ROT-13 Router", () => {
 
 });
 
-async function routerResponse(requestOptions) {
+async function controllerResponse(requestOptions) {
 	const request = createNullRequest(requestOptions);
 	return await rot13Controller.postAsync(request);
 }
