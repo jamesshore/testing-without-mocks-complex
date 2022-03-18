@@ -3,6 +3,7 @@
 
 const ensure = require("util/ensure");
 
+/** ROT-13 transformation logic */
 exports.transform = function(input) {
 	ensure.signature(arguments, [ String ]);
 

@@ -7,7 +7,7 @@ const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
 const Rot13Router = require("./rot13_router");
 
-/** Top-level 'traffic cop' for ROT-13 service */
+/** Server for ROT-13 service */
 module.exports = class Rot13Server {
 
 	static create() {
