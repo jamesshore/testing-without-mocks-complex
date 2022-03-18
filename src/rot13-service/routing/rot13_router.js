@@ -11,6 +11,7 @@ const rot13Controller = require("./rot13_controller");
 module.exports = class Rot13Router {
 
 	static create() {
+		ensure.signature(arguments, []);
 		return new Rot13Router();
 	}
 
