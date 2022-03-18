@@ -10,3 +10,10 @@ exports.errorPage = function(status, message) {
 		body: `errorPage view not yet implemented (status: ${status})`,
 	});
 };
+
+exports.homePage = function() {
+	return HttpResponse.createPlainTextResponse({
+		status: 501,
+		body: "home page view not yet implemented",
+	});
+};

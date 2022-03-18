@@ -2,11 +2,9 @@
 "use strict";
 
 const HttpResponse = require("http/http_response");
+const wwwView = require("./www_view");
 
 /** GET endpoint for / */
 exports.getAsync = function(request) {
-	return HttpResponse.createPlainTextResponse({
-		status: 501,
-		body: "controller not yet implemented",
-	});
+	return wwwView.homePage();
 };
