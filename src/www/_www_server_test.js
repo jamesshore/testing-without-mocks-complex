@@ -38,7 +38,7 @@ async function startServerAsync() {
 	const httpServer = HttpServer.createNull();
 	const wwwServer = new WwwServer(httpServer);
 
-	await wwwServer.serveAsync(PORT);
+	await wwwServer.startAsync(PORT);
 
 	return {
 		httpServer,

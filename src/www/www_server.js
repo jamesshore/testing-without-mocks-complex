@@ -32,7 +32,7 @@ module.exports = class WwwServer {
 		return this._httpServer.port;
 	}
 
-	async serveAsync(port) {
+	async startAsync(port) {
 		ensure.signature(arguments, [ Number ]);
 
 		await this._httpServer.startAsync(port, request => this._router.routeAsync(request));
