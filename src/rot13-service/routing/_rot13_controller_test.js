@@ -13,7 +13,7 @@ function validBody(text) { return { text }; }
 
 describe("ROT-13 Controller", () => {
 
-	describe("happy path", () => {
+	describe("happy paths", () => {
 
 		it("transforms requests", async () => {
 			const response = await simulateRequestAsync({
@@ -23,10 +23,16 @@ describe("ROT-13 Controller", () => {
 			assertOkResponse(response, "hello");
 		});
 
+		it("ignores extraneous fields", async () => {
+			const body = { ignoreMe: "wrong field", text: "right field" };
+			const response = await simulateRequestAsync({ body });
+			assertOkResponse(response, "right field");
+		});
+
 	});
 
 
-	describe("edge cases", () => {
+	describe("failure paths", () => {
 
 		it("returns 'bad request' when content-type header isn't JSON", async () => {
 			const headers = { "content-type": "text/plain" };
@@ -43,12 +49,6 @@ describe("ROT-13 Controller", () => {
 			const body = { wrongField: "foo" };
 			const response = await simulateRequestAsync({ body });
 			assertBadRequest(response, "request.text must be a string, but it was undefined");
-		});
-
-		it("ignores extraneous fields", async () => {
-			const body = { ignoreMe: "wrong field", text: "right field" };
-			const response = await simulateRequestAsync({ body });
-			assertOkResponse(response, "right field");
 		});
 
 	});
