@@ -16,7 +16,7 @@ const VALID_ARGS = [ VALID_PORT.toString(), VALID_TEXT ];
 const TIMEOUT_IN_MS = 5000;
 
 
-describe("web server", function() {
+describe("WWW server", function() {
 
 	it("starts server", async function() {
 		const { httpServer } = await startServerAsync({ args: [ "5000" ]});

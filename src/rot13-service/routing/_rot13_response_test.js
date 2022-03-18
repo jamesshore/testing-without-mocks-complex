@@ -3,6 +3,7 @@
 
 const assert = require("util/assert");
 const rot13Response = require("./rot13_response");
+const HttpResponse = require("http/http_response");
 
 describe("ROT-13 Response", function() {
 
@@ -29,9 +30,5 @@ describe("ROT-13 Response", function() {
 });
 
 function assertResponseEquals(response, status, body) {
-	assert.deepEqual(response, {
-		status,
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(body),
-	});
+	assert.deepEqual(response, HttpResponse.createJsonResponse({ status, body }));
 }

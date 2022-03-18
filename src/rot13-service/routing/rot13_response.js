@@ -2,6 +2,7 @@
 "use strict";
 
 const ensure = require("util/ensure");
+const HttpResponse = require("http/http_response");
 
 /** Functions for generating ROT-13 service's responses */
 
@@ -30,9 +31,5 @@ function errorResponse(status, error) {
 }
 
 function response(status, body) {
-	return {
-		status,
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(body),
-	};
+	return HttpResponse.createJsonResponse({ status, body });
 }

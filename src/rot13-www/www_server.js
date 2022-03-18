@@ -6,6 +6,7 @@ const ensure = require("util/ensure");
 const Rot13Client = require("./infrastructure/rot13_client");
 const Clock = require("infrastructure/clock");
 const HttpServer = require("http/http_server");
+const HttpResponse = require("http/http_response");
 const Log = require("infrastructure/log");
 
 const TIMEOUT_IN_MS = 5000;
@@ -26,13 +27,11 @@ exports.serveAsync = async function({
 	const port = parseInt(args[0], 10);
 
 	function onRequestAsync() {
-		return {
+		return HttpResponse.create({
 			status: 200,
-			headers: {
-				"content-type": "text/plain; charset=utf-8"
-			},
-			body: "placeholder"
-		};
+			headers: { "content-type": "text/plain; charset=utf-8" },
+			body: "placeholder",
+		});
 	}
 
 	await httpServer.startAsync({ port, onRequestAsync });
