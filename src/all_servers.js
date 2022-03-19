@@ -6,8 +6,14 @@ const CommandLine = require("infrastructure/command_line");
 const WwwServer = require("./www/www_server");
 const Rot13Server = require("./rot13_service/rot13_server");
 
+const USAGE = "Usage: run [www server port] [rot-13 server port]";
+
 /** Wrapper for starting all the servers needed for the site to work */
 module.exports = class AllServers {
+
+	static get USAGE() {
+		return USAGE;
+	}
 
 	static create() {
 		ensure.signature(arguments, []);
@@ -21,18 +27,35 @@ module.exports = class AllServers {
 	}
 
 	async startAsync() {
-		const args = this._commandLine.args();
+		try {
+			const { wwwPort, rot13Port } = parseArgs(this._commandLine.args());
 
-		const wwwPort = parseInt(args[0], 10);
-		const rot13Port = parseInt(args[1], 10);
-
-		await Promise.all([
-			this._wwwServer.startAsync(wwwPort),
-			this._rot13Server.startAsync(rot13Port),
-		]);
+			await Promise.all([
+				this._wwwServer.startAsync(wwwPort),
+				this._rot13Server.startAsync(rot13Port),
+			]);
+		}
+		catch (err) {
+			this._commandLine.writeStderr(err.message + "\n");
+		}
 	}
 
 };
+
+function parseArgs(args) {
+	if (args.length !== 2) throw new Error(USAGE);
+
+	return {
+		wwwPort: parse(args[0], "www server"),
+		rot13Port: parse(args[1], "ROT-13 server"),
+	};
+
+	function parse(arg, name) {
+		const result = parseInt(arg, 10);
+		if (Number.isNaN(result)) throw new Error(`${name} port is not a number`);
+		return result;
+	}
+}
 
 
 // exports.runAsync = async function({

@@ -12,6 +12,7 @@ const VALID_ARGS = [ "1000", "2000" ];
 
 describe("All servers", () => {
 
+
 	describe("happy path", () => {
 
 		it("starts servers", async () => {
@@ -30,6 +31,24 @@ describe("All servers", () => {
 
 	});
 
+
+	describe("error handling", () => {
+
+		it("writes usage to stderr when wrong number of arguments provided", async () => {
+			const { stderr } = await startAsync({ args: [] });
+			assert.deepEqual(stderr, [ AllServers.USAGE + "\n"]);
+		});
+
+		it("writes error if ports aren't numbers", async () => {
+			const { stderr: wwwStderr } = await startAsync({ args: [ "xxx", "1000" ]});
+			const { stderr: rot13Stderr } = await startAsync({ args: [ "1000", "xxx" ]});
+
+			assert.deepEqual(wwwStderr, [ "www server port is not a number\n" ]);
+			assert.deepEqual(rot13Stderr, [ "ROT-13 server port is not a number\n" ]);
+		});
+
+	});
+
 });
 
 async function startAsync({
@@ -40,12 +59,18 @@ async function startAsync({
 	}]]);
 
 	const commandLine = CommandLine.createNull({ args });
+	const stderr = commandLine.trackStderr();
+
 	const wwwServer = WwwServer.createNull();
 	const rot13Server = Rot13Server.createNull();
 	const servers = new AllServers(commandLine, wwwServer, rot13Server);
 
 	await servers.startAsync();
-	return { wwwServer, rot13Server };
+	return {
+		wwwServer,
+		rot13Server,
+		stderr,
+	};
 }
 
 // function run({ args, rot13Response, rot13Error, rot13Hang }) {
