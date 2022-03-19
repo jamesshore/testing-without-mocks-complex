@@ -18,7 +18,7 @@ describe("Smoke test", () => {
 		await new Promise((resolve, reject) => {
 			let startupCount = 0;
 			let stdout = "";
-			const process = forkModule(
+			const process = testHelper.forkModule(
 				__dirname,
 				"./serve.js",
 				{ args: ["5001", "5002"] },
@@ -58,37 +58,3 @@ describe("Smoke test", () => {
 	});
 
 });
-
-
-function forkModule(cwd, modulePath, {
-	args = []
-} = {}) {
-	ensure.signature(arguments, [ String, String, [ undefined, {
-		args: [ undefined, Array ],
-	}]], [ "cwd", "modulePath", "options" ]);
-
-	const absolutePath = path.resolve(cwd, modulePath);
-	const options = {
-		stdio: "pipe",
-	};
-	return childProcess.fork(absolutePath, args, options);
-
-	// let stdout = "";
-	// let stderr = "";
-	// child.stdout.on("data", (data) => {
-	// 	stdout += data;
-	// });
-	// child.stderr.on("data", (data) => {
-	// 	stderr += data;
-	// });
-	//
-	// child.on("exit", () => {
-	// 	if (failOnStderr && stderr !== "") {
-	// 		console.log(stderr);
-	// 		return reject(new Error("Runner failed"));
-	// 	}
-	// 	else {
-	// 		return resolve({ stdout, stderr });
-	// 	}
-	// });
-}
