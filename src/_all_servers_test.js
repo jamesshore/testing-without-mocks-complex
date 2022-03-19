@@ -7,6 +7,7 @@ const AllServers = require("./all_servers");
 const CommandLine = require("infrastructure/command_line");
 const WwwServer = require("./www/www_server");
 const Rot13Server = require("./rot13_service/rot13_server");
+const Log = require("infrastructure/log");
 
 const VALID_ARGS = [ "1000", "2000" ];
 
@@ -34,17 +35,31 @@ describe("All servers", () => {
 
 	describe("error handling", () => {
 
-		it("writes usage to stderr when wrong number of arguments provided", async () => {
-			const { stderr } = await startAsync({ args: [] });
-			assert.deepEqual(stderr, [ AllServers.USAGE + "\n"]);
+		it("logs error if wrong number of arguments provided", async () => {
+			const { logOutput } = await startAsync({ args: [ "one", "two", "three" ] });
+			assert.deepEqual(logOutput, [{
+				alert: "emergency",
+				message: "startup error",
+				error: `Error: invalid command-line arguments (${AllServers.USAGE})`,
+				commandLineArguments: [ "one", "two", "three" ],
+			}]);
 		});
 
-		it("writes error if ports aren't numbers", async () => {
-			const { stderr: wwwStderr } = await startAsync({ args: [ "xxx", "1000" ]});
-			const { stderr: rot13Stderr } = await startAsync({ args: [ "1000", "xxx" ]});
+		it("logs error if ports aren't numbers", async () => {
+			const { logOutput: wwwLog } = await startAsync({ args: [ "xxx", "1000" ]});
+			const { logOutput: rot13Log } = await startAsync({ args: [ "1000", "xxx" ]});
 
-			assert.deepEqual(wwwStderr, [ "www server port is not a number\n" ]);
-			assert.deepEqual(rot13Stderr, [ "ROT-13 server port is not a number\n" ]);
+			assertLogError(wwwLog, "www", [ "xxx", "1000" ]);
+			assertLogError(rot13Log, "ROT-13", [ "1000", "xxx" ]);
+
+			function assertLogError(logOutput, serverName, args) {
+				assert.deepEqual(logOutput, [{
+					alert: "emergency",
+					message: "startup error",
+					commandLineArguments: args,
+					error: `Error: ${serverName} server port is not a number`,
+				}]);
+			}
 		});
 
 	});
@@ -58,18 +73,21 @@ async function startAsync({
 		args: [ undefined, Array ],
 	}]]);
 
+	const log = Log.createNull();
+	const logOutput = log.trackOutput();
+
 	const commandLine = CommandLine.createNull({ args });
-	const stderr = commandLine.trackStderr();
 
 	const wwwServer = WwwServer.createNull();
 	const rot13Server = Rot13Server.createNull();
-	const servers = new AllServers(commandLine, wwwServer, rot13Server);
 
+	const servers = new AllServers(log, commandLine, wwwServer, rot13Server);
 	await servers.startAsync();
+
 	return {
 		wwwServer,
 		rot13Server,
-		stderr,
+		logOutput,
 	};
 }
 

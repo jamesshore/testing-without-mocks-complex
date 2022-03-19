@@ -9,9 +9,9 @@ const Rot13Router = require("./rot13_router");
 /** Server for ROT-13 service */
 module.exports = class Rot13Server {
 
-	static create() {
-		ensure.signature(arguments, []);
-		return new this(HttpServer.create(Log.create()));
+	static create(log) {
+		ensure.signature(arguments, [ Log ]);
+		return new this(HttpServer.create(log));
 	}
 
 	static createNull() {
