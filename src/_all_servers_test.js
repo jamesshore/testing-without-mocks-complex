@@ -2,50 +2,91 @@
 "use strict";
 
 const assert = require("util/assert");
+const ensure = require("util/ensure");
+const AllServers = require("./all_servers");
 const CommandLine = require("infrastructure/command_line");
-const Rot13Client = require("./infrastructure/rot13_client");
-const Clock = require("infrastructure/clock");
-const WwwServer = require("./www_server");
-const HttpServer = require("http/http_server");
-const HttpRequest = require("http/http_request");
-const HttpResponse = require("http/http_response");
-const WwwRouter = require("./www_router");
+const WwwServer = require("./www/www_server");
+const Rot13Server = require("./rot13_service/rot13_server");
 
-const VALID_PORT = 5000;
-const VALID_TEXT = "my_text";
-const VALID_ARGS = [ VALID_PORT.toString(), VALID_TEXT ];
+const VALID_ARGS = [ "1000", "2000" ];
 
-const TIMEOUT_IN_MS = 5000;
+describe("All servers", () => {
 
 
-describe("WWW server", () => {
+	describe("happy path", () => {
 
-	it("starts server", async () => {
-		const { httpServer } = await startServerAsync();
-		assert.equal(httpServer.isStarted, true, "should start server");
-		assert.equal(httpServer.port, VALID_PORT, "server port");
+		it("starts servers", async () => {
+			const { wwwServer, rot13Server } = await startAsync();
+
+			assert.equal(wwwServer.isStarted, true, "www server should be started");
+			assert.equal(rot13Server.isStarted, true, "Rot-13 service should be started");
+		});
+
+		it("uses ports provided on command line", async () => {
+			const { wwwServer, rot13Server } = await startAsync({ args: [ "5001", "5002" ]});
+
+			assert.equal(wwwServer.port, 5001, "www port");
+			assert.equal(rot13Server.port, 5002, "ROT-13 port");
+		});
+
 	});
 
-	it("routes requests", async () => {
-		const { httpServer } = await startServerAsync();
 
-		const actualResponse = await httpServer.simulateRequestAsync(HttpRequest.createNull());
-		const expectedResponse = await WwwRouter.create().routeAsync(HttpRequest.createNull());
-		assert.deepEqual(actualResponse, expectedResponse);
+	describe("error handling", () => {
+
+		it("writes usage to stderr when wrong number of arguments provided", async () => {
+			const { stderr } = await startAsync({ args: [] });
+			assert.deepEqual(stderr, [ AllServers.USAGE + "\n"]);
+		});
+
+		it("writes error if ports aren't numbers", async () => {
+			const { stderr: wwwStderr } = await startAsync({ args: [ "xxx", "1000" ]});
+			const { stderr: rot13Stderr } = await startAsync({ args: [ "1000", "xxx" ]});
+
+			assert.deepEqual(wwwStderr, [ "www server port is not a number\n" ]);
+			assert.deepEqual(rot13Stderr, [ "ROT-13 server port is not a number\n" ]);
+		});
+
 	});
 
 });
 
-async function startServerAsync() {
-	const httpServer = HttpServer.createNull();
-	const wwwServer = new WwwServer(httpServer);
+async function startAsync({
+	args = VALID_ARGS,
+} = {}) {
+	ensure.signature(arguments, [[ undefined, {
+		args: [ undefined, Array ],
+	}]]);
 
-	await wwwServer.serveAsync(VALID_PORT);
+	const commandLine = CommandLine.createNull({ args });
+	const stderr = commandLine.trackStderr();
 
+	const wwwServer = WwwServer.createNull();
+	const rot13Server = Rot13Server.createNull();
+	const servers = new AllServers(commandLine, wwwServer, rot13Server);
+
+	await servers.startAsync();
 	return {
-		httpServer,
+		wwwServer,
+		rot13Server,
+		stderr,
 	};
 }
+
+// function run({ args, rot13Response, rot13Error, rot13Hang }) {
+// 	const commandLine = CommandLine.createNull({ args });
+// 	const stdout = commandLine.trackStdout();
+// 	const stderr = commandLine.trackStderr();
+//
+// 	const rot13Client = Rot13Client.createNull([{ response: rot13Response, error: rot13Error, hang: rot13Hang }]);
+// 	const rot13Requests = rot13Client.trackRequests();
+//
+// 	const clock = Clock.createNull();
+//
+// 	const runPromise = server.runAsync({ commandLine, rot13Client, clock });
+//
+// 	return { runPromise, stdout, stderr, rot13Requests, clock };
+// }
 
 
 

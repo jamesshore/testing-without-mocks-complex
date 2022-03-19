@@ -1,0 +1,95 @@
+// Copyright Titanium I.T. LLC.
+"use strict";
+
+const ensure = require("util/ensure");
+const CommandLine = require("infrastructure/command_line");
+const WwwServer = require("./www/www_server");
+const Rot13Server = require("./rot13_service/rot13_server");
+
+const USAGE = "Usage: run [www server port] [rot-13 server port]";
+
+/** Wrapper for starting all the servers needed for the site to work */
+module.exports = class AllServers {
+
+	static get USAGE() {
+		return USAGE;
+	}
+
+	static create() {
+		ensure.signature(arguments, []);
+		return new AllServers(CommandLine.create(), WwwServer.create(), Rot13Server.create());
+	}
+
+	constructor(commandLine, wwwServer, rot13Server) {
+		this._commandLine = commandLine;
+		this._wwwServer = wwwServer;
+		this._rot13Server = rot13Server;
+	}
+
+	async startAsync() {
+		try {
+			const { wwwPort, rot13Port } = parseArgs(this._commandLine.args());
+
+			await Promise.all([
+				this._wwwServer.startAsync(wwwPort),
+				this._rot13Server.startAsync(rot13Port),
+			]);
+		}
+		catch (err) {
+			this._commandLine.writeStderr(err.message + "\n");
+		}
+	}
+
+};
+
+function parseArgs(args) {
+	if (args.length !== 2) throw new Error(USAGE);
+
+	return {
+		wwwPort: parse(args[0], "www server"),
+		rot13Port: parse(args[1], "ROT-13 server"),
+	};
+
+	function parse(arg, name) {
+		const result = parseInt(arg, 10);
+		if (Number.isNaN(result)) throw new Error(`${name} port is not a number`);
+		return result;
+	}
+}
+
+
+// exports.runAsync = async function({
+// 	commandLine = CommandLine.create(),
+// 	rot13Client = Rot13Client.create(),
+// 	clock = Clock.create(),
+// } = {}) {
+// 	ensure.signature(arguments, [[ undefined, {
+// 		commandLine: [ undefined, CommandLine ],
+// 		rot13Client: [ undefined, Rot13Client ],
+// 		clock: [ undefined, Clock ],
+// 	}]]);
+//
+// 	const args = commandLine.args();
+// 	if (args.length !== 2) {
+// 		commandLine.writeStderr("Usage: run PORT TEXT\n");
+// 		return;
+// 	}
+//
+// 	const port = parseInt(args[0], 10);
+// 	const text = args[1];
+//
+// 	try {
+// 		const { transformPromise, cancelFn } = rot13Client.transform(port, text);
+// 		const response = await clock.timeoutAsync(TIMEOUT_IN_MS, transformPromise, () => timeout(cancelFn));
+// 		commandLine.writeStdout(response + "\n");
+// 	}
+// 	catch (err) {
+// 		commandLine.writeStderr("ROT-13 service failed:\n");
+// 		commandLine.writeStderr(err.message + "\n");
+// 	}
+// };
+//
+// function timeout(cancelFn) {
+// 	cancelFn();
+// 	throw new Error("Service timed out.");
+// }{}
