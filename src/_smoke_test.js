@@ -18,21 +18,21 @@ describe("Smoke test", () => {
 		await new Promise((resolve, reject) => {
 			let startupCount = 0;
 			let stdout = "";
-			const child = forkModule(
+			const process = testHelper.forkModule(
 				__dirname,
 				"./serve.js",
 				{ args: ["5001", "5002"] },
 			);
 
 			const timeoutHandle = setTimeout(() => {
-				return die("Startup timed out");
+				return fail("Startup timed out");
 			}, TIMEOUT_IN_MS);
 
-			child.stdout.on("data", (chunkBuffer) => {
+			process.stdout.on("data", (chunkBuffer) => {
 				const chunk = chunkBuffer.toString();
 				stdout += chunk;
 				if (chunk.includes('"emergency"')) {
-					return die("Startup logged emergency");
+					return fail("Startup logged emergency");
 				}
 				if (chunk.includes('"server started"')) {
 					startupCount++;
@@ -40,50 +40,21 @@ describe("Smoke test", () => {
 				if (startupCount === 2) {
 					// both servers have started; test was a success
 					clearTimeout(timeoutHandle);
-					child.kill();
-					return resolve();
+					return kill(() => resolve());
 				}
 			});
 
-			function die(reason) {
-				child.kill();
-				return reject(new Error(`${reason}. Logs:\n${stdout}`));
+			function fail(reason) {
+				kill(() => {
+					return reject(new Error(`${reason}. Logs:\n${stdout}`));
+				});
+			}
+
+			function kill(thenFn) {
+				process.kill();
+				process.on("exit", () => thenFn());
 			}
 		});
 	});
 
 });
-
-
-function forkModule(cwd, modulePath, {
-	args = []
-} = {}) {
-	ensure.signature(arguments, [ String, String, [ undefined, {
-		args: [ undefined, Array ],
-	}]], [ "cwd", "modulePath", "options" ]);
-
-	const absolutePath = path.resolve(cwd, modulePath);
-	const options = {
-		stdio: "pipe",
-	};
-	return childProcess.fork(absolutePath, args, options);
-
-	// let stdout = "";
-	// let stderr = "";
-	// child.stdout.on("data", (data) => {
-	// 	stdout += data;
-	// });
-	// child.stderr.on("data", (data) => {
-	// 	stderr += data;
-	// });
-	//
-	// child.on("exit", () => {
-	// 	if (failOnStderr && stderr !== "") {
-	// 		console.log(stderr);
-	// 		return reject(new Error("Runner failed"));
-	// 	}
-	// 	else {
-	// 		return resolve({ stdout, stderr });
-	// 	}
-	// });
-}
