@@ -17,7 +17,7 @@ module.exports = class AllServers {
 
 	static create() {
 		ensure.signature(arguments, []);
-		return new WwwServer(CommandLine.create(), WwwServer.create(), Rot13Server.create());
+		return new AllServers(CommandLine.create(), WwwServer.create(), Rot13Server.create());
 	}
 
 	constructor(commandLine, wwwServer, rot13Server) {

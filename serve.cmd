@@ -1,3 +1,3 @@
 @echo off
 call build\scripts\prebuild
-node src/rot13-service/serve.js %*
+node src/serve.js %*
