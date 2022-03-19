@@ -6,6 +6,7 @@ const WwwServer = require("./www_server");
 const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
 const WwwRouter = require("./www_router");
+const Log = require("infrastructure/log");
 
 const PORT = 5000;
 
@@ -38,7 +39,7 @@ async function startServerAsync() {
 	const httpServer = HttpServer.createNull();
 	const wwwServer = new WwwServer(httpServer);
 
-	await wwwServer.startAsync(PORT);
+	await wwwServer.startAsync(PORT, Log.createNull());
 
 	return {
 		httpServer,
