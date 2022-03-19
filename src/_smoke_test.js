@@ -12,7 +12,7 @@ const TIMEOUT_IN_MS = 2000;
 
 describe("Smoke test", () => {
 
-	it.only("starts servers", async function() {
+	it("starts servers", async function() {
 		this.timeout(TIMEOUT_IN_MS + 1000);
 
 		await new Promise((resolve, reject) => {
