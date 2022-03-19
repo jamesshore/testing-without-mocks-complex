@@ -5,6 +5,7 @@ const ensure = require("util/ensure");
 const CommandLine = require("infrastructure/command_line");
 const WwwServer = require("./www/www_server");
 const Rot13Server = require("./rot13_service/rot13_server");
+const Log = require("infrastructure/log");
 
 const USAGE = "Usage: run [www server port] [rot-13 server port]";
 
@@ -17,18 +18,20 @@ module.exports = class AllServers {
 
 	static create() {
 		ensure.signature(arguments, []);
-		return new AllServers(CommandLine.create(), WwwServer.create(), Rot13Server.create());
+		return new AllServers(Log.create(), CommandLine.create(), WwwServer.create(), Rot13Server.create());
 	}
 
-	constructor(commandLine, wwwServer, rot13Server) {
+	constructor(log, commandLine, wwwServer, rot13Server) {
+		this._log = log;
 		this._commandLine = commandLine;
 		this._wwwServer = wwwServer;
 		this._rot13Server = rot13Server;
 	}
 
 	async startAsync() {
+		const args = this._commandLine.args();
 		try {
-			const { wwwPort, rot13Port } = parseArgs(this._commandLine.args());
+			const { wwwPort, rot13Port } = parseArgs(args);
 
 			await Promise.all([
 				this._wwwServer.startAsync(wwwPort),
@@ -36,14 +39,18 @@ module.exports = class AllServers {
 			]);
 		}
 		catch (err) {
-			this._commandLine.writeStderr(err.message + "\n");
+			this._log.emergency({
+				message: "startup error",
+				commandLineArguments: args,
+				error: err,
+			});
 		}
 	}
 
 };
 
 function parseArgs(args) {
-	if (args.length !== 2) throw new Error(USAGE);
+	if (args.length !== 2) throw new Error(`invalid command-line arguments (${USAGE})`);
 
 	return {
 		wwwPort: parse(args[0], "www server"),
