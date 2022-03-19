@@ -9,9 +9,9 @@ const WwwRouter = require("./www_router");
 /** Server for user-facing www site */
 module.exports = class WwwServer {
 
-	static create() {
-		ensure.signature(arguments, []);
-		return new this(HttpServer.create(Log.create()));
+	static create(log) {
+		ensure.signature(arguments, [ Log ]);
+		return new this(HttpServer.create(log));
 	}
 
 	static createNull() {
