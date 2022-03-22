@@ -20,7 +20,7 @@ module.exports = class AllServers {
 		ensure.signature(arguments, []);
 
 		const log = Log.create();
-		return new AllServers(log, CommandLine.create(), WwwServer.create(log), Rot13Server.create(log));
+		return new AllServers(log, CommandLine.create(), WwwServer.create(), Rot13Server.create());
 	}
 
 	constructor(log, commandLine, wwwServer, rot13Server) {
@@ -36,8 +36,8 @@ module.exports = class AllServers {
 			const { wwwPort, rot13Port } = parseArgs(args);
 
 			await Promise.all([
-				this._wwwServer.startAsync(wwwPort),
-				this._rot13Server.startAsync(rot13Port),
+				this._wwwServer.startAsync(wwwPort, this._log),
+				this._rot13Server.startAsync(rot13Port, this._log),
 			]);
 		}
 		catch (err) {

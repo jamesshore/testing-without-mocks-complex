@@ -9,9 +9,9 @@ const Rot13Router = require("./rot13_router");
 /** Server for ROT-13 service */
 module.exports = class Rot13Server {
 
-	static create(log) {
-		ensure.signature(arguments, [ Log ]);
-		return new this(HttpServer.create(log));
+	static create() {
+		ensure.signature(arguments, []);
+		return new this(HttpServer.create());
 	}
 
 	static createNull() {
@@ -32,10 +32,10 @@ module.exports = class Rot13Server {
 		return this._httpServer.port;
 	}
 
-	async startAsync(port) {
-		ensure.signature(arguments, [ Number ]);
+	async startAsync(port, log) {
+		ensure.signature(arguments, [ Number, Log ]);
 
-		await this._httpServer.startAsync(port, request => this._router.routeAsync(request));
+		await this._httpServer.startAsync(port, log, request => this._router.routeAsync(request));
 	}
 
 };
