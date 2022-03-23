@@ -30,6 +30,13 @@ describe("All servers", () => {
 			assert.equal(rot13Server.port, 5002, "ROT-13 port");
 		});
 
+		it("binds node name to server logs", async () => {
+			const { wwwServer, rot13Server } = await startAsync();
+
+			assert.deepEqual(wwwServer.log.defaults, { node: "www" });
+			assert.deepEqual(rot13Server.log.defaults, { node: "rot13" });
+		});
+
 	});
 
 
