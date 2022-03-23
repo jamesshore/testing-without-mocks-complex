@@ -3,7 +3,6 @@
 
 const assert = require("util/assert");
 const WwwServer = require("./www/www_server");
-const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
 const WwwRouter = require("./www/www_router");
 const Log = require("infrastructure/log");
@@ -12,37 +11,27 @@ const PORT = 5000;
 
 describe("Server Node", () => {
 
-	it("starts server", async () => {
-		const { httpServer } = await startServerAsync();
-		assert.equal(httpServer.isStarted, true, "should start server");
-		assert.equal(httpServer.port, PORT, "server port");
+	it("starts server and provides status", async () => {
+		const { serverNode } = await startServerAsync();
+
+		assert.equal(serverNode.isStarted, true, "isStarted");
+		assert.equal(serverNode.port, PORT, "port");
 	});
 
 	it("routes requests", async () => {
-		const { httpServer } = await startServerAsync();
+		const { serverNode } = await startServerAsync();
 
-		const actualResponse = await httpServer.simulateRequestAsync(HttpRequest.createNull());
+		const actualResponse = await serverNode.simulateRequestAsync(HttpRequest.createNull());
 		const expectedResponse = await WwwRouter.create().routeAsync(HttpRequest.createNull());
 		assert.deepEqual(actualResponse, expectedResponse);
-	});
-
-	it("provides server status", async () => {
-		const { wwwServer } = await startServerAsync();
-
-		assert.equal(wwwServer.isStarted, true, "isStarted");
-		assert.equal(wwwServer.port, PORT, "port");
 	});
 
 });
 
 async function startServerAsync() {
-	const httpServer = HttpServer.createNull();
-	const wwwServer = new WwwServer(httpServer);
-
-	await wwwServer.startAsync(PORT, Log.createNull());
-
+	const serverNode = WwwServer.createNull();
+	await serverNode.startAsync(PORT, Log.createNull());
 	return {
-		httpServer,
-		wwwServer,
+		serverNode,
 	};
 }
