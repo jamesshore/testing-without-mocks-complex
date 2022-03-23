@@ -2,9 +2,7 @@
 "use strict";
 
 const ensure = require("util/ensure");
-const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
-const WwwRouter = require("./www/www_router");
 
 /** Server for user-facing www site */
 module.exports = class ServerNode {
