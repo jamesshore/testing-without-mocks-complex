@@ -2,15 +2,21 @@
 "use strict";
 
 const assert = require("util/assert");
-const WwwServer = require("./www_server");
+const WwwServer = require("./www/www_server");
 const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
-const WwwRouter = require("./www_router");
+const WwwRouter = require("./www/www_router");
 const Log = require("infrastructure/log");
 
 const PORT = 5000;
 
-describe("WWW server", () => {
+describe("Server Node", () => {
+
+	it("starts server", async () => {
+		const { httpServer } = await startServerAsync();
+		assert.equal(httpServer.isStarted, true, "should start server");
+		assert.equal(httpServer.port, PORT, "server port");
+	});
 
 	it("routes requests", async () => {
 		const { httpServer } = await startServerAsync();
@@ -18,6 +24,13 @@ describe("WWW server", () => {
 		const actualResponse = await httpServer.simulateRequestAsync(HttpRequest.createNull());
 		const expectedResponse = await WwwRouter.create().routeAsync(HttpRequest.createNull());
 		assert.deepEqual(actualResponse, expectedResponse);
+	});
+
+	it("provides server status", async () => {
+		const { wwwServer } = await startServerAsync();
+
+		assert.equal(wwwServer.isStarted, true, "isStarted");
+		assert.equal(wwwServer.port, PORT, "port");
 	});
 
 });

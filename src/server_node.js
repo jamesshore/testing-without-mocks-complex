@@ -4,7 +4,9 @@
 const ensure = require("util/ensure");
 const Log = require("infrastructure/log");
 
-/** Server for user-facing www site */
+/**
+ * Base class for all servers... not really necessary, given that the heavy lifting is performed by
+ * HttpServer, but it reduces some duplication between WwwServer and Rot13Server. */
 module.exports = class ServerNode {
 
 	constructor(httpServer, router) {
