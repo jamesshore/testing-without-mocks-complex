@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
 "use strict";
 
-/** Main entry point */
+/** Top-level entry point */
 require("./all_servers").create().startAsync();
