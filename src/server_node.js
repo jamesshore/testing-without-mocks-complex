@@ -6,8 +6,9 @@ const Log = require("infrastructure/log");
 const HttpRequest = require("http/http_request");
 
 /**
- * Base class for all servers... not really necessary, given that the heavy lifting is performed by
- * HttpServer, but it reduces some duplication between WwwServer and Rot13Server. */
+ * Base class for all servers. Not really necessary, given that the heavy lifting is performed by
+ * HttpServer, but it reduces some duplication between WwwServer and Rot13Server, and also illustrates
+ * how nullable wrappers work with inheritance. */
 module.exports = class ServerNode {
 
 	constructor(httpServer, router) {

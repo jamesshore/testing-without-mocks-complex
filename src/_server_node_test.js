@@ -2,12 +2,14 @@
 "use strict";
 
 const assert = require("util/assert");
-const WwwServer = require("./www/www_server");
 const HttpRequest = require("http/http_request");
-const WwwRouter = require("./www/www_router");
+const HttpResponse = require("http/http_response");
 const Log = require("infrastructure/log");
+const ServerNode = require("./server_node");
+const HttpServer = require("http/http_server");
 
 const PORT = 5000;
+const EXAMPLE_HTTP_RESPONSE = HttpResponse.createForTestingOnly();
 
 describe("Server Node", () => {
 
@@ -18,20 +20,37 @@ describe("Server Node", () => {
 		assert.equal(serverNode.port, PORT, "port");
 	});
 
-	it("routes requests", async () => {
+	it("simulates and routes requests", async () => {
 		const { serverNode } = await startServerAsync();
 
 		const actualResponse = await serverNode.simulateRequestAsync(HttpRequest.createNull());
-		const expectedResponse = await WwwRouter.create().routeAsync(HttpRequest.createNull());
-		assert.deepEqual(actualResponse, expectedResponse);
+		assert.deepEqual(actualResponse, EXAMPLE_HTTP_RESPONSE);
 	});
 
 });
 
 async function startServerAsync() {
-	const serverNode = WwwServer.createNull();
+	const serverNode = new ExampleServerNode();
 	await serverNode.startAsync(PORT, Log.createNull());
 	return {
 		serverNode,
 	};
+}
+
+
+class ExampleServerNode extends ServerNode {
+
+	constructor() {
+		super(HttpServer.createNull(), new ExampleRouter());
+	}
+
+}
+
+
+class ExampleRouter {
+
+	routeAsync(request) {
+		return EXAMPLE_HTTP_RESPONSE;
+	}
+
 }
