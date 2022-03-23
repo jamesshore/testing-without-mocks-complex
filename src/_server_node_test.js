@@ -13,11 +13,19 @@ const EXAMPLE_HTTP_RESPONSE = HttpResponse.createForTestingOnly();
 
 describe("Server Node", () => {
 
-	it("starts server and provides status", async () => {
-		const { serverNode } = await startServerAsync();
+	it("starts server and provides info", async () => {
+		const { serverNode, log } = await startServerAsync();
 
 		assert.equal(serverNode.isStarted, true, "isStarted");
 		assert.equal(serverNode.port, PORT, "port");
+		assert.equal(serverNode.log, log, "log");
+	});
+
+	it("server info is null prior to server starting", () => {
+		const serverNode = new ExampleServerNode();
+
+		assert.equal(serverNode.port, null, "port");
+		assert.equal(serverNode.log, null, "log");
 	});
 
 	it("simulates and routes requests", async () => {
@@ -31,9 +39,12 @@ describe("Server Node", () => {
 
 async function startServerAsync() {
 	const serverNode = new ExampleServerNode();
-	await serverNode.startAsync(PORT, Log.createNull());
+	const log = Log.createNull();
+
+	await serverNode.startAsync(PORT, log);
 	return {
 		serverNode,
+		log,
 	};
 }
 

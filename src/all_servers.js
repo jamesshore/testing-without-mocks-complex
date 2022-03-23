@@ -36,8 +36,8 @@ module.exports = class AllServers {
 			const { wwwPort, rot13Port } = parseArgs(args);
 
 			await Promise.all([
-				this._wwwServer.startAsync(wwwPort, this._log),
-				this._rot13Server.startAsync(rot13Port, this._log),
+				this._wwwServer.startAsync(wwwPort, this._log.bind({ node: "www" })),
+				this._rot13Server.startAsync(rot13Port, this._log.bind({ node: "rot13" })),
 			]);
 		}
 		catch (err) {

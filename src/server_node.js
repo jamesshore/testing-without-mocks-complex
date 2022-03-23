@@ -14,6 +14,7 @@ module.exports = class ServerNode {
 	constructor(httpServer, router) {
 		this._httpServer = httpServer;
 		this._router = router;
+		this._log = null;
 	}
 
 	get isStarted() {
@@ -24,10 +25,15 @@ module.exports = class ServerNode {
 		return this._httpServer.port;
 	}
 
+	get log() {
+		return this._log;
+	}
+
 	async startAsync(port, log) {
 		ensure.signature(arguments, [ Number, Log ]);
 
 		await this._httpServer.startAsync(port, log, request => this._router.routeAsync(request));
+		this._log = log;
 	}
 
 	async simulateRequestAsync(request) {
