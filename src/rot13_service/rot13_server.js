@@ -2,12 +2,12 @@
 "use strict";
 
 const ensure = require("util/ensure");
+const ServerNode = require("../server_node");
 const HttpServer = require("http/http_server");
-const Log = require("infrastructure/log");
 const Rot13Router = require("./rot13_router");
 
 /** Server for ROT-13 service */
-module.exports = class Rot13Server {
+module.exports = class Rot13Server extends ServerNode {
 
 	static create() {
 		ensure.signature(arguments, []);
@@ -20,22 +20,7 @@ module.exports = class Rot13Server {
 	}
 
 	constructor(httpServer) {
-		this._httpServer = httpServer;
-		this._router = Rot13Router.create();
-	}
-
-	get isStarted() {
-		return this._httpServer.isStarted;
-	}
-
-	get port() {
-		return this._httpServer.port;
-	}
-
-	async startAsync(port, log) {
-		ensure.signature(arguments, [ Number, Log ]);
-
-		await this._httpServer.startAsync(port, log, request => this._router.routeAsync(request));
+		super(httpServer, Rot13Router.create());
 	}
 
 };
