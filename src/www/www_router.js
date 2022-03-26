@@ -14,6 +14,10 @@ module.exports = class WwwRouter {
 		return new WwwRouter();
 	}
 
+	static createNull() {
+		return new WwwRouter();
+	}
+
 	constructor() {
 		this._router = GenericRouter.create(errorHandler, {
 			"/": wwwController,
