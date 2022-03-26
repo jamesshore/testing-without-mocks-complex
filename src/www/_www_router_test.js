@@ -2,7 +2,7 @@
 "use strict";
 
 const assert = require("util/assert");
-const wwwController = require("./home_page_controller");
+const HomePageController = require("./home_page_controller");
 const HttpRequest = require("http/http_request");
 const WwwRouter = require("./www_router");
 const wwwView = require("./www_view");
@@ -33,7 +33,7 @@ describe("WWW Router", () => {
 
 async function controllerResponse(requestOptions) {
 	const request = createNullRequest(requestOptions);
-	return await wwwController.getAsync(request);
+	return await HomePageController.createNull().getAsync(request);
 }
 
 async function simulateRequestAsync(requestOptions) {

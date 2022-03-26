@@ -3,7 +3,7 @@
 
 const ensure = require("util/ensure");
 const HttpRequest = require("http/http_request");
-const wwwController = require("./home_page_controller");
+const HomePageController = require("./home_page_controller");
 const wwwView = require("./www_view");
 const GenericRouter = require("http/generic_router");
 
@@ -11,16 +11,16 @@ const GenericRouter = require("http/generic_router");
 module.exports = class WwwRouter {
 
 	static create() {
-		return new WwwRouter();
+		return new WwwRouter(HomePageController.create());
 	}
 
 	static createNull() {
-		return new WwwRouter();
+		return new WwwRouter(HomePageController.createNull());
 	}
 
-	constructor() {
+	constructor(homePageController) {
 		this._router = GenericRouter.create(errorHandler, {
-			"/": wwwController,
+			"/": homePageController,
 		});
 	}
 

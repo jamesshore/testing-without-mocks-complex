@@ -69,5 +69,5 @@ async function simulateRequestAsync({
 	}]]);
 
 	const request = HttpRequest.createNull({ method, body, url: "/" });
-	return await WwwRouter.create().routeAsync(request);
+	return await WwwRouter.createNull().routeAsync(request);
 }

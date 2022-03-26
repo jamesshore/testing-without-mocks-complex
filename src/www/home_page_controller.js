@@ -4,15 +4,26 @@
 const HttpResponse = require("http/http_response");
 const wwwView = require("./www_view");
 
-/** GET endpoint for / */
-exports.getAsync = function(request) {
-	return wwwView.homePage();
-};
+/** Endpoints for / (home page) */
+module.exports = class HomePageController {
 
-/** POST endpoint for / */
-exports.postAsync = async function(request) {
-	const text = parseBody(await request.readBodyAsync());
-	return wwwView.homePage(text);
+	static create() {
+		return new HomePageController();
+	}
+
+	static createNull() {
+		return new HomePageController();
+	}
+
+	getAsync(request) {
+		return wwwView.homePage();
+	}
+
+	async postAsync(request) {
+		const text = parseBody(await request.readBodyAsync());
+		return wwwView.homePage(text);
+	}
+
 };
 
 function parseBody(body) {
