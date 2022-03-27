@@ -6,6 +6,8 @@ const ensure = require("util/ensure");
 const HttpRequest = require("http/http_request");
 const WwwRouter = require("./www_router");
 const wwwView = require("./www_view");
+const Rot13Client = require("./infrastructure/rot13_client");
+const HomePageController = require("./home_page_controller");
 
 describe("Home Page Controller", () => {
 
@@ -16,15 +18,18 @@ describe("Home Page Controller", () => {
 			assert.deepEqual(response, wwwView.homePage());
 		});
 
-		it("Temp: POST renders input", async () => {
-			const response = await simulatePostAsync("text=something");
-			assert.deepEqual(response, wwwView.homePage("something"));
-		});
+		it("POST asks ROT-13 service to transform text, then renders result", async () => {
+			const rot13Client = Rot13Client.createNull([{ response: "my_response" }]);
+			const rot13Requests = rot13Client.trackRequests();
 
-		it.skip("POST asks ROT-13 service to transform text, then renders result", async () => {
-			// TODO
-			const response = await simulatePostAsync("text=hello");
-			assert.deepEqual(response, wwwView.homePage("uryyb"));
+			const response = await simulatePostAsync({ body: "text=my_text", rot13Client });
+
+			// TO DO: configure port
+			assert.deepEqual(rot13Requests, [{
+				port: 1234,
+				text: "my_text",
+			}]);
+			assert.deepEqual(response, wwwView.homePage("my_response"), "home page rendering");
 		});
 
 	});
@@ -33,11 +38,11 @@ describe("Home Page Controller", () => {
 	describe.skip("POST edge cases (TO DO)", () => {
 
 		it("POST finds correct form field when there are multiple fields", async () => {
-			const response = await simulatePostAsync("");
+			const response = await simulatePostAsync({ body: "TO DO" });
 		});
 
 		it("POST treats empty input like GET", async () => {
-			const response = await simulatePostAsync("");
+			const response = await simulatePostAsync({ body: "" });
 			assert.deepEqual(response, wwwView.homePage());
 		});
 
@@ -47,27 +52,34 @@ describe("Home Page Controller", () => {
 
 	});
 
+
+	describe.skip("ROT-13 service edge cases (TO DO)", () => {
+
+		it("fails gracefully, and logs error, when service returns error");
+
+		it("fails gracefully, and logs error, when service times out");
+
+	});
+
 });
 
 async function simulateGetAsync() {
 	ensure.signature(arguments, []);
-	return await simulateRequestAsync({ method: "get" });
+
+	const controller = HomePageController.createNull();
+	return await controller.getAsync(HttpRequest.createNull());
 }
 
-async function simulatePostAsync(body) {
-	ensure.signature(arguments, [ String ]);
-	return await simulateRequestAsync({ method: "post", body });
-}
+async function simulatePostAsync({
+	body,
+	rot13Client = Rot13Client.createNull(),
+}) {
+	ensure.signature(arguments, [{
+		body: String,
+		rot13Client: [ undefined, Rot13Client ],
+	}]);
 
-async function simulateRequestAsync({
-	method = "get",
-	body = "",
-} = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		method: [ undefined, String ],
-		body: [ undefined, String ],
-	}]]);
-
-	const request = HttpRequest.createNull({ method, body, url: "/" });
-	return await WwwRouter.createNull().routeAsync(request);
+	const controller = HomePageController.createNull({ rot13Client });
+	const response = await controller.postAsync(HttpRequest.createNull({ body }));
+	return response;
 }

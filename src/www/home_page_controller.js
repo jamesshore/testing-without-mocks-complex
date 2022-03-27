@@ -1,18 +1,29 @@
 // Copyright Titanium I.T. LLC.
 "use strict";
 
-const HttpResponse = require("http/http_response");
+const ensure = require("util/ensure");
 const wwwView = require("./www_view");
+const Rot13Client = require("./infrastructure/rot13_client");
 
 /** Endpoints for / (home page) */
 module.exports = class HomePageController {
 
 	static create() {
-		return new HomePageController();
+		ensure.signature(arguments, []);
+		return new HomePageController(Rot13Client.create());
 	}
 
-	static createNull() {
-		return new HomePageController();
+	static createNull({
+		rot13Client = Rot13Client.createNull(),
+	} = {}) {
+		ensure.signature(arguments, [[ undefined, {
+			rot13Client: [ undefined, Rot13Client ],
+		}]]);
+		return new HomePageController(rot13Client);
+	}
+
+	constructor(rot13Client) {
+		this._rot13Client = rot13Client;
 	}
 
 	getAsync(request) {
@@ -21,7 +32,8 @@ module.exports = class HomePageController {
 
 	async postAsync(request) {
 		const text = parseBody(await request.readBodyAsync());
-		return wwwView.homePage(text);
+		const { transformPromise } = this._rot13Client.transform(1234, text);
+		return wwwView.homePage(await transformPromise);
 	}
 
 };

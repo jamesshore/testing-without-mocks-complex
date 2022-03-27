@@ -9,8 +9,6 @@ exports.homePage = function(text = "") {
 		<p>Enter text to translate:</p>
 		<form method="post">
 			<input type="text" name="text" value="${text}" required />
-			<input type="text" name="text2" value="${text}" required />
-			<input type="text" name="text3" value="${text}" required />
 			<input type="submit" value="Translate" />
 		</form>
 	`;
