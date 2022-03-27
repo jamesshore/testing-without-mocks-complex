@@ -10,8 +10,6 @@ const REQUEST_TYPE = { text: String };
 
 /** POST endpoint for /rot13/transform */
 exports.postAsync = async function(request) {
-	ensure.signature(arguments, [ HttpRequest ]);
-
 	const { input, err } = await parseRequestAsync(request);
 	if (err !== undefined) return badRequest(err.message);
 
