@@ -2,9 +2,10 @@
 "use strict";
 
 const assert = require("util/assert");
-const wwwController = require("./home_page_controller");
+const HomePageController = require("./home_page_controller");
 const HttpRequest = require("http/http_request");
 const WwwRouter = require("./www_router");
+const WwwConfig = require("./www_config");
 const wwwView = require("./www_view");
 
 const VALID_URL = "/";
@@ -33,13 +34,13 @@ describe("WWW Router", () => {
 
 async function controllerResponse(requestOptions) {
 	const request = createNullRequest(requestOptions);
-	return await wwwController.getAsync(request);
+	return await HomePageController.createNull().getAsync(request, WwwConfig.createNull());
 }
 
 async function simulateRequestAsync(requestOptions) {
 	const request = createNullRequest(requestOptions);
 	const router = WwwRouter.create();
-	return await router.routeAsync(request);
+	return await router.routeAsync(request, WwwConfig.createNull());
 }
 
 function createNullRequest({

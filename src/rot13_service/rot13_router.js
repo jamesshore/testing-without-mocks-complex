@@ -22,7 +22,7 @@ module.exports = class Rot13Router {
 	}
 
 	async routeAsync(request) {
-		ensure.signature(arguments, [ HttpRequest ]);
+		ensure.signature(arguments, [ HttpRequest, [ undefined, Object ]]);
 		return await this._router.routeAsync(request);
 	}
 

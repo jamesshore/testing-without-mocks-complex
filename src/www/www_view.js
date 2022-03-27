@@ -4,11 +4,11 @@
 const HttpResponse = require("http/http_response");
 
 /** render home page response */
-exports.homePage = function() {
+exports.homePage = function(text = "") {
 	const body = `
 		<p>Enter text to translate:</p>
-		<form action="" method="post">
-			<input type="text" name="text" required />
+		<form method="post">
+			<input type="text" name="text" value="${text}" required />
 			<input type="submit" value="Translate" />
 		</form>
 	`;

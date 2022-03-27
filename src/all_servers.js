@@ -9,7 +9,7 @@ const Log = require("infrastructure/log");
 
 const USAGE = "Usage: run [www server port] [rot-13 server port]";
 
-/** Wrapper for starting all the servers needed for the site to work */
+/** Application startup (parse command line and start servers) */
 module.exports = class AllServers {
 
 	static get USAGE() {
@@ -35,9 +35,12 @@ module.exports = class AllServers {
 		try {
 			const { wwwPort, rot13Port } = parseArgs(args);
 
+			const wwwLog = this._log.bind({ node: "www" });
+			const rot13Log = this._log.bind({ node: "rot13" });
+
 			await Promise.all([
-				this._wwwServer.startAsync(wwwPort, this._log.bind({ node: "www" })),
-				this._rot13Server.startAsync(rot13Port, this._log.bind({ node: "rot13" })),
+				this._wwwServer.startAsync(wwwPort, wwwLog, rot13Port),
+				this._rot13Server.startAsync(rot13Port, rot13Log),
 			]);
 		}
 		catch (err) {
@@ -65,40 +68,3 @@ function parseArgs(args) {
 		return result;
 	}
 }
-
-
-// exports.runAsync = async function({
-// 	commandLine = CommandLine.create(),
-// 	rot13Client = Rot13Client.create(),
-// 	clock = Clock.create(),
-// } = {}) {
-// 	ensure.signature(arguments, [[ undefined, {
-// 		commandLine: [ undefined, CommandLine ],
-// 		rot13Client: [ undefined, Rot13Client ],
-// 		clock: [ undefined, Clock ],
-// 	}]]);
-//
-// 	const args = commandLine.args();
-// 	if (args.length !== 2) {
-// 		commandLine.writeStderr("Usage: run PORT TEXT\n");
-// 		return;
-// 	}
-//
-// 	const port = parseInt(args[0], 10);
-// 	const text = args[1];
-//
-// 	try {
-// 		const { transformPromise, cancelFn } = rot13Client.transform(port, text);
-// 		const response = await clock.timeoutAsync(TIMEOUT_IN_MS, transformPromise, () => timeout(cancelFn));
-// 		commandLine.writeStdout(response + "\n");
-// 	}
-// 	catch (err) {
-// 		commandLine.writeStderr("ROT-13 service failed:\n");
-// 		commandLine.writeStderr(err.message + "\n");
-// 	}
-// };
-//
-// function timeout(cancelFn) {
-// 	cancelFn();
-// 	throw new Error("Service timed out.");
-// }{}
