@@ -41,7 +41,8 @@ describe("Server Node", () => {
 		const { exampleRouter, serverNode } = await startServerAsync({ config });
 
 		await serverNode.simulateRequestAsync();
-		assert.equal(exampleRouter.config, config);
+		assert.equal(exampleRouter.config, config, "passes config through to router");
+		assert.equal(serverNode.config, config, "reports config");
 	});
 
 });
