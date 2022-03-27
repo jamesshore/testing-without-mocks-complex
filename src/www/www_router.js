@@ -6,6 +6,7 @@ const HttpRequest = require("http/http_request");
 const HomePageController = require("./home_page_controller");
 const wwwView = require("./www_view");
 const GenericRouter = require("http/generic_router");
+const WwwConfig = require("./www_config");
 
 /** Router for user-facing www site */
 module.exports = class WwwRouter {
@@ -24,9 +25,9 @@ module.exports = class WwwRouter {
 		});
 	}
 
-	async routeAsync(request) {
-		ensure.signature(arguments, [ HttpRequest, [ undefined, Object ]]);
-		return await this._router.routeAsync(request);
+	async routeAsync(request, config) {
+		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
+		return await this._router.routeAsync(request, config);
 	}
 
 };

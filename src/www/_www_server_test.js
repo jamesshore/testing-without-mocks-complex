@@ -17,7 +17,7 @@ describe("WWW server", () => {
 		const { wwwServer } = await startServerAsync();
 
 		const actualResponse = await wwwServer.simulateRequestAsync(HttpRequest.createNull());
-		const expectedResponse = await WwwRouter.create().routeAsync(HttpRequest.createNull());
+		const expectedResponse = await WwwRouter.create().routeAsync(HttpRequest.createNull(), WwwConfig.createNull());
 		assert.deepEqual(actualResponse, expectedResponse);
 	});
 

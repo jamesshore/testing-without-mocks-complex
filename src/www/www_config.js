@@ -30,4 +30,8 @@ module.exports = class WwwConfig {
 		this._rot13ServicePort = rot13ServicePort;
 	}
 
+	get rot13ServicePort() {
+		return this._rot13ServicePort;
+	}
+
 };

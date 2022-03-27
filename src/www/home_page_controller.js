@@ -4,6 +4,8 @@
 const ensure = require("util/ensure");
 const wwwView = require("./www_view");
 const Rot13Client = require("./infrastructure/rot13_client");
+const HttpRequest = require("http/http_request");
+const WwwConfig = require("./www_config");
 
 /** Endpoints for / (home page) */
 module.exports = class HomePageController {
@@ -27,12 +29,16 @@ module.exports = class HomePageController {
 	}
 
 	getAsync(request) {
+		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
+
 		return wwwView.homePage();
 	}
 
-	async postAsync(request) {
+	async postAsync(request, config) {
+		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
+
 		const text = parseBody(await request.readBodyAsync());
-		const { transformPromise } = this._rot13Client.transform(1234, text);
+		const { transformPromise } = this._rot13Client.transform(config.rot13ServicePort, text);
 		return wwwView.homePage(await transformPromise);
 	}
 
