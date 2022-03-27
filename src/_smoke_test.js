@@ -9,6 +9,8 @@ const childProcess = require("child_process");
 // dependency_analysis: ./serve.js
 
 const TIMEOUT_IN_MS = 2000;
+const STARTUP_FAILED_REGEX = /"emergency"/;
+const SERVER_STARTED_REGEX = /"server started".*?\n.*?"server started"/;  // look for both servers to start
 
 describe("Smoke test", () => {
 
@@ -31,18 +33,20 @@ describe("Smoke test", () => {
 			process.stdout.on("data", (chunkBuffer) => {
 				const chunk = chunkBuffer.toString();
 				stdout += chunk;
-				if (chunk.includes('"emergency"')) {
+				if (STARTUP_FAILED_REGEX.test(stdout)) {
 					return fail("Startup logged emergency");
 				}
-				if (chunk.includes('"server started"')) {
-					startupCount++;
-				}
-				if (startupCount === 2) {
-					// both servers have started; test was a success
+				if (SERVER_STARTED_REGEX.test(stdout)) {
 					clearTimeout(timeoutHandle);
-					return kill(() => resolve());
+					return succeed();
 				}
 			});
+
+			function succeed() {
+				return kill(() => {
+					return resolve();
+				});
+			}
 
 			function fail(reason) {
 				kill(() => {
