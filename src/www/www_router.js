@@ -25,6 +25,7 @@ module.exports = class WwwRouter {
 	}
 
 	async routeAsync(request) {
+		ensure.signature(arguments, [ HttpRequest, [ undefined, Object ]]);
 		return await this._router.routeAsync(request);
 	}
 

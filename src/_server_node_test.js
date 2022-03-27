@@ -2,6 +2,7 @@
 "use strict";
 
 const assert = require("util/assert");
+const ensure = require("util/ensure");
 const HttpRequest = require("http/http_request");
 const HttpResponse = require("http/http_response");
 const Log = require("infrastructure/log");
@@ -35,14 +36,30 @@ describe("Server Node", () => {
 		assert.deepEqual(actualResponse, EXAMPLE_HTTP_RESPONSE);
 	});
 
+	it("passes arbitrary config object with each request", async () => {
+		const config = { myArbitraryConfig: true };
+		const { exampleRouter, serverNode } = await startServerAsync({ config });
+
+		await serverNode.simulateRequestAsync();
+		assert.equal(exampleRouter.config, config);
+	});
+
 });
 
-async function startServerAsync() {
-	const serverNode = new ExampleServerNode();
+async function startServerAsync({
+	config,
+} = {}) {
+	ensure.signature(arguments, [[ undefined, {
+		config: [ undefined, Object ],
+	}]]);
+
+	const exampleRouter = new ExampleRouter();
+	const serverNode = new ExampleServerNode(exampleRouter);
 	const log = Log.createNull();
 
-	await serverNode.startAsync(PORT, log);
+	await serverNode.startAsync(PORT, log, config);
 	return {
+		exampleRouter,
 		serverNode,
 		log,
 	};
@@ -51,8 +68,8 @@ async function startServerAsync() {
 
 class ExampleServerNode extends ServerNode {
 
-	constructor() {
-		super(HttpServer.createNull(), new ExampleRouter());
+	constructor(exampleRouter) {
+		super(HttpServer.createNull(), exampleRouter);
 	}
 
 }
@@ -60,7 +77,8 @@ class ExampleServerNode extends ServerNode {
 
 class ExampleRouter {
 
-	routeAsync(request) {
+	routeAsync(request, config) {
+		this.config = config;
 		return EXAMPLE_HTTP_RESPONSE;
 	}
 

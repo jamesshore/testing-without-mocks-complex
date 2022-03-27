@@ -29,15 +29,15 @@ module.exports = class ServerNode {
 		return this._log;
 	}
 
-	async startAsync(port, log) {
-		ensure.signature(arguments, [ Number, Log ]);
+	async startAsync(port, log, config) {
+		ensure.signature(arguments, [ Number, Log, [ undefined, Object ]]);
 
-		await this._httpServer.startAsync(port, log, request => this._router.routeAsync(request));
+		await this._httpServer.startAsync(port, log, request => this._router.routeAsync(request, config));
 		this._log = log;
 	}
 
-	async simulateRequestAsync(request) {
-		ensure.signature(arguments, [ HttpRequest ]);
+	async simulateRequestAsync(request = HttpRequest.createNull()) {
+		ensure.signature(arguments, [[ undefined, HttpRequest ]]);
 
 		return await this._httpServer.simulateRequestAsync(request);
 	}
