@@ -8,6 +8,7 @@ const infrastructureHelper = require("util/infrastructure_helper");
 const EventEmitter = require("events");
 
 const HOST = "localhost";
+const TRANSFORM_ENDPOINT = "/rot13/transform";
 const RESPONSE_TYPE = { transformed: String };
 const REQUEST_EVENT = "request";
 
@@ -22,7 +23,7 @@ module.exports = class Rot13Client {
 	static createNull(options) {
 		const httpResponses = nullHttpResponses(options);
 		return new Rot13Client(HttpClient.createNull({
-			"/rot13/transform": httpResponses,
+			[TRANSFORM_ENDPOINT]: httpResponses,
 		}));
 	}
 
@@ -41,7 +42,7 @@ module.exports = class Rot13Client {
 			host: HOST,
 			port,
 			method: "POST",
-			path: "/rot13/transform",
+			path: TRANSFORM_ENDPOINT,
 			headers: { "content-type": "application/json" },
 			body: JSON.stringify({ text }),
 		});
@@ -50,7 +51,7 @@ module.exports = class Rot13Client {
 			const cancelled = httpCancelFn(
 				"ROT-13 service request cancelled\n" +
 				`Host: ${HOST}:${port}\n` +
-				"Endpoint: /rot13/transform"
+				`Endpoint: ${TRANSFORM_ENDPOINT}`
 			);
 			if (cancelled) this._emitter.emit(REQUEST_EVENT, { ...requestData, cancelled: true });
 		};
@@ -92,7 +93,7 @@ function throwError(message, port, response) {
 	throw new Error(
 `${message}
 Host: ${HOST}:${port}
-Endpoint: /rot13/transform
+Endpoint: ${TRANSFORM_ENDPOINT}
 Status: ${response.status}
 Headers: ${JSON.stringify(response.headers)}
 Body: ${response.body}`
