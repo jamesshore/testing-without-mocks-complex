@@ -7,6 +7,8 @@ const Rot13Client = require("./infrastructure/rot13_client");
 const HttpRequest = require("http/http_request");
 const WwwConfig = require("./www_config");
 
+const INPUT_FIELD_NAME = "text";
+
 /** Endpoints for / (home page) */
 module.exports = class HomePageController {
 
@@ -37,14 +39,31 @@ module.exports = class HomePageController {
 	async postAsync(request, config) {
 		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
 
-		const text = parseBody(await request.readBodyAsync());
-		const { transformPromise } = this._rot13Client.transform(config.rot13ServicePort, text);
+		const { input, err } = parseBody(await request.readBodyAsync(), config.log);
+		if (err !== undefined) return wwwView.homePage();
+
+		const { transformPromise } = this._rot13Client.transform(config.rot13ServicePort, input);
 		return wwwView.homePage(await transformPromise);
 	}
 
 };
 
-function parseBody(body) {
-	const [ name, value ] = body.split("=");
-	return value;
+function parseBody(body, log) {
+	try {
+		const params = new URLSearchParams(body);
+		const textFields = params.getAll(INPUT_FIELD_NAME);
+
+		if (textFields.length === 0) throw new Error(`'${INPUT_FIELD_NAME}' form field not found`);
+		if (textFields.length > 1) throw new Error(`multiple '${INPUT_FIELD_NAME}' form fields found`);
+
+		return { input: textFields[0] };
+	}
+	catch (err) {
+		log.monitor({
+			message: "form parse error in POST /",
+			details: err.message,
+			body,
+		});
+		return { err };
+	}
 }
