@@ -9,6 +9,7 @@ const wwwView = require("./www_view");
 const Rot13Client = require("./infrastructure/rot13_client");
 const HomePageController = require("./home_page_controller");
 const Log = require("infrastructure/log");
+const Clock = require("infrastructure/clock");
 
 const IRRELEVANT_PORT = 42;
 const PARSE_LOG_BOILERPLATE = {
@@ -77,12 +78,12 @@ describe("Home Page Controller", () => {
 	});
 
 
-	describe("ROT-13 service edge cases (TO DO)", () => {
+	describe("ROT-13 service edge cases", () => {
 
 		it("fails gracefully, and logs error, when service returns error", async () => {
 			const rot13Client = Rot13Client.createNull([{ error: "my_error" }]);
 			const { response, logOutput } =
-				await simulatePostAsync({ body: "text=my_text", rot13Client, rot13Port: 9999 });
+				await simulatePostAsync({ rot13Client, rot13Port: 9999 });
 
 			assert.deepEqual(response, wwwView.homePage("ROT-13 service failed"));
 			assert.deepEqual(logOutput, [{
@@ -97,7 +98,29 @@ describe("Home Page Controller", () => {
 			}]);
 		});
 
-		it("fails gracefully, and logs error, when service times out");
+		it("fails gracefully, cancels request, and logs error, when service responds too slowly", async () => {
+			const rot13Client = Rot13Client.createNull([{ hang: true }]);
+			const { responsePromise, rot13Requests, logOutput, clock } =
+				simulatePost({ rot13Client, rot13Port: 9999, body: "text=my_input" });
+
+			clock.advanceNullTimersAsync();
+			const response = await responsePromise;
+
+			assert.deepEqual(response, wwwView.homePage("ROT-13 service timed out"), "graceful failure");
+			assert.deepEqual(rot13Requests, [{
+				port: 9999,
+				text: "my_input",
+			}, {
+				port: 9999,
+				text: "my_input",
+				cancelled: true,
+			}], "request cancellation");
+			assert.deepEqual(logOutput, [{
+				alert: Log.EMERGENCY,
+				message: "ROT-13 service timed out in POST /",
+				timeoutInMs: 5000,
+			}], "log");
+		});
 
 	});
 
@@ -112,29 +135,40 @@ async function simulateGetAsync() {
 	return { response };
 }
 
-async function simulatePostAsync({
-	body,
+async function simulatePostAsync(options) {
+	const { responsePromise, ...remainder } = simulatePost(options);
+
+	return {
+		response: await responsePromise,
+		...remainder,
+	};
+}
+
+function simulatePost({
+	body = "text=irrelevant_input",
 	rot13Client = Rot13Client.createNull(),
 	rot13Port = IRRELEVANT_PORT,
-}) {
-	ensure.signature(arguments, [{
-		body: String,
+} = {}) {
+	ensure.signature(arguments, [[ undefined, {
+		body: [ undefined, String ],
 		rot13Client: [ undefined, Rot13Client ],
 		rot13Port: [ undefined, Number ]
-	}]);
+	}]]);
 
 	const rot13Requests = rot13Client.trackRequests();
-	const controller = HomePageController.createNull({ rot13Client });
+	const clock = Clock.createNull();
+	const controller = HomePageController.createNull({ rot13Client, clock });
 	const log = Log.createNull();
 	const logOutput = log.trackOutput();
 	const wwwConfig = WwwConfig.createNull({ rot13ServicePort: rot13Port, log });
 
 	const request = HttpRequest.createNull({ body });
-	const response = await controller.postAsync(request, wwwConfig);
+	const responsePromise = controller.postAsync(request, wwwConfig);
 
 	return {
-		response,
+		responsePromise,
 		rot13Requests,
 		logOutput,
+		clock,
 	};
 }
