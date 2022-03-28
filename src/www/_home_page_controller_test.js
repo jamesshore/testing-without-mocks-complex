@@ -14,16 +14,14 @@ describe("Home Page Controller", () => {
 	describe("happy paths", () => {
 
 		it("GET renders home page", async () => {
-			const response = await simulateGetAsync();
+			const { response } = await simulateGetAsync();
 			assert.deepEqual(response, wwwView.homePage());
 		});
 
 		it("POST asks ROT-13 service to transform text, then renders result", async () => {
 			const rot13Client = Rot13Client.createNull([{ response: "my_response" }]);
-			const rot13Requests = rot13Client.trackRequests();
-			const wwwConfig = WwwConfig.createNull({ rot13ServicePort: 9999 });
-
-			const response = await simulatePostAsync({ body: "text=my_text", rot13Client, wwwConfig });
+			const { response, rot13Requests } =
+				await simulatePostAsync({ body: "text=my_text", rot13Client, rot13Port: 9999 });
 
 			assert.deepEqual(rot13Requests, [{
 				port: 9999,       // should match config
@@ -67,22 +65,31 @@ async function simulateGetAsync() {
 	ensure.signature(arguments, []);
 
 	const controller = HomePageController.createNull();
-	return await controller.getAsync(HttpRequest.createNull(), WwwConfig.createNull());
+	const response = await controller.getAsync(HttpRequest.createNull(), WwwConfig.createNull());
+
+	return { response };
 }
 
 async function simulatePostAsync({
 	body,
 	rot13Client = Rot13Client.createNull(),
-	wwwConfig = WwwConfig.createNull(),
+	rot13Port,
 }) {
 	ensure.signature(arguments, [{
 		body: String,
 		rot13Client: [ undefined, Rot13Client ],
-		wwwConfig: [ undefined, WwwConfig ],
+		rot13Port: [ undefined, Number ]
 	}]);
 
+	const rot13Requests = rot13Client.trackRequests();
 	const controller = HomePageController.createNull({ rot13Client });
+	const wwwConfig = WwwConfig.createNull({ rot13ServicePort: rot13Port });
+
 	const request = HttpRequest.createNull({ body });
 	const response = await controller.postAsync(request, wwwConfig);
-	return response;
+
+	return {
+		response,
+		rot13Requests
+	};
 }
