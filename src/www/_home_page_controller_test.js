@@ -8,6 +8,13 @@ const WwwConfig = require("./www_config");
 const wwwView = require("./www_view");
 const Rot13Client = require("./infrastructure/rot13_client");
 const HomePageController = require("./home_page_controller");
+const Log = require("infrastructure/log");
+
+const IRRELEVANT_PORT = 42;
+const PARSE_LOG_BOILERPLATE = {
+	alert: Log.MONITOR,
+	message: "form parse error in POST /",
+};
 
 describe("Home Page Controller", () => {
 
@@ -26,27 +33,46 @@ describe("Home Page Controller", () => {
 			assert.deepEqual(rot13Requests, [{
 				port: 9999,       // should match config
 				text: "my_text",  // should match post body
-			}], "ROT-13 service requests");
+			}], "ROT-13 service request");
 			assert.deepEqual(response, wwwView.homePage("my_response"), "home page rendering");
 		});
 
 	});
 
 
-	describe.skip("POST edge cases (TO DO)", () => {
+	describe("parse edge cases", () => {
 
-		it("POST finds correct form field when there are multiple fields", async () => {
-			const response = await simulatePostAsync({ body: "TO DO" });
+		it("finds correct form field when there are unrelated fields", async () => {
+			const body = "unrelated=one&text=two&also_unrelated=three";
+			const { rot13Requests } = await simulatePostAsync({ body });
+
+			assert.deepEqual(rot13Requests, [{
+				port: IRRELEVANT_PORT,
+				text: "two",
+			}]);
 		});
 
-		it("POST treats empty input like GET", async () => {
-			const response = await simulatePostAsync({ body: "" });
+		it("logs warning when form field not found (and treats request like GET)", async () => {
+			const { response, logOutput } = await simulatePostAsync({ body: "" });
 			assert.deepEqual(response, wwwView.homePage());
+			assert.deepEqual(logOutput, [{
+				...PARSE_LOG_BOILERPLATE,
+				details: "'text' form field not found",
+				body: "",
+			}]);
 		});
 
-		it("POST treats parse errors like GET, but logs a warning");
+		it("logs warning when duplicated form field found (and treats request like GET)", async () => {
+			const body = "text=one&text=two";
+			const { response, logOutput } = await simulatePostAsync({ body });
 
-		it("POST treats incorrect form data like GET, but logs a warning");
+			assert.deepEqual(response, wwwView.homePage());
+			assert.deepEqual(logOutput, [{
+				...PARSE_LOG_BOILERPLATE,
+				details: "multiple 'text' form fields found",
+				body,
+			}]);
+		});
 
 	});
 
@@ -73,7 +99,7 @@ async function simulateGetAsync() {
 async function simulatePostAsync({
 	body,
 	rot13Client = Rot13Client.createNull(),
-	rot13Port,
+	rot13Port = IRRELEVANT_PORT,
 }) {
 	ensure.signature(arguments, [{
 		body: String,
@@ -83,13 +109,16 @@ async function simulatePostAsync({
 
 	const rot13Requests = rot13Client.trackRequests();
 	const controller = HomePageController.createNull({ rot13Client });
-	const wwwConfig = WwwConfig.createNull({ rot13ServicePort: rot13Port });
+	const log = Log.createNull();
+	const logOutput = log.trackOutput();
+	const wwwConfig = WwwConfig.createNull({ rot13ServicePort: rot13Port, log });
 
 	const request = HttpRequest.createNull({ body });
 	const response = await controller.postAsync(request, wwwConfig);
 
 	return {
 		response,
-		rot13Requests
+		rot13Requests,
+		logOutput,
 	};
 }
