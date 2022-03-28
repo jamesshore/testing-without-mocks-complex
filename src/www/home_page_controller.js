@@ -39,11 +39,13 @@ module.exports = class HomePageController {
 	async postAsync(request, config) {
 		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
 
-		const { input, err } = parseBody(await request.readBodyAsync(), config.log);
-		if (err !== undefined) return wwwView.homePage();
+		const { input, inputErr } = parseBody(await request.readBodyAsync(), config.log);
+		if (inputErr !== undefined) return wwwView.homePage();
 
-		const { transformPromise } = this._rot13Client.transform(config.rot13ServicePort, input);
-		return wwwView.homePage(await transformPromise);
+		const { output, outputErr } = await transformAsync(this._rot13Client, config, input);
+		if (outputErr !== undefined) return wwwView.homePage("ROT-13 service failed");
+
+		return wwwView.homePage(output);
 	}
 
 };
@@ -58,12 +60,27 @@ function parseBody(body, log) {
 
 		return { input: textFields[0] };
 	}
-	catch (err) {
+	catch (inputErr) {
 		log.monitor({
 			message: "form parse error in POST /",
-			details: err.message,
+			details: inputErr.message,
 			body,
 		});
-		return { err };
+		return { inputErr };
+	}
+}
+
+async function transformAsync(rot13Client, config, input) {
+	try {
+		const { transformPromise } = rot13Client.transform(config.rot13ServicePort, input);
+		const output = await transformPromise;
+		return { output };
+	}
+	catch (outputErr) {
+		config.log.emergency({
+			message: "ROT-13 service error in POST /",
+			error: outputErr,
+		});
+		return { outputErr };
 	}
 }

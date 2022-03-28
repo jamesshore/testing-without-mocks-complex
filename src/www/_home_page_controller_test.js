@@ -77,9 +77,25 @@ describe("Home Page Controller", () => {
 	});
 
 
-	describe.skip("ROT-13 service edge cases (TO DO)", () => {
+	describe("ROT-13 service edge cases (TO DO)", () => {
 
-		it("fails gracefully, and logs error, when service returns error");
+		it("fails gracefully, and logs error, when service returns error", async () => {
+			const rot13Client = Rot13Client.createNull([{ error: "my_error" }]);
+			const { response, logOutput } =
+				await simulatePostAsync({ body: "text=my_text", rot13Client, rot13Port: 9999 });
+
+			assert.deepEqual(response, wwwView.homePage("ROT-13 service failed"));
+			assert.deepEqual(logOutput, [{
+				alert: Log.EMERGENCY,
+				message: "ROT-13 service error in POST /",
+				error: "Error: Unexpected status from ROT-13 service\n" +
+					"Host: localhost:9999\n" +
+					"Endpoint: /rot13/transform\n" +
+					"Status: 500\n" +
+					"Headers: {}\n" +
+					"Body: my_error",
+			}]);
+		});
 
 		it("fails gracefully, and logs error, when service times out");
 
