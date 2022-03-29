@@ -12,6 +12,7 @@ const gaze = require("gaze");
 const pathLib = require("path");
 const sh = require("../util/sh");
 const paths = require("../config/paths");
+const sound = require("sound-play");
 const { cyan, brightRed } = require("../util/colors");
 
 const watchColor = cyan;
@@ -136,19 +137,9 @@ function logEvent(event, filepath) {
 async function playSoundAsync(filename) {
 	try {
 		const path = pathLib.resolve(__dirname, filename);
-		if(process.platform === 'win32'){
-			// If on Windows create a Media.SoundPlayer .Net object to play the sound, it is invoked through powershell
-			// note that Media.SoundPlayer has a restriction of only working on .wav files.
-			await sh.runSilentlyAsync(`powershell`,['-c',`(New-Object Media.SoundPlayer "${path}").PlaySync();`]);
-		} else if (process.platform === 'linux'){
-			// aplay is part of the alsa-utils package
-			await sh.runSilentlyAsync("aplay", [ path ]);
-		} else {
-			// MacOS has a built-in 'afplay' command
-			await sh.runSilentlyAsync("afplay", [ path, "--volume", "0.3" ]);
-		}
+		await sound.play(path, 0.3);
 	}
 	catch (err) {
-		// If audio player isn't found, just ignore it
+		// If something goes wrong, just ignore it
 	}
 }
