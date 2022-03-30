@@ -1,3 +1,3 @@
 @echo off
 call build\scripts\prebuild
-node src/serve.js %*
+node build/scripts/serve_dev.js %*

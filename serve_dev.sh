@@ -1,4 +1,4 @@
 #!/bin/sh
 
 . build/scripts/prebuild.sh
-node src/serve.js "$@"
+node build/scripts/serve_dev.js "$@"

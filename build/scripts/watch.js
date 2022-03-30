@@ -10,7 +10,6 @@
 const build = require("./build");
 const gaze = require("gaze");
 const pathLib = require("path");
-const sh = require("../util/sh");
 const paths = require("../config/paths");
 const sound = require("sound-play");
 const { cyan, brightRed } = require("../util/colors");
