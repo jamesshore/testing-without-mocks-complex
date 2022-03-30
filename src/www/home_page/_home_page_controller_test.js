@@ -26,16 +26,21 @@ describe("Home Page Controller", () => {
 			assert.deepEqual(response, homePageView.homePage());
 		});
 
-		it("POST asks ROT-13 service to transform text, then renders result", async () => {
-			const rot13Client = Rot13Client.createNull([{ response: "my_response" }]);
-			const { response, rot13Requests } =
-				await simulatePostAsync({ body: "text=my_text", rot13Client, rot13Port: 9999 });
+		it("POST asks ROT-13 service to transform text", async () => {
+			const rot13Client = Rot13Client.createNull();
+			const { rot13Requests } = await simulatePostAsync({ body: "text=my_text", rot13Client, rot13Port: 9999 });
 
 			assert.deepEqual(rot13Requests, [{
 				port: 9999,       // should match config
 				text: "my_text",  // should match post body
-			}], "ROT-13 service request");
-			assert.deepEqual(response, homePageView.homePage("my_response"), "home page rendering");
+			}]);
+		});
+
+		it("POST renders result of ROT-13 service call", async() => {
+			const rot13Client = Rot13Client.createNull([{ response: "my_response" }]);
+			const { response } = await simulatePostAsync({ body: "text=my_text", rot13Client, rot13Port: 9999 });
+
+			assert.deepEqual(response, homePageView.homePage("my_response"));
 		});
 
 	});

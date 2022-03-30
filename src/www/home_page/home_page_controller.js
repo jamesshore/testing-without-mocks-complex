@@ -2,7 +2,7 @@
 "use strict";
 
 const ensure = require("util/ensure");
-const wwwView = require("./home_page_view");
+const homePageView = require("./home_page_view");
 const Rot13Client = require("../infrastructure/rot13_client");
 const HttpRequest = require("http/http_request");
 const WwwConfig = require("../www_config");
@@ -35,22 +35,22 @@ module.exports = class HomePageController {
 		this._clock = clock;
 	}
 
-	getAsync(request) {
+	getAsync(request, config) {
 		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
 
-		return wwwView.homePage();
+		return homePageView.homePage();
 	}
 
 	async postAsync(request, config) {
 		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
 
 		const { input, inputErr } = parseBody(await request.readBodyAsync(), config.log);
-		if (inputErr !== undefined) return wwwView.homePage();
+		if (inputErr !== undefined) return homePageView.homePage();
 
 		const { output, outputErr } = await transformAsync(this._rot13Client, this._clock, config, input);
-		if (outputErr !== undefined) return wwwView.homePage("ROT-13 service failed");
+		if (outputErr !== undefined) return homePageView.homePage("ROT-13 service failed");
 
-		return wwwView.homePage(output);
+		return homePageView.homePage(output);
 	}
 
 };
