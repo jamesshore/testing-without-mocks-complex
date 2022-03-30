@@ -4,9 +4,9 @@
 const assert = require("util/assert");
 const ensure = require("util/ensure");
 const HttpRequest = require("http/http_request");
-const WwwConfig = require("./www_config");
-const wwwView = require("./www_view");
-const Rot13Client = require("./infrastructure/rot13_client");
+const WwwConfig = require("../www_config");
+const homePageView = require("./home_page_view");
+const Rot13Client = require("../infrastructure/rot13_client");
 const HomePageController = require("./home_page_controller");
 const Log = require("infrastructure/log");
 const Clock = require("infrastructure/clock");
@@ -23,7 +23,7 @@ describe("Home Page Controller", () => {
 
 		it("GET renders home page", async () => {
 			const { response } = await simulateGetAsync();
-			assert.deepEqual(response, wwwView.homePage());
+			assert.deepEqual(response, homePageView.homePage());
 		});
 
 		it("POST asks ROT-13 service to transform text, then renders result", async () => {
@@ -35,7 +35,7 @@ describe("Home Page Controller", () => {
 				port: 9999,       // should match config
 				text: "my_text",  // should match post body
 			}], "ROT-13 service request");
-			assert.deepEqual(response, wwwView.homePage("my_response"), "home page rendering");
+			assert.deepEqual(response, homePageView.homePage("my_response"), "home page rendering");
 		});
 
 	});
@@ -55,7 +55,7 @@ describe("Home Page Controller", () => {
 
 		it("logs warning when form field not found (and treats request like GET)", async () => {
 			const { response, logOutput } = await simulatePostAsync({ body: "" });
-			assert.deepEqual(response, wwwView.homePage());
+			assert.deepEqual(response, homePageView.homePage());
 			assert.deepEqual(logOutput, [{
 				...PARSE_LOG_BOILERPLATE,
 				details: "'text' form field not found",
@@ -67,7 +67,7 @@ describe("Home Page Controller", () => {
 			const body = "text=one&text=two";
 			const { response, logOutput } = await simulatePostAsync({ body });
 
-			assert.deepEqual(response, wwwView.homePage());
+			assert.deepEqual(response, homePageView.homePage());
 			assert.deepEqual(logOutput, [{
 				...PARSE_LOG_BOILERPLATE,
 				details: "multiple 'text' form fields found",
@@ -85,7 +85,7 @@ describe("Home Page Controller", () => {
 			const { response, logOutput } =
 				await simulatePostAsync({ rot13Client, rot13Port: 9999 });
 
-			assert.deepEqual(response, wwwView.homePage("ROT-13 service failed"));
+			assert.deepEqual(response, homePageView.homePage("ROT-13 service failed"));
 			assert.deepEqual(logOutput, [{
 				alert: Log.EMERGENCY,
 				message: "ROT-13 service error in POST /",
@@ -106,7 +106,7 @@ describe("Home Page Controller", () => {
 			clock.advanceNullTimersAsync();
 			const response = await responsePromise;
 
-			assert.deepEqual(response, wwwView.homePage("ROT-13 service timed out"), "graceful failure");
+			assert.deepEqual(response, homePageView.homePage("ROT-13 service timed out"), "graceful failure");
 			assert.deepEqual(rot13Requests, [{
 				port: 9999,
 				text: "my_input",

@@ -3,7 +3,7 @@
 
 const ensure = require("util/ensure");
 const HttpRequest = require("http/http_request");
-const HomePageController = require("./home_page_controller");
+const HomePageController = require("./home_page/home_page_controller");
 const wwwView = require("./www_view");
 const GenericRouter = require("http/generic_router");
 const WwwConfig = require("./www_config");
