@@ -35,26 +35,7 @@ module.exports = class Rot13Client {
 	transform(port, text) {
 		ensure.signature(arguments, [ Number, String ]);
 
-		const requestData = { port, text };
-		this._emitter.emit(REQUEST_EVENT, requestData);
-
-		const { responsePromise, cancelFn: httpCancelFn } = this._httpClient.request({
-			host: HOST,
-			port,
-			method: "POST",
-			path: TRANSFORM_ENDPOINT,
-			headers: { "content-type": "application/json" },
-			body: JSON.stringify({ text }),
-		});
-
-		const cancelFn = () => {
-			const cancelled = httpCancelFn(
-				"ROT-13 service request cancelled\n" +
-				`Host: ${HOST}:${port}\n` +
-				`Endpoint: ${TRANSFORM_ENDPOINT}`
-			);
-			if (cancelled) this._emitter.emit(REQUEST_EVENT, { ...requestData, cancelled: true });
-		};
+		const { responsePromise, cancelFn } = performRequest(port, text, this._httpClient, this._emitter);
 		const transformPromise = validateAndParseResponseAsync(responsePromise, port);
 		return { transformPromise, cancelFn };
 	}
@@ -64,6 +45,31 @@ module.exports = class Rot13Client {
 	}
 
 };
+
+function performRequest(port, text, httpClient, emitter) {
+	const requestData = { port, text };
+	emitter.emit(REQUEST_EVENT, requestData);
+
+	const { responsePromise, cancelFn: httpCancelFn } = httpClient.request({
+		host: HOST,
+		port,
+		method: "POST",
+		path: TRANSFORM_ENDPOINT,
+		headers: { "content-type": "application/json" },
+		body: JSON.stringify({ text }),
+	});
+
+	const cancelFn = () => {
+		const cancelled = httpCancelFn(
+			"ROT-13 service request cancelled\n" +
+			`Host: ${HOST}:${port}\n` +
+			`Endpoint: ${TRANSFORM_ENDPOINT}`
+		);
+		if (cancelled) emitter.emit(REQUEST_EVENT, { ...requestData, cancelled: true });
+	};
+
+	return { responsePromise, cancelFn };
+}
 
 async function validateAndParseResponseAsync(responsePromise, port) {
 	const response = await responsePromise;
