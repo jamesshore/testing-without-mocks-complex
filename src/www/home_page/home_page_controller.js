@@ -2,7 +2,7 @@
 "use strict";
 
 const ensure = require("util/ensure");
-const wwwView = require("../www_view");
+const wwwView = require("./home_page_view");
 const Rot13Client = require("../infrastructure/rot13_client");
 const HttpRequest = require("http/http_request");
 const WwwConfig = require("../www_config");

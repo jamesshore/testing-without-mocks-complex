@@ -4,7 +4,7 @@
 const ensure = require("util/ensure");
 const Log = require("infrastructure/log");
 
-/** Configuration used by all routes */
+/** Configuration used by all www routes */
 module.exports = class WwwConfig {
 
 	static create(log, rot13ServicePort) {
