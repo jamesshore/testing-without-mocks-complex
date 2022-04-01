@@ -1,132 +1,58 @@
-James Shore Live
-================
+Nullable Infrastructure Training
+================================
 
-This example code is used in my [Tuesday Lunch & Learn](https://www.jamesshore.com/v2/projects/lunch-and-learn) series. See that link for for more information and an archive of past episodes, or [watch live on Twitch](https://www.twitch.tv/jamesshorelive).
+This example code is meant to be used as part of James Shore's training courses. It demonstrates his [Testing Without Mocks](https://www.jamesshore.com/v2/blog/2018/testing-without-mocks) patterns. It also contains two sets of coding challenges that allow you to experience the Nullable Infrastructure Wrapper patterns for yourself. Those challenges may be found on these two branches:
 
+* `exercise1`: A series of challenges demonstrating how to use nullable infrastructure wrappers to test glue code.
 
-This Week's Challenge (22 Sep 2020): Request Cancellation
----------------------
+* `exercise2`: A series of challenges demonstrating how to create nullable infrastructure wrappers from scratch.
 
-This repo contains a command-line client/server application. The command-line application calls a small microservice that encodes text using ROT-13 encoding. (You can find the details below, under "Running the Code" and "How the Microservice Works.")
-
-The server-side code is programmed to randomly delay some requests by 30 seconds. The client-side command-line interface (CLI) times out after five seconds, but it doesn't cancel the request, so the CLI doesn't exit until the full 30 seconds has elapsed and the server responds.
-
-Your challenge this week is to update the CLI to cancel the network request when it times out, so that the CLI exits after five seconds when the server is slow to respond. (The code will take five seconds to exit even if the server responds immediately; this is due to the way JavaScript timers work, and you don't have to solve that problem this week.)
-
-The focus of this week's challenge is on the design of the cancellation mechanism. Cancelling a request in Node is fairly straightforward (see the hints below); the challenge is coming up with a clean design.
-
-As always, make sure that your code is well tested.
-
-Hints:
-
-* Make sure you're on Node.js version 14 or higher. Previous versions fail the test suite due to insufficient locale support.
-
-* The command-line application is implemented in `src/rot13-cli/rot13_cli.js` and `_rot13_cli_test.js`. It depends on `src/rot13-cli/infrastructure/rot13_client.js` to parse the microservice response, and that in turn depends on `src/rot13-cli/infrastructure/http_client.js` to perform the HTTP request.
-
-* To cancel a Node.js request, call `request.destroy(new Error("my error message"));`. That line of code belongs in the `http_client.js` class.
-
-* The assertion library used by the tests, `/src/node_modules/util/assert.js`, is a thin wrapper over [Chai](https://www.chaijs.com/api/assert/), a JavaScript assertion library. It has a few extra assertions that you might find useful, such as `assert.throwsAsync()`, which let you check if an async function throws an exception.
-
-
-The Thinking Framework
-----------------------
-
-(Previous episodes may be helpful. You can find them [here](https://www.jamesshore.com/v2/projects/lunch-and-learn).)
-
-This week's challenge is a design challenge. The implementation for cancellation is clear (use `request.destroy()` as described above), but it's not clear how to do that *cleanly.*
-
-When faced with a thorny design problem, there are two approaches to use, and it's worth using both of them:
-
-1. How have other people solved this problem? Research the problem on the web.
-
-2. Ignoring implementation, what's a clean solution to this problem? Use Programming By Intention to prototype an API.
-
-"Programming By Intention" means writing high-level code as if all the low-level code you need already exists. Just imagine what functions or methods would make your life easy, and write your code to use them. It's a good way to design an easy-to-use API.
-
-It's a good idea to use both techniques because, although your research will generally help you understand the scope of the problem, the generic solutions available online are often more complicated than you need. You might be able to come up with a simpler design that fits the narrow parameters of the specific problem you're solving. In design, simpler is almost always better—assuming the simpler solution actually works!—because lower complexity means easier maintenance and fewer bugs.
-
-In the case of this week's challenge, a web search will lead you to the idea of "cancellation tokens." In .NET, you use cancellation tokens by instantiating a `CancellationTokenSource` object. Then you pass in `CancellationTokenSource.Token` to the things that you want to cancel, and call `CancellationTokenSource.Cancel()` to cancel them.
-
-The code currently looks like this:
-
-```javascript
-const response = await Promise.race([
-	rot13Client.transformAsync(port, text),
-	timeoutAsync(clock),
-]);
-commandLine.writeStdout(response + "\n");
-
-async function timeoutAsync(clock) {
-	await clock.waitAsync(TIMEOUT_IN_MS);
-	throw new Error("Service timed out.");
-}
-```
-
-With the cancellation token idea, the code would look like this:
-
-```javascript
-const cancellationSource = new CancellationTokenSource()
-const response = await Promise.race([
-	rot13Client.transformAsync(port, text, cancellationSource.token),
-	timeoutAsync(clock, cancellationSource),
-]);
-commandLine.writeStdout(response + "\n");
-
-async function timeoutAsync(clock, cancellationSource) {
-	await clock.waitAsync(TIMEOUT_IN_MS);
-	cancellationSource.cancel();
-	throw new Error("Service timed out.");
-}
-```
-
-Cancellation tokens are a well-known idea, and would solve the problem. But they require additional scaffolding (the `CancellationSource` class and everything to make it work) and they're indirect (the connection between the call to cancel() and the thing it cancels is implied, not explicit). Is there a simpler idea that's specific to our needs?
-
-This is where Programming By Intention comes in. Cancellation tokens assume a strongly object-oriented system, but JavaScript is a multi-paradigm language. Could a more functional approach work better? What if `transformAsync` returned a function that could be used to cancel the request?
-
-```javascript
-const { transformPromise, cancelFn } = rot13Client.transform(port, text);
-const response = await Promise.race([
-	transformPromise,
-	timeoutAsync(clock, cancelFn),
-]);
-commandLine.writeStdout(response + "\n");
-
-async function timeoutAsync(clock, cancelFn) {
-	await clock.waitAsync(TIMEOUT_IN_MS);
-	cancelFn();
-	throw new Error("Service timed out.");
-}
-```
-
-At this point, weigh the pros and cons of each approach (and try to come up with something better than both), then choose one. In this case, neither option is clearly better than the other. The functional approach is more explicit, but has some downsides, too. The cancellation token is well-known and is less likely to have hidden flaws, but has more moving parts.
-
-Tune in on September 22nd at noon Pacific to see how I apply these ideas, including my implementation of the functional cancellation approach. For details, go to the [Lunch & Learn home page](https://www.jamesshore.com/v2/projects/lunch-and-learn). Starting September 23rd, a video with my solution will be archived on that page.
+**Important**: Prior to starting the training course, make sure the code works. Check out the integration branch using `git checkout integration` and run the build and server as described under "Running the Code".
 
 
 Running the Code
 ----------------
 
-To run the code in this repository, install [Node.js](http://nodejs.org). Make sure you have version 14 or higher. Then:
+To run the code in this repository, install [Node.js](http://nodejs.org). Make sure you have version 16.14.2. If you have a different version of Node, the code will probably work, but you may experience some unexpected test failures. If that happens, make sure you have the correct version of Node installed.
 
-* Run `./serve.sh [port]` to run the ROT-13 service, then `./run.sh [port] [text]` to run the command-line application.
+* To run the build and automated tests, run `watch quick` (Windows) or `./watch.sh quick` (Mac/Linux) from the root directory of the repo. The build will automatically re-run every time you change a file.
 
-* Run `./build.sh` to lint and test the code once, or `./watch.sh` to do so every time a file changes.
+* The build only runs tests for files that have changed. Sometimes it can get confused. Restarting the script is usually enough. To make it start from scratch, run `clean` (Windows) or `./clean.sh` (Mac/Linux).
 
-* Use `./build.sh quick` or `./watch.sh quick` to perform an incremental build, and `./clean.sh` to reset the incremental build.
+* To run the servers, run `serve_dev 5010 5011` (Windows) or `./serve_dev 5010 5011` (Mac/Linux) from the root directory of the repo. Then visit `http://localhost:5010` in a browser. The server will automatically restart every time you change a file.
 
-* On Windows, use the .cmd versions: `run` instead of `./run.sh`, `watch` instead of `./watch.sh`, etc. If you're using gitbash, the .sh versions will also work, and they display the output better.
-
-All commands must be run from the repository root.
+*Note:* The `watch` script plays sounds when it runs. (One sound for success, another for lint failure, and a third for test failure.) If this bothers you, you can delete or rename the files in `build/sounds`.
 
 
-How the Microservice Works
---------------------------
+Performing the Exercises
+------------------------
 
-Start the server using the run command described under "Running the Code." E.g., `./serve.sh 5000`.
+The exercises in this repository are intended to be performed during James Shore’s training course. He will provide
+an overview of the challenges and explain the patterns involved. But briefly:
 
-The service transforms text using ROT-13 encoding. In other words, `hello` becomes `uryyb`. Some responses (randomly chosen) are delayed for 30 seconds.
+* To try the `exercise1` challenges, check out the branch using `git checkout exercise1`, then open `_home_page_controller_test.js` and `home_page_controller.js` in a code editor. Both are located in the `src/www/home_page/` directory. Run the watch script (described below) and follow the instructions in `_home_page_controller_test.js`.
 
-It has one endpoint:
+* To try the `exercise2` challenges, check out the branch using `git checkout exercise2`, then open `_command_line_test.js` and `command_line.js` in a code editor. Both are located in the `src/node_modules/infrastructure/` directory. Run the watch script and follow the instructions in `_command_line_test.js`.
+
+As you work, commit your code to the `exercise1` or `exercise2` branch. To start over, check out the `part1` or `part2` branch and make a new branch using `git checkout -b <your_branch>`.
+
+
+How the Servers Work
+--------------------
+
+Start the servers using the serve command described above. E.g., `./serve_dev.sh 5010 5011`. This starts two servers: a WWW server on port 5010 and a ROT-13 service on port 5011.
+
+
+### The WWW server
+
+The WWW server serves HTML to the user. Access it from a web browser. For example, `http://localhost:5010`. The server will serve a form that allows you to encode text using ROT-13. Enter text into the text field and press the "Transform" button. Behind the scenes, the browser will send a "text" form field to the WWW server, which will send it to the ROT-13 service and serve the result back to the browser.
+
+
+### The ROT-13 service
+
+The ROT-13 service transforms text using ROT-13 encoding. In other words, `hello` becomes `uryyb`.
+
+The service has one endpoint:
 
 * **URL**: `/rot13/transform`
 * Method: `POST`
@@ -148,16 +74,16 @@ It has one endpoint:
 		* `error` the error
 		* E.g., `{ "error": "invalid content-type header" }`
 
-Make requests against the server using your favorite HTTP client. For example, [httpie](https://httpie.org/):
+You can make requests to the service directly using your favorite HTTP client. For example, [httpie](https://httpie.org/):
 
 ```sh
-~ % http post :5000/rot13/transform content-type:application/json text=hello -v
+~ % http post :5011/rot13/transform content-type:application/json text=hello -v
 POST /rot13/transform HTTP/1.1
 Accept: application/json, */*;q=0.5
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
 Content-Length: 17
-Host: localhost:5000
+Host: localhost:5011
 User-Agent: HTTPie/2.1.0
 content-type: application/json
 
@@ -177,7 +103,122 @@ Date: Tue, 30 Jun 2020 01:14:15 GMT
 ```
 
 
+Finding Your Way Around
+-----------------------
+
+You don't need to know the ins-and-outs of the codebase to do the exercises. But in case you want to know more:
+
+Branches:
+
+* `dev`: Used by James Shore for work in progress.
+* `exercise1`: **Challenges demonstrating how to use nullable infrastructure wrappers to test glue code.**
+* `exercise2`: **Challenges demonstrating how to create nullable infrastructure wrappers from scratch.**
+* `integration`: **The completed code.**
+* `part1`: Same as `exercise1`. Allows you to start the exercise again.
+* `part2`: Same as `exercise2`. Allows you to start the exercise again.
+
+Top-level directories and files:
+
+* `build/`: Scripts for running the build, the servers, etc.
+* `generated/`: Files generated by the build.
+* `node_modules/`: Third-party modules from npm, such as Mocha (the test framework) and Chai (the assertion library)
+* `src/`: **Source code**
+* `build.cmd` and `build.sh`: Run the build and exit. Use the `quick` option to only build files that have changed. Use the `-T` option to see other build targets.
+* `clean.cmd` and `clean.sh`: **Reset the incremental build.**
+* `integrate.sh`: Merge the `dev` branch into the `integration` branch (only for use by James Shore)
+* `LICENSE.txt`: Copyright and license.
+* `package.json` and `package-lock.json`: Generated by `npm` (the Node package manager).
+* `README.md`: This file.
+* `serve_dev.cmd` and `serve_dev.cmd`: **Start the servers and automatically restart when files change.** Takes two port numbers. The first is the port of the WWW server; the second is the port of the ROT-13 service.
+* `watch.cmd` and `watch.sh`: **Automatically re-run the build every time a file changes.** Uses the same options as `build`.
+
+`src/`:
+
+* `node_modules/`: **Code shared by both servers.** Note that these are *not* third-party modules from npm.
+* `rot13_service/`: **Code for the ROT-13 service.**
+* `www/`: **Code for the user-facing web server.**
+* `_all_servers_test.js`: Unit tests for `all_servers.js`.
+* `_server_node_test.js`: Unit tests for `server_node.js`.
+* `_smoke_test.js`: End-to-end integration test.
+* `all_servers.js:` **Application start-up code.**
+* `serve.js:` Entry point for the application (just runs all_servers.js).
+* `server_node.js` Base class for both servers.
+
+`src/node_modules/`:
+
+* `http/`: HTTP infrastructure
+* `infrastructure/`: Other infrastructure
+* `util/`: Utility modules
+
+`src/node_modules/http/`:
+
+* `_*_test.js`: Unit and narrow integration tests.
+* `generic_router.js`: A general-purpose router than can be configured to convert URL paths to method calls.
+* `http_client.js`: Makes HTTP requests.
+* `http_request.js`: Represents an HTTP request on the server.
+* `http_response.js`: Represents an HTTP response from the server.
+* `http_server.js`: Starts an HTTP server.
+
+`src/node_modules/infrastructure/`:
+
+* `_*_test.js`: Unit and narrow integration tests.
+* `clock.js`: The system clock and time-related functions.
+* `command_line.js`: Command-line arguments, stdout, and stderr. **Used in exercise 2.**
+* `log.js`: Logging (used by the servers).
+
+`src/node_modules/util/`:
+
+* `_*_test.js`: Unit tests.
+* `assert.js`: A thin wrapper around Chai (an assertion library). Contains some extra assertions.
+* `ensure.js`: A run-time assertion library meant for use in production code. `ensure.signature()` is particularly useful for run-time type checking.
+* `infrastructure_helper.js`: Useful functions for infrastructure wrappers. Only contains `trackOutput()` at present.
+* `test_helper.js`: Useful functions for tests.
+* `type.js` A run-time type checker.
+
+`src/rot13_service/`:
+
+* `_*_test.js`: Unit tests.
+* `rot13_controller.js`: Endpoint for ROT-13 service.
+* `rot13_logic.js`: ROT-13 transformation logic.
+* `rot13_router.js`: Router for ROT-13 service.
+* `rot13_server.j.s`: ROT-13 server.
+
+`src/www/`:
+
+* `home_page/`: **Code related to serving the home page.**
+* `infrastructure/`: Infrastructure wrappers for the WWW server.
+* `_*_test.js`: Unit tests.
+* `www_config.js`: Configuration variables.
+* `www_router.js`: Router for WWW server.
+* `www_server.js`: WWW server.
+* `www_view.js`: HTML template and error responses.
+
+`src/www/home_page`:
+
+* `_*_test.js`: Unit tests.
+* `home_page_controller.js`: Endpoints for home page. **Used in exercise 1.**
+* `home_page_view.js`: HTML response for home page.
+
+`src/www/infrastructure`:
+
+* `_*_test.js`: Unit tests.
+* `rot13_client.js`: Client for ROT-13 service.
+
+
 License
 -------
 
-MIT License. See `LICENSE.txt`.
+Copyright (c) 2020-2022 Titanium I.T. LLC
+
+The code in this repository is licensed for use by  James Shore's training courses only. Participants in those courses may make copies for their own personal use, but may not re-distribute the code or create their own training course using this material.
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
