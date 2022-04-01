@@ -3,7 +3,6 @@
 
 const ensure = require("util/ensure");
 const rot13Logic = require("./rot13_logic");
-const HttpRequest = require("http/http_request");
 const HttpResponse = require("http/http_response");
 
 const REQUEST_TYPE = { text: String };

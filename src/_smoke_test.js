@@ -19,7 +19,7 @@ describe("Smoke test", function() {
 	this.timeout(STARTUP_TIMEOUT_IN_MS + 1000);
 
 	it("performs end-to-end ROT-13 transform", async () => {
-		await runSmokeTestAsync(async () => {
+		await runServersAsync(async () => {
 			const { status, body } = await testHelper.requestAsync({
 				port: WWW_PORT,
 				url: "/",
@@ -35,7 +35,7 @@ describe("Smoke test", function() {
 });
 
 
-async function runSmokeTestAsync(fnAsync) {
+async function runServersAsync(fnAsync) {
 	const killFnAsync = await forkAsync();
 	try {
 		await fnAsync();
@@ -72,7 +72,8 @@ async function forkAsync() {
 
 		function succeed() {
 			clearTimeout(timeoutHandle);
-			return resolve(() => new Promise((resolve) => kill(resolve)));
+			const killFnAsync = () => new Promise((innerResolve) => kill(innerResolve));
+			return resolve(killFnAsync);
 		}
 
 		function fail(err) {
