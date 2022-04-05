@@ -32,6 +32,10 @@ module.exports = class Rot13Client {
 		this._emitter = new EventEmitter();
 	}
 
+	async transformAsync(port, text) {
+		return await this.transform(port, text).transformPromise;
+	}
+
 	transform(port, text) {
 		ensure.signature(arguments, [ Number, String ]);
 
