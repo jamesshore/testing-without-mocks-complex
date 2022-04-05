@@ -230,7 +230,7 @@ function createClient({
 }
 
 async function transformAsync(rot13Client, port, text) {
-	return await rot13Client.transform(port, text).transformPromise;
+	return await rot13Client.transformAsync(port, text);
 }
 
 async function assertFailureAsync({
