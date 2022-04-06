@@ -27,8 +27,7 @@ describe("Home Page Controller", () => {
 		});
 
 		it("POST asks ROT-13 service to transform text", async () => {
-			const rot13Client = Rot13Client.createNull();
-			const { rot13Requests } = await simulatePostAsync({ body: "text=my_text", rot13Client, rot13Port: 9999 });
+			const { rot13Requests } = await simulatePostAsync({ body: "text=my_text", rot13Port: 9999 });
 
 			assert.deepEqual(rot13Requests, [{
 				port: 9999,       // should match config
