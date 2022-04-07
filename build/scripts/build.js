@@ -68,8 +68,8 @@ build.task("lint", async () => {
 	process.stdout.write(footer);
 });
 
-incrementalTestsTask("test", "Testing", paths.testFiles());
-// allTestsTask("test", "Testing", paths.testFiles(), paths.testDependencies());
+// incrementalTestsTask("test", "Testing", paths.testFiles());
+allTestsTask("test", "Testing", paths.testFiles(), paths.testDependencies());
 
 
 function incrementalTestsTask(taskName, header, candidateTestFiles) {
