@@ -37,7 +37,7 @@ describe("Home Page Controller", () => {
 
 		it("POST renders result of ROT-13 service call", async() => {
 			const rot13Client = Rot13Client.createNull([{ response: "my_response" }]);
-			const { response } = await simulatePostAsync({ body: "text=my_text", rot13Client, rot13Port: 9999 });
+			const { response } = await simulatePostAsync({ body: "text=my_text", rot13Client });
 
 			assert.deepEqual(response, homePageView.homePage("my_response"));
 		});
@@ -59,6 +59,7 @@ describe("Home Page Controller", () => {
 
 		it("logs warning when form field not found (and treats request like GET)", async () => {
 			const { response, logOutput } = await simulatePostAsync({ body: "" });
+
 			assert.deepEqual(response, homePageView.homePage());
 			assert.deepEqual(logOutput, [{
 				...PARSE_LOG_BOILERPLATE,
@@ -86,8 +87,7 @@ describe("Home Page Controller", () => {
 
 		it("fails gracefully, and logs error, when service returns error", async () => {
 			const rot13Client = Rot13Client.createNull([{ error: "my_error" }]);
-			const { response, logOutput } =
-				await simulatePostAsync({ rot13Client, rot13Port: 9999 });
+			const { response, logOutput } = await simulatePostAsync({ rot13Client, rot13Port: 9999 });
 
 			assert.deepEqual(response, homePageView.homePage("ROT-13 service failed"));
 			assert.deepEqual(logOutput, [{
