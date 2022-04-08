@@ -182,7 +182,7 @@ Top-level directories and files:
 * `rot13_controller.js`: Endpoint for ROT-13 service.
 * `rot13_logic.js`: ROT-13 transformation logic.
 * `rot13_router.js`: Router for ROT-13 service.
-* `rot13_server.j.s`: ROT-13 server.
+* `rot13_server.js`: ROT-13 server.
 
 `src/www/`:
 
@@ -211,7 +211,10 @@ License
 
 Copyright (c) 2020-2022 Titanium I.T. LLC
 
-The code in this repository is licensed for use by  James Shore's training courses only. Participants in those courses may make copies for their own personal use, but may not re-distribute the code or create their own training course using this material.
+The code in this repository is licensed for use in James Shore's training
+courses only. Participants in those courses may make copies for their own
+personal use, but may not re-distribute the code or create their own training
+course using this material.
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
