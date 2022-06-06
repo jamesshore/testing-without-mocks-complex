@@ -90,7 +90,7 @@ exports.options = {
 		// "Stylistic Issues"
 		"new-cap": IGNORE,
 		"no-bitwise": ERROR,
-		"no-mixed-spaces-and-tabs": ERROR,
+		"no-mixed-spaces-and-tabs": IGNORE,
 		"semi": [ ERROR, "always" ],
 
 		// "ECMAScript 6"
