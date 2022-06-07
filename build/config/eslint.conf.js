@@ -76,7 +76,7 @@ exports.options = {
 		"no-with": ERROR,
 		"prefer-promise-reject-errors": ERROR,
 		"radix": ERROR,
-		"require-await": ERROR,
+		"require-await": IGNORE,
 
 		// "Strict Mode"
 		"strict": [ ERROR, "safe" ],
