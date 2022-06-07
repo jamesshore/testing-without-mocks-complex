@@ -27,43 +27,25 @@ describe("Home Page Controller", () => {
 	describe("happy paths", () => {
 
 		it("GET renders home page", async () => {
-			const rot13Client = td.instance(Rot13Client);
-			const clock = td.instance(Clock);
-			const request = td.instance(HttpRequest);
-			const config = td.instance(WwwConfig);
-
-			const controller = new HomePageController(rot13Client, clock);
-			const response = controller.getAsync(request, config);
+			const { response } = await getAsync();
 			assert.deepEqual(response, homePageView.homePage());
 		});
 
 		it("POST asks ROT-13 service to transform text", async () => {
-			const rot13Client = td.instance(Rot13Client);
-			const clock = td.instance(Clock);
-			const request = td.instance(HttpRequest);
-			const config = td.instance(WwwConfig);
-
-			config.rot13ServicePort = 777;
-			td.when(request.readBodyAsync()).thenResolve("text=my+text");
-
-			const controller = new HomePageController(rot13Client, clock);
-			await controller.postAsync(request, config);
-			td.verify(rot13Client.transformAsync(777, "my text"));
+			const { rot13Client } = await postAsync({
+				body: "text=my+text",
+				rot13Port: 999
+			});
+			td.verify(rot13Client.transformAsync(999, "my text"));
 		});
 
 		it("POST renders result of ROT-13 service call", async() => {
-			const rot13Client = td.instance(Rot13Client);
-			const clock = td.instance(Clock);
-			const request = td.instance(HttpRequest);
-			const config = td.instance(WwwConfig);
-
-			config.rot13ServicePort = 777;
-			td.when(request.readBodyAsync()).thenResolve("text=my+text");
-			td.when(rot13Client.transformAsync(777, "my text")).thenResolve("my response");
-
-			const controller = new HomePageController(rot13Client, clock);
-			const result = await controller.postAsync(request, config);
-			assert.deepEqual(result, homePageView.homePage("my response"));
+			const { response } = await postAsync({
+				body: "text=hello%20world",
+				rot13Input: "hello world",
+				rot13Response: "my_response"
+			});
+			assert.deepEqual(response, homePageView.homePage("my_response"));
 		});
 
 	});
@@ -72,10 +54,28 @@ describe("Home Page Controller", () => {
 	describe("parse edge cases", () => {
 
 		it("finds correct form field when there are unrelated fields", async () => {
+			const { response } = await postAsync({
+				body: "unrelated=one&text=two&also_unrelated=three",
+				rot13Input: "two",
+				rot13Response: "my response"
+			});
+			assert.deepEqual(response, homePageView.homePage("my response"));
 		});
 
 		it("logs warning when form field not found (and treats request like GET)", async () => {
+			const { response, rot13Client, log } = await postAsync({
+				body: ""
+			});
+
+			assert.deepEqual(response, homePageView.homePage());
+			td.verify(rot13Client.transformAsync(), { times: 0, ignoreExtraArgs: true });
+			td.verify(log.monitor({
+				message: "form parse error in POST /",
+				details: "'text' form field not found",
+				body: "",
+			}));
 		});
+
 
 		it("logs warning when duplicated form field found (and treats request like GET)", async () => {
 		});
@@ -94,3 +94,52 @@ describe("Home Page Controller", () => {
 	});
 
 });
+
+async function getAsync() {
+	ensure.signature(arguments, []);
+
+	const rot13Client = td.instance(Rot13Client);
+	const clock = td.instance(Clock);
+	const request = td.instance(HttpRequest);
+	const config = td.instance(WwwConfig);
+
+	const controller = new HomePageController(rot13Client, clock);
+	const response = controller.getAsync(request, config);
+
+	return { response };
+}
+
+async function postAsync({
+	body = "text=irrelevant_body",
+	rot13Port = 42,
+	rot13Input = "irrelevant ROT-13 input",
+	rot13Response = "irrelevant ROT-13 response",
+} = {}) {
+	ensure.signature(arguments, [[ undefined, {
+		body: [ undefined, String ],
+		rot13Port: [ undefined, Number ],
+		rot13Input: [ undefined, String ],
+		rot13Response: [ undefined, String ],
+	}]]);
+
+	const rot13Client = td.instance(Rot13Client);
+	const clock = td.instance(Clock);
+	const request = td.instance(HttpRequest);
+	const config = td.instance(WwwConfig);
+	const log = td.object(new Log());
+
+	config.rot13ServicePort = rot13Port;
+	config.log = log;
+	td.when(request.readBodyAsync()).thenResolve(body);
+	td.when(rot13Client.transformAsync(rot13Port, rot13Input)).thenResolve(rot13Response);
+
+	const controller = new HomePageController(rot13Client, clock);
+	const response = await controller.postAsync(request, config);
+
+	return {
+		response,
+		rot13Client,
+		log,
+	};
+
+}
