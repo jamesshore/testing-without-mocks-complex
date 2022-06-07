@@ -32,7 +32,7 @@ describe("Home Page Controller", () => {
 		});
 
 		it("POST asks ROT-13 service to transform text", async () => {
-			const { rot13Client } = await postAsync({
+			const { rot13Client } = await simulatePostAsync({
 				body: "text=my+text",
 				rot13Port: 999
 			});
@@ -40,7 +40,7 @@ describe("Home Page Controller", () => {
 		});
 
 		it("POST renders result of ROT-13 service call", async() => {
-			const { response } = await postAsync({
+			const { response } = await simulatePostAsync({
 				body: "text=hello%20world",
 				rot13Input: "hello world",
 				rot13Response: "my_response"
@@ -54,7 +54,7 @@ describe("Home Page Controller", () => {
 	describe("parse edge cases", () => {
 
 		it("finds correct form field when there are unrelated fields", async () => {
-			const { response } = await postAsync({
+			const { response } = await simulatePostAsync({
 				body: "unrelated=one&text=two&also_unrelated=three",
 				rot13Input: "two",
 				rot13Response: "my response"
@@ -63,7 +63,7 @@ describe("Home Page Controller", () => {
 		});
 
 		it("logs warning when form field not found (and treats request like GET)", async () => {
-			const { response, rot13Client, log } = await postAsync({
+			const { response, rot13Client, log } = await simulatePostAsync({
 				body: ""
 			});
 
@@ -78,7 +78,7 @@ describe("Home Page Controller", () => {
 
 
 		it("logs warning when duplicated form field found (and treats request like GET)", async () => {
-			const { response, rot13Client, log } = await postAsync({
+			const { response, rot13Client, log } = await simulatePostAsync({
 				body: "text=one&text=two"
 			});
 
@@ -98,7 +98,7 @@ describe("Home Page Controller", () => {
 
 		it("fails gracefully, and logs error, when service returns error", async () => {
 			const rot13Error = new Error("my_error");
-			const { response, log } = await postAsync({
+			const { response, log } = await simulatePostAsync({
 				rot13Error,
 			});
 
@@ -109,16 +109,20 @@ describe("Home Page Controller", () => {
 			}));
 		});
 
-		it.skip("fails gracefully, cancels request, and logs error, when service responds too slowly", async () => {
-			// const { responsePromise, log } = await post({
-			// 	rot13Hang: true,
-			// });
-			//
-			// assert.deepEqual(response, homePageView.homePage("ROT-13 service timed out"));
-			// td.verify(log.emergency({
-			// 	message: "ROT-13 service timed out in POST /",
-			// 	timeoutInMs: 5000,
-			// }));
+		it("fails gracefully, cancels request, and logs error, when service responds too slowly", async () => {
+			const { responsePromise, clock, log, cancelFn } = await simulatePost({
+				rot13Hang: true,
+			});
+
+			await clock.advanceNullTimersAsync();
+			const response = await responsePromise;
+
+			assert.deepEqual(response, homePageView.homePage("ROT-13 service timed out"));
+			td.verify(log.emergency({
+				message: "ROT-13 service timed out in POST /",
+				timeoutInMs: 5000,
+			}));
+			td.verify(cancelFn());
 		});
 
 	});
@@ -139,8 +143,8 @@ async function getAsync() {
 	return { response };
 }
 
-async function postAsync(options) {
-	const { responsePromise, ...remainder } = post(options);
+async function simulatePostAsync(options) {
+	const { responsePromise, ...remainder } = simulatePost(options);
 
 	return {
 		response: await responsePromise,
@@ -148,7 +152,7 @@ async function postAsync(options) {
 	};
 }
 
-function post({
+function simulatePost({
 	body = "text=irrelevant_body",
 	rot13Port = 42,
 	rot13Input = "irrelevant_body",
@@ -166,10 +170,11 @@ function post({
 	}]]);
 
 	const rot13Client = td.instance(Rot13Client);
-	const clock = td.instance(Clock);
+	const clock = Clock.createNull();
 	const request = td.instance(HttpRequest);
 	const config = td.instance(WwwConfig);
 	const log = td.object(new Log());
+	const cancelFn = td.function();
 
 	config.rot13ServicePort = rot13Port;
 	config.log = log;
@@ -178,14 +183,19 @@ function post({
 	if (rot13Error !== undefined) {
 		td.when(rot13Client.transform(rot13Port, rot13Input)).thenReturn({
 			transformPromise: Promise.reject(rot13Error),
+			cancelFn,
 		});
 	}
 	else if (rot13Hang) {
-		td.when(rot13Client.transform(rot13Port, rot13Input)).thenReturn(new Promise(() => {}));
+		td.when(rot13Client.transform(rot13Port, rot13Input)).thenReturn({
+			transformPromise: new Promise(() => {}),
+			cancelFn,
+		});
 	}
 	else {
 		td.when(rot13Client.transform(rot13Port, rot13Input)).thenReturn({
 			transformPromise: Promise.resolve(rot13Response),
+			cancelFn,
 		});
 	}
 
@@ -195,7 +205,9 @@ function post({
 	return {
 		responsePromise,
 		rot13Client,
+		clock,
 		log,
+		cancelFn,
 	};
 
 }

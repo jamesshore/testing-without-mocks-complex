@@ -17,7 +17,7 @@ const PARSE_LOG_BOILERPLATE = {
 	message: "form parse error in POST /",
 };
 
-describe.skip("Home Page Controller", () => {
+describe("Home Page Controller", () => {
 
 	describe("happy paths", () => {
 

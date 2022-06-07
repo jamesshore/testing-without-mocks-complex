@@ -48,22 +48,10 @@ module.exports = class HomePageController {
 		const { input, inputErr } = parseBody(await request.readBodyAsync(), config.log);
 		if (inputErr !== undefined) return homePageView.homePage();
 
-		try {
-			const { transformPromise } = this._rot13Client.transform(config.rot13ServicePort, input);
-			return homePageView.homePage(await transformPromise);
-		}
-		catch (error) {
-			config.log.emergency({
-				message: "ROT-13 service error in POST /",
-				error,
-			});
-			return homePageView.homePage("ROT-13 service failed");
-		}
+		const { output, outputErr } = await transformAsync(this._rot13Client, this._clock, config, input);
+		if (outputErr !== undefined) return homePageView.homePage("ROT-13 service failed");
 
-		// const { output, outputErr } = await transformAsync(this._rot13Client, this._clock, config, input);
-		// if (outputErr !== undefined) return homePageView.homePage("ROT-13 service failed");
-		//
-		// return homePageView.homePage(output);
+		return homePageView.homePage(output);
 	}
 
 };
@@ -89,21 +77,21 @@ function parseBody(body, log) {
 }
 
 async function transformAsync(rot13Client, clock, config, input) {
-	// try {
-	// 	const { transformPromise, cancelFn } = rot13Client.transform(config.rot13ServicePort, input);
-	// 	const output = await clock.timeoutAsync(
-	// 		TIMEOUT_IN_MS,
-	// 		transformPromise,
-	// 		() => timeout(config.log, cancelFn));
-	// 	return { output };
-	// }
-	// catch (outputErr) {
-	// 	config.log.emergency({
-	// 		message: "ROT-13 service error in POST /",
-	// 		error: outputErr,
-	// 	});
-	// 	return { outputErr };
-	// }
+	try {
+		const { transformPromise, cancelFn } = rot13Client.transform(config.rot13ServicePort, input);
+		const output = await clock.timeoutAsync(
+			TIMEOUT_IN_MS,
+			transformPromise,
+			() => timeout(config.log, cancelFn));
+		return { output };
+	}
+	catch (outputErr) {
+		config.log.emergency({
+			message: "ROT-13 service error in POST /",
+			error: outputErr,
+		});
+		return { outputErr };
+	}
 }
 
 function timeout(log, cancelFn) {
