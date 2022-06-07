@@ -36,7 +36,7 @@ describe("Home Page Controller", () => {
 				body: "text=my+text",
 				rot13Port: 999
 			});
-			td.verify(rot13Client.transformAsync(999, "my text"));
+			td.verify(rot13Client.transform(999, "my text"));
 		});
 
 		it("POST renders result of ROT-13 service call", async() => {
@@ -68,7 +68,7 @@ describe("Home Page Controller", () => {
 			});
 
 			assert.deepEqual(response, homePageView.homePage());
-			td.verify(rot13Client.transformAsync(), { times: 0, ignoreExtraArgs: true });
+			td.verify(rot13Client.transform(), { times: 0, ignoreExtraArgs: true });
 			td.verify(log.monitor({
 				message: "form parse error in POST /",
 				details: "'text' form field not found",
@@ -83,7 +83,7 @@ describe("Home Page Controller", () => {
 			});
 
 			assert.deepEqual(response, homePageView.homePage());
-			td.verify(rot13Client.transformAsync(), { times: 0, ignoreExtraArgs: true });
+			td.verify(rot13Client.transform(), { times: 0, ignoreExtraArgs: true });
 			td.verify(log.monitor({
 				message: "form parse error in POST /",
 				details: "multiple 'text' form fields found",
@@ -139,7 +139,16 @@ async function getAsync() {
 	return { response };
 }
 
-async function postAsync({
+async function postAsync(options) {
+	const { responsePromise, ...remainder } = post(options);
+
+	return {
+		response: await responsePromise,
+		...remainder,
+	};
+}
+
+function post({
 	body = "text=irrelevant_body",
 	rot13Port = 42,
 	rot13Input = "irrelevant_body",
@@ -167,20 +176,24 @@ async function postAsync({
 	td.when(request.readBodyAsync()).thenResolve(body);
 
 	if (rot13Error !== undefined) {
-		td.when(rot13Client.transformAsync(rot13Port, rot13Input)).thenReject(rot13Error);
+		td.when(rot13Client.transform(rot13Port, rot13Input)).thenReturn({
+			transformPromise: Promise.reject(rot13Error),
+		});
 	}
 	else if (rot13Hang) {
-		td.when(rot13Client.transformAsync(rot13Port, rot13Input)).thenReturn(new Promise(() => {}));
+		td.when(rot13Client.transform(rot13Port, rot13Input)).thenReturn(new Promise(() => {}));
 	}
 	else {
-		td.when(rot13Client.transformAsync(rot13Port, rot13Input)).thenResolve(rot13Response);
+		td.when(rot13Client.transform(rot13Port, rot13Input)).thenReturn({
+			transformPromise: Promise.resolve(rot13Response),
+		});
 	}
 
 	const controller = new HomePageController(rot13Client, clock);
-	const response = await controller.postAsync(request, config);
+	const responsePromise = controller.postAsync(request, config);
 
 	return {
-		response,
+		responsePromise,
 		rot13Client,
 		log,
 	};

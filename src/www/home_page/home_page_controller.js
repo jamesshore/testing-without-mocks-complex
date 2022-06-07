@@ -49,8 +49,8 @@ module.exports = class HomePageController {
 		if (inputErr !== undefined) return homePageView.homePage();
 
 		try {
-			const output = await this._rot13Client.transformAsync(config.rot13ServicePort, input);
-			return homePageView.homePage(output);
+			const { transformPromise } = this._rot13Client.transform(config.rot13ServicePort, input);
+			return homePageView.homePage(await transformPromise);
 		}
 		catch (error) {
 			config.log.emergency({
