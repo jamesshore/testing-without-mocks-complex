@@ -10,6 +10,7 @@ const Rot13Client = require("../infrastructure/rot13_client");
 const HomePageController = require("./home_page_controller");
 const Log = require("infrastructure/log");
 const Clock = require("infrastructure/clock");
+const td = require("testdouble");
 
 const IRRELEVANT_PORT = 42;
 const PARSE_LOG_BOILERPLATE = {
@@ -19,15 +20,50 @@ const PARSE_LOG_BOILERPLATE = {
 
 describe("Home Page Controller", () => {
 
+	afterEach(() => {
+		td.reset();
+	});
+
 	describe("happy paths", () => {
 
 		it("GET renders home page", async () => {
+			const rot13Client = td.instance(Rot13Client);
+			const clock = td.instance(Clock);
+			const request = td.instance(HttpRequest);
+			const config = td.instance(WwwConfig);
+
+			const controller = new HomePageController(rot13Client, clock);
+			const response = controller.getAsync(request, config);
+			assert.deepEqual(response, homePageView.homePage());
 		});
 
 		it("POST asks ROT-13 service to transform text", async () => {
+			const rot13Client = td.instance(Rot13Client);
+			const clock = td.instance(Clock);
+			const request = td.instance(HttpRequest);
+			const config = td.instance(WwwConfig);
+
+			config.rot13ServicePort = 777;
+			td.when(request.readBodyAsync()).thenResolve("text=my+text");
+
+			const controller = new HomePageController(rot13Client, clock);
+			await controller.postAsync(request, config);
+			td.verify(rot13Client.transformAsync(777, "my text"));
 		});
 
 		it("POST renders result of ROT-13 service call", async() => {
+			const rot13Client = td.instance(Rot13Client);
+			const clock = td.instance(Clock);
+			const request = td.instance(HttpRequest);
+			const config = td.instance(WwwConfig);
+
+			config.rot13ServicePort = 777;
+			td.when(request.readBodyAsync()).thenResolve("text=my+text");
+			td.when(rot13Client.transformAsync(777, "my text")).thenResolve("my response");
+
+			const controller = new HomePageController(rot13Client, clock);
+			const result = await controller.postAsync(request, config);
+			assert.deepEqual(result, homePageView.homePage("my response"));
 		});
 
 	});
