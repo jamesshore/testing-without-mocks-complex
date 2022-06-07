@@ -45,25 +45,21 @@ module.exports = class HomePageController {
 	async postAsync(request, config) {
 		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
 
-		const body = await request.readBodyAsync();
-		const params = new URLSearchParams(body);
-		const textFields = params.getAll("text");
-		if (textFields.length === 0) {
-			config.log.monitor({
-				message: "form parse error in POST /",
-				details: "'text' form field not found",
-				body,
-			});
-			return homePageView.homePage();
+		const { input, inputErr } = parseBody(await request.readBodyAsync(), config.log);
+		if (inputErr !== undefined) return homePageView.homePage();
+
+		try {
+			const output = await this._rot13Client.transformAsync(config.rot13ServicePort, input);
+			return homePageView.homePage(output);
 		}
-		const input = textFields[0];
+		catch (error) {
+			config.log.emergency({
+				message: "ROT-13 service error in POST /",
+				error,
+			});
+			return homePageView.homePage("ROT-13 service failed");
+		}
 
-		const output = await this._rot13Client.transformAsync(config.rot13ServicePort, input);
-		return homePageView.homePage(output);
-
-		// const { input, inputErr } = parseBody(await request.readBodyAsync(), config.log);
-		// if (inputErr !== undefined) return homePageView.homePage();
-		//
 		// const { output, outputErr } = await transformAsync(this._rot13Client, this._clock, config, input);
 		// if (outputErr !== undefined) return homePageView.homePage("ROT-13 service failed");
 		//
@@ -73,23 +69,23 @@ module.exports = class HomePageController {
 };
 
 function parseBody(body, log) {
-	// try {
-	// 	const params = new URLSearchParams(body);
-	// 	const textFields = params.getAll(INPUT_FIELD_NAME);
-	//
-	// 	if (textFields.length === 0) throw new Error(`'${INPUT_FIELD_NAME}' form field not found`);
-	// 	if (textFields.length > 1) throw new Error(`multiple '${INPUT_FIELD_NAME}' form fields found`);
-	//
-	// 	return { input: textFields[0] };
-	// }
-	// catch (inputErr) {
-	// 	log.monitor({
-	// 		message: "form parse error in POST /",
-	// 		details: inputErr.message,
-	// 		body,
-	// 	});
-	// 	return { inputErr };
-	// }
+	try {
+		const params = new URLSearchParams(body);
+		const textFields = params.getAll(INPUT_FIELD_NAME);
+
+		if (textFields.length === 0) throw new Error(`'${INPUT_FIELD_NAME}' form field not found`);
+		if (textFields.length > 1) throw new Error(`multiple '${INPUT_FIELD_NAME}' form fields found`);
+
+		return { input: textFields[0] };
+	}
+	catch (inputErr) {
+		log.monitor({
+			message: "form parse error in POST /",
+			details: inputErr.message,
+			body,
+		});
+		return { inputErr };
+	}
 }
 
 async function transformAsync(rot13Client, clock, config, input) {

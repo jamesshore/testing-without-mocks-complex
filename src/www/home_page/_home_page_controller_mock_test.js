@@ -78,6 +78,17 @@ describe("Home Page Controller", () => {
 
 
 		it("logs warning when duplicated form field found (and treats request like GET)", async () => {
+			const { response, rot13Client, log } = await postAsync({
+				body: "text=one&text=two"
+			});
+
+			assert.deepEqual(response, homePageView.homePage());
+			td.verify(rot13Client.transformAsync(), { times: 0, ignoreExtraArgs: true });
+			td.verify(log.monitor({
+				message: "form parse error in POST /",
+				details: "multiple 'text' form fields found",
+				body: "text=one&text=two",
+			}));
 		});
 
 	});
@@ -86,9 +97,28 @@ describe("Home Page Controller", () => {
 	describe("ROT-13 service edge cases", () => {
 
 		it("fails gracefully, and logs error, when service returns error", async () => {
+			const rot13Error = new Error("my_error");
+			const { response, log } = await postAsync({
+				rot13Error,
+			});
+
+			assert.deepEqual(response, homePageView.homePage("ROT-13 service failed"));
+			td.verify(log.emergency({
+				message: "ROT-13 service error in POST /",
+				error: rot13Error,
+			}));
 		});
 
-		it("fails gracefully, cancels request, and logs error, when service responds too slowly", async () => {
+		it.skip("fails gracefully, cancels request, and logs error, when service responds too slowly", async () => {
+			// const { responsePromise, log } = await post({
+			// 	rot13Hang: true,
+			// });
+			//
+			// assert.deepEqual(response, homePageView.homePage("ROT-13 service timed out"));
+			// td.verify(log.emergency({
+			// 	message: "ROT-13 service timed out in POST /",
+			// 	timeoutInMs: 5000,
+			// }));
 		});
 
 	});
@@ -112,14 +142,18 @@ async function getAsync() {
 async function postAsync({
 	body = "text=irrelevant_body",
 	rot13Port = 42,
-	rot13Input = "irrelevant ROT-13 input",
+	rot13Input = "irrelevant_body",
 	rot13Response = "irrelevant ROT-13 response",
+	rot13Hang = false,
+	rot13Error,
 } = {}) {
 	ensure.signature(arguments, [[ undefined, {
 		body: [ undefined, String ],
 		rot13Port: [ undefined, Number ],
 		rot13Input: [ undefined, String ],
 		rot13Response: [ undefined, String ],
+		rot13Hang: [ undefined, Boolean ],
+		rot13Error: [ undefined, Error ],
 	}]]);
 
 	const rot13Client = td.instance(Rot13Client);
@@ -131,7 +165,16 @@ async function postAsync({
 	config.rot13ServicePort = rot13Port;
 	config.log = log;
 	td.when(request.readBodyAsync()).thenResolve(body);
-	td.when(rot13Client.transformAsync(rot13Port, rot13Input)).thenResolve(rot13Response);
+
+	if (rot13Error !== undefined) {
+		td.when(rot13Client.transformAsync(rot13Port, rot13Input)).thenReject(rot13Error);
+	}
+	else if (rot13Hang) {
+		td.when(rot13Client.transformAsync(rot13Port, rot13Input)).thenReturn(new Promise(() => {}));
+	}
+	else {
+		td.when(rot13Client.transformAsync(rot13Port, rot13Input)).thenResolve(rot13Response);
+	}
 
 	const controller = new HomePageController(rot13Client, clock);
 	const response = await controller.postAsync(request, config);
