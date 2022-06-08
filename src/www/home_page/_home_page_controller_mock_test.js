@@ -134,7 +134,7 @@ async function getAsync() {
 	const config = td.instance(WwwConfig);
 
 	const controller = new HomePageController(rot13Client, clock);
-	const response = controller.getAsync(request, config);
+	const response = await controller.getAsync(request, config);
 
 	return { response };
 }
