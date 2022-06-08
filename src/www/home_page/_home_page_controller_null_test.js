@@ -101,12 +101,7 @@ describe("Home Page Controller", () => {
 			assert.deepEqual(logOutput, [{
 				alert: Log.EMERGENCY,
 				message: "ROT-13 service error in POST /",
-				error: "Error: Unexpected status from ROT-13 service\n" +
-					"Host: localhost:9999\n" +
-					"Endpoint: /rot13/transform\n" +
-					"Status: 500\n" +
-					"Headers: {}\n" +
-					"Body: my_error",
+				error: "Error: " + Rot13Client.nullErrorString(9999, "my_error"),
 			}]);
 		});
 

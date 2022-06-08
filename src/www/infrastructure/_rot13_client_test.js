@@ -197,11 +197,11 @@ describe("ROT-13 Service client", () => {
 			assert.equal(response2, "response 2");
 		});
 
-		it("can force an error", async () => {
+		it("can force an error (and provides expected error string)", async () => {
 			const rot13Client = Rot13Client.createNull([{ error: "my error" }]);
 			await assert.throwsAsync(
-				() => transformAsync(rot13Client, IRRELEVANT_PORT, IRRELEVANT_TEXT),
-				/my error/
+				() => transformAsync(rot13Client, 999, IRRELEVANT_TEXT),
+				Rot13Client.nullErrorString(999,"my error")
 			);
 		});
 

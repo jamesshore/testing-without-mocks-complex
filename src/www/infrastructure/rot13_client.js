@@ -4,6 +4,7 @@
 const ensure = require("util/ensure");
 const type = require("util/type");
 const HttpClient = require("http/http_client");
+const HttpResponse = require("http/http_response");
 const infrastructureHelper = require("util/infrastructure_helper");
 const EventEmitter = require("events");
 
@@ -21,10 +22,22 @@ module.exports = class Rot13Client {
 	}
 
 	static createNull(options) {
+		ensure.signature(arguments, [[ undefined, Array ]]);
+
 		const httpResponses = nullHttpResponses(options);
 		return new Rot13Client(HttpClient.createNull({
 			[TRANSFORM_ENDPOINT]: httpResponses,
 		}));
+	}
+
+	static nullErrorString(port, error) {
+		ensure.signature(arguments, [ Number, String ]);
+
+		const errorResponse = HttpResponse.create({
+			status: 500,
+			body: error,
+		});
+		return formatError("Unexpected status from ROT-13 service", port, errorResponse);
 	}
 
 	constructor(httpClient) {
@@ -33,6 +46,8 @@ module.exports = class Rot13Client {
 	}
 
 	async transformAsync(port, text) {
+		ensure.signature(arguments, [ Number, String ]);
+
 		return await this.transform(port, text).transformPromise;
 	}
 
@@ -45,6 +60,8 @@ module.exports = class Rot13Client {
 	}
 
 	trackRequests() {
+		ensure.signature(arguments, []);
+
 		return infrastructureHelper.trackOutput(this._emitter, REQUEST_EVENT);
 	}
 
@@ -100,19 +117,21 @@ async function validateAndParseResponseAsync(responsePromise, port) {
 }
 
 function throwError(message, port, response) {
-	throw new Error(
+	throw new Error(formatError(message, port, response));
+}
+
+function formatError(message, port, response) {
+	return "" +
 `${message}
 Host: ${HOST}:${port}
 Endpoint: ${TRANSFORM_ENDPOINT}
 Status: ${response.status}
 Headers: ${JSON.stringify(response.headers)}
-Body: ${response.body}`
-	);
+Body: ${response.body}`;
 }
 
 
 function nullHttpResponses(responses = [{}]) {
-	ensure.signature(arguments, [[ undefined, Array ]]);
 	return responses.map((response) => nullHttpResponse(response));
 }
 
