@@ -106,7 +106,7 @@ describe("Home Page Controller", () => {
 		});
 
 		it("fails gracefully, cancels request, and logs error, when service responds too slowly", async () => {
-			const { responsePromise, clock, log, cancelFn } = await simulatePost({
+			const { responsePromise, clock, log, cancelFn } = simulatePost({
 				rot13Hang: true,
 			});
 
