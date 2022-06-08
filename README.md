@@ -13,7 +13,7 @@ This example code is meant to be used as part of James Shore's training courses.
 Running the Code
 ----------------
 
-To run the code in this repository, install [Node.js](http://nodejs.org). Make sure you have version 16.14.2. If you have a different version of Node, the code will probably work, but you may experience some unexpected test failures. If that happens, make sure you have the correct version of Node installed.
+To run the code in this repository, install [Node.js](http://nodejs.org). Make sure you have version 16.15.1. If you have a different version of Node, the code will probably work, but you may experience some unexpected test failures. If that happens, make sure you have the correct version of Node installed.
 
 * To run the build and automated tests, run `.\watch.cmd quick` (Windows) or `./watch.sh quick` (Mac/Linux) from the root directory of the repo. The build will automatically re-run every time you change a file.
 

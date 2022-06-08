@@ -7,6 +7,7 @@ const Rot13Client = require("../infrastructure/rot13_client");
 const HttpRequest = require("http/http_request");
 const WwwConfig = require("../www_config");
 const Clock = require("infrastructure/clock");
+const { homePage } = require("./home_page_view");
 
 const INPUT_FIELD_NAME = "text";
 const TIMEOUT_IN_MS = 5000;
