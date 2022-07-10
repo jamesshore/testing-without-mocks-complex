@@ -24,7 +24,7 @@ describe("Home Page Controller", () => {
 	describe("happy paths", () => {
 
 		it("GET renders home page", async () => {
-			const { response } = await getAsync();
+			const { response } = await simulateGetAsync();
 			assert.deepEqual(response, homePageView.homePage());
 		});
 
@@ -125,7 +125,7 @@ describe("Home Page Controller", () => {
 
 });
 
-async function getAsync() {
+async function simulateGetAsync() {
 	ensure.signature(arguments, []);
 
 	const rot13Client = td.instance(Rot13Client);
