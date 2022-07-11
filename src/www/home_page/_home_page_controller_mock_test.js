@@ -24,7 +24,7 @@ describe("Home Page Controller", () => {
 	describe("happy paths", () => {
 
 		it("GET renders home page", async () => {
-			const { response } = await getAsync();
+			const { response } = await simulateGetAsync();
 			assert.deepEqual(response, homePageView.homePage());
 		});
 
@@ -106,7 +106,7 @@ describe("Home Page Controller", () => {
 		});
 
 		it("fails gracefully, cancels request, and logs error, when service responds too slowly", async () => {
-			const { responsePromise, clock, log, cancelFn } = await simulatePost({
+			const { responsePromise, clock, log, cancelFn } = simulatePost({
 				rot13Hang: true,
 			});
 
@@ -125,7 +125,7 @@ describe("Home Page Controller", () => {
 
 });
 
-async function getAsync() {
+async function simulateGetAsync() {
 	ensure.signature(arguments, []);
 
 	const rot13Client = td.instance(Rot13Client);
@@ -134,7 +134,7 @@ async function getAsync() {
 	const config = td.instance(WwwConfig);
 
 	const controller = new HomePageController(rot13Client, clock);
-	const response = controller.getAsync(request, config);
+	const response = await controller.getAsync(request, config);
 
 	return { response };
 }
