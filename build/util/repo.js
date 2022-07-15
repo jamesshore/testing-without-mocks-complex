@@ -42,6 +42,12 @@ exports.mergeBranchWithoutCommitAsync = async function(fromBranch, toBranch, mes
 	});
 };
 
+exports.rebaseAsync = async function(fromBranch, toBranch) {
+	await exports.runCodeInBranch(fromBranch, async () => {
+		await runAsync("git", "rebase", toBranch);
+	});
+};
+
 exports.rebuildNpmPackagesAsync = async function() {
 	await runAsync("npm", "rebuild");
 };
