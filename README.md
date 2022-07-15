@@ -1,25 +1,37 @@
 Nullable Infrastructure Training
 ================================
 
-This example code is meant to be used as part of James Shore's training courses. It demonstrates his [Testing Without Mocks](https://www.jamesshore.com/v2/blog/2018/testing-without-mocks) patterns. It also contains two sets of coding challenges that allow you to experience the Nullable Infrastructure Wrapper patterns for yourself. Those challenges may be found on these two branches:
+This example code is meant to be used as part of James Shore's training courses. It demonstrates his [Testing Without Mocks](https://www.jamesshore.com/v2/blog/2018/testing-without-mocks) patterns. It also several coding challenges that allow you to experience the Nullable Infrastructure Wrapper patterns for yourself.
 
-* `exercise1`: A series of challenges demonstrating how to use nullable infrastructure wrappers to test glue code.
+**Important**: Prior to starting the training course, make sure the code works on your machine, as follows:
 
-* `exercise2`: A series of challenges demonstrating how to create nullable infrastructure wrappers from scratch.
+1. Install [Node.js](https://nodejs.org). Make sure you install version 16.16.0. If you use a different version of Node, the tests may not pass. (If you already have Node installed, you can try using your existing version. But if the tests don't pass, you'll need to install the correct version of Node.)
 
-**Important**: Prior to starting the training course, make sure the code works. Check out the integration branch using `git checkout integration` and run the build and server as described under "Running the Code".
+2. Install [git](https://git-scm.com/) if you don't already have it installed.
+
+3. Open a command prompt and navigate to the root of this repository (the same folder this README file is in).
+
+4. Check out the integration branch by running `git checkout integration`.
+
+5. Run the build and tests with `build` (on Windows) or `./build.sh` (on MacOS and Linux).
+
+6. Confirm that the build runs and ends by saying `BUILD OK`. If it doesn't, make sure you have the correct version of Node installed, then ask James for help.
+
+**Copyright note**: Please note that this repository is copyrighted by James Shore's company, Titanium I.T. LLC. Although you're welcome to copy it for your personal use, you may not make use this material to make your own training courses without express written permission. See the "License" section below for details.
 
 
 Running the Code
 ----------------
 
-To run the code in this repository, install [Node.js](http://nodejs.org). Make sure you have version 16.15.1. If you have a different version of Node, the code will probably work, but you may experience some unexpected test failures. If that happens, make sure you have the correct version of Node installed.
+All scripts must be run from the root of the repository.
 
-* To run the build and automated tests, run `.\watch.cmd quick` (Windows) or `./watch.sh quick` (Mac/Linux) from the root directory of the repo. The build will automatically re-run every time you change a file.
+* To run the build and tests during development, run `watch quick` (Windows) or `./watch.sh quick` (Mac/Linux). It will automatically re-run the build every time you change a file.
 
-* The build only runs tests for files that have changed. Sometimes it can get confused. Restarting the script is usually enough. To make it start from scratch, run `.\clean.cmd` (Windows) or `./clean.sh` (Mac/Linux).
+* If the watch script doesn't work, you can run the build manually with `build quick` (Windows) or `./build.sh quick` (Mac/Linux).
 
-* To run the servers, run `.\serve_dev.cmd 5010 5011` (Windows) or `./serve_dev 5010 5011` (Mac/Linux) from the root directory of the repo. Then visit `http://localhost:5010` in a browser. The server will automatically restart every time you change a file.
+* The build only runs tests for files that have changed. Sometimes it can get confused. Restarting the script is usually enough. To make it start from scratch, run `clean` (Windows) or `./clean.sh` (Mac/Linux).
+
+* To run the servers, run `serve_dev 5010 5011` (Windows) or `./serve_dev.sh 5010 5011` (Mac/Linux). Then visit `http://localhost:5010` in a browser. The server will automatically restart every time you change a file.
 
 *Note:* The `watch` script plays sounds when it runs. (One sound for success, another for lint failure, and a third for test failure.) If this bothers you, you can delete or rename the files in `build/sounds`.
 
@@ -27,20 +39,21 @@ To run the code in this repository, install [Node.js](http://nodejs.org). Make s
 Performing the Exercises
 ------------------------
 
-The exercises in this repository are intended to be performed during James Shore’s training course. He will provide
-an overview of the challenges and explain the patterns involved. But briefly:
+The exercises in this repository are intended to be performed during James Shore's training course. He will explain which exercises to use and describe the patterns involved. Each set of exercises is in a branch of the repository. To check out a branch, run `git checkout <branch_name>`.
 
-* To try the `exercise1` challenges, check out the branch using `git checkout exercise1`, then open `_home_page_controller_test.js` and `home_page_controller.js` in a code editor. Both are located in the `src/www/home_page/` directory. Run the watch script (described below) and follow the instructions in `_home_page_controller_test.js`.
+* `challenge_nullable`: A series of challenges demonstrating how to use nullable infrastructure wrappers to test glue code. Uses `_home_page_controller_null_test.js` and `home_page_controller.js`, located in the `src/www/home_page/` directory.
 
-* To try the `exercise2` challenges, check out the branch using `git checkout exercise2`, then open `_command_line_test.js` and `command_line.js` in a code editor. Both are located in the `src/node_modules/infrastructure/` directory. Run the watch script and follow the instructions in `_command_line_test.js`.
+* `challenge_mock`: A series of challenges demonstrating how to use test doubles to test glue code. Uses `_home_page_controller_mock_test.js` and `home_page_controller.js`, located in the `src/www/home_page/` directory. 
 
-As you work, commit your code to the `exercise1` or `exercise2` branch. To start over, check out the `part1` or `part2` branch and make a new branch using `git checkout -b <your_branch>`.
+* `challenge_mock_to_null`: A series of challenges demonstrating how to convert tests from using test doubles to using nullable infrastructure wrappers. Uses `_home_page_controller_null_test.js` and `home_page_controller.js`, located in the `src/www/home_page/` directory.
+
+* `challenge_infrastructure`: A series of challenges demonstrating how to create nullable infrastructure wrappers from scratch. Uses `_command_line_test.js` and `command_line.js`, located in the `src/node_modules/infrastructure/` directory.
 
 
 How the Servers Work
 --------------------
 
-Start the servers using the serve command described above. E.g., `./serve_dev.sh 5010 5011`. This starts two servers: a WWW server on port 5010 and a ROT-13 service on port 5011.
+Start the servers using the serve command described in the "Running the Code" section. E.g., `./serve_dev.sh 5010 5011`. This starts two servers: a WWW server on port 5010 and a ROT-13 service on port 5011.
 
 
 ### The WWW server
@@ -110,12 +123,9 @@ You don't need to know the ins-and-outs of the codebase to do the exercises. But
 
 Branches:
 
-* `dev`: Used by James Shore for work in progress.
-* `exercise1`: **Challenges demonstrating how to use nullable infrastructure wrappers to test glue code.**
-* `exercise2`: **Challenges demonstrating how to create nullable infrastructure wrappers from scratch.**
+* `challenge_XXX`: **Sets of exercises for use during the training course. (See the "Performing the Exercises" section.)**
 * `integration`: **The completed code.**
-* `part1`: Same as `exercise1`. Allows you to start the exercise again.
-* `part2`: Same as `exercise2`. Allows you to start the exercise again.
+* `dev`: Used by James Shore for work in progress.
 
 Top-level directories and files:
 
@@ -163,7 +173,7 @@ Top-level directories and files:
 
 * `_*_test.js`: Unit and narrow integration tests.
 * `clock.js`: The system clock and time-related functions.
-* `command_line.js`: Command-line arguments, stdout, and stderr. **Used in exercise 2.**
+* `command_line.js`: Command-line arguments, stdout, and stderr. **Used in the "infrastructure" exercise.**
 * `log.js`: Logging (used by the servers).
 
 `src/node_modules/util/`:
@@ -196,7 +206,7 @@ Top-level directories and files:
 `src/www/home_page`:
 
 * `_*_test.js`: Unit tests.
-* `home_page_controller.js`: Endpoints for home page. **Used in exercise 1.**
+* `home_page_controller.js`: Endpoints for home page. **Used in most exercises.**
 * `home_page_view.js`: HTML response for home page.
 
 `src/www/infrastructure`:
