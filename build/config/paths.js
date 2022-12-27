@@ -26,13 +26,14 @@ exports.lintFiles = memoizedDeglob([
 exports.testFiles = memoizedDeglob([
 	"build/**/_*_test.js",
 	"src/**/_*_test.js",
+	"src/**/_*_test.js",
 ]);
 
 exports.testDependencies = memoizedDeglob([
 	"build/**/*.js",
 	"src/**/*.js",
 ], [
-	"build/util/dependency_analysis.js"
+	"build/util/dependency_analysis.js",
 ]);
 
 

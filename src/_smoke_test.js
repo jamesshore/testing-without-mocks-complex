@@ -3,9 +3,6 @@
 
 const assert = require("util/assert");
 const testHelper = require("util/test_helper");
-const ensure = require("util/ensure");
-const path = require("path");
-const childProcess = require("child_process");
 // dependency_analysis: ./serve.js
 
 const STARTUP_TIMEOUT_IN_MS = 2000;
@@ -34,7 +31,6 @@ describe("Smoke test", function() {
 
 });
 
-
 async function runServersAsync(fnAsync) {
 	const killFnAsync = await forkAsync();
 	try {
@@ -45,14 +41,13 @@ async function runServersAsync(fnAsync) {
 	}
 }
 
-
 async function forkAsync() {
 	return await new Promise((resolve, reject) => {
 		let stdout = "";
 		const process = testHelper.forkModule(
 			__dirname,
 			"./serve.js",
-			{ args: [WWW_PORT.toString(), ROT13_PORT.toString()] },
+			{ args: [ WWW_PORT.toString(), ROT13_PORT.toString() ] },
 		);
 
 		const timeoutHandle = setTimeout(() => {
