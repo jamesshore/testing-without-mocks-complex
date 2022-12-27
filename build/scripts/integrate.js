@@ -48,11 +48,6 @@ async function integrateAsync(message) {
 		await repo.resetToFreshCheckoutAsync();
 		throw err;
 	}
-
-	writeHeader("Rebasing challenge branches");
-	for (let i = 0; i < branches.challenges.length; i++) {
-		await repo.rebaseAsync(branches.challenges[i], branches.integration);
-	}
 }
 
 async function ensureNpmBuildFilesAreIgnored() {
