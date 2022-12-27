@@ -24,7 +24,7 @@ module.exports = {
         type: "suggestion",
 
         docs: {
-            description: "disallow unnecessary boolean casts",
+            description: "Disallow unnecessary boolean casts",
             recommended: true,
             url: "https://eslint.org/docs/rules/no-extra-boolean-cast"
         },
@@ -188,7 +188,7 @@ module.exports = {
                     }
                     return precedence(node) <= precedence(parent);
 
-                /* istanbul ignore next */
+                /* c8 ignore next */
                 default:
                     throw new Error(`Unexpected parent type: ${parent.type}`);
             }

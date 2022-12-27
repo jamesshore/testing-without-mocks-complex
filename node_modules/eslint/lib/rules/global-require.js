@@ -28,10 +28,11 @@ function findReference(scope, node) {
     const references = scope.references.filter(reference => reference.identifier.range[0] === node.range[0] &&
             reference.identifier.range[1] === node.range[1]);
 
-    /* istanbul ignore else: correctly returns null */
     if (references.length === 1) {
         return references[0];
     }
+
+    /* c8 ignore next */
     return null;
 
 }
@@ -58,7 +59,7 @@ module.exports = {
         type: "suggestion",
 
         docs: {
-            description: "require `require()` calls to be placed at top-level module scope",
+            description: "Require `require()` calls to be placed at top-level module scope",
             recommended: false,
             url: "https://eslint.org/docs/rules/global-require"
         },
