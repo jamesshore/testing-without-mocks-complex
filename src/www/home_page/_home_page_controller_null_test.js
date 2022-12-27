@@ -193,7 +193,7 @@ function simulatePost({
 
 	return {
 		responsePromise,
-		rot13Requests,
+		rot13Requests: rot13Requests.data,
 		logOutput: logOutput.data,
 		clock,
 	};

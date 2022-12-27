@@ -5,7 +5,7 @@ const ensure = require("util/ensure");
 const type = require("util/type");
 const HttpClient = require("http/http_client");
 const HttpResponse = require("http/http_response");
-const infrastructureHelper = require("util/infrastructure_helper");
+const OutputTracker = require("util/output_tracker");
 const EventEmitter = require("events");
 
 const HOST = "localhost";
@@ -22,7 +22,7 @@ module.exports = class Rot13Client {
 	}
 
 	static createNull(options) {
-		ensure.signature(arguments, [[ undefined, Array ]]);
+		ensure.signature(arguments, [ [ undefined, Array ] ]);
 
 		const httpResponses = nullHttpResponses(options);
 		return new Rot13Client(HttpClient.createNull({
@@ -62,7 +62,7 @@ module.exports = class Rot13Client {
 	trackRequests() {
 		ensure.signature(arguments, []);
 
-		return infrastructureHelper.trackOutput(this._emitter, REQUEST_EVENT);
+		return new OutputTracker(this._emitter, REQUEST_EVENT);
 	}
 
 };
@@ -84,7 +84,7 @@ function performRequest(port, text, httpClient, emitter) {
 		const cancelled = httpCancelFn(
 			"ROT-13 service request cancelled\n" +
 			`Host: ${HOST}:${port}\n` +
-			`Endpoint: ${TRANSFORM_ENDPOINT}`
+			`Endpoint: ${TRANSFORM_ENDPOINT}`,
 		);
 		if (cancelled) emitter.emit(REQUEST_EVENT, { ...requestData, cancelled: true });
 	};
@@ -122,7 +122,7 @@ function throwError(message, port, response) {
 
 function formatError(message, port, response) {
 	return "" +
-`${message}
+		`${message}
 Host: ${HOST}:${port}
 Endpoint: ${TRANSFORM_ENDPOINT}
 Status: ${response.status}
@@ -131,7 +131,7 @@ Body: ${response.body}`;
 }
 
 
-function nullHttpResponses(responses = [{}]) {
+function nullHttpResponses(responses = [ {} ]) {
 	return responses.map((response) => nullHttpResponse(response));
 }
 
@@ -140,11 +140,15 @@ function nullHttpResponse({
 	error,
 	hang = false,
 } = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		response: [ undefined, String ],
-		error: [ undefined, String ],
-		hang: [ undefined, Boolean ],
-	}]]);
+	ensure.signature(arguments, [
+		[
+			undefined, {
+			response: [ undefined, String ],
+			error: [ undefined, String ],
+			hang: [ undefined, Boolean ],
+		},
+		],
+	]);
 
 	if (error !== undefined) {
 		return {
