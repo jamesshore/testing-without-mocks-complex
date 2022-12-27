@@ -33,14 +33,14 @@ const AllServers = module.exports = class AllServers {
 		const args = this._commandLine.args();
 		try {
 			const { wwwPort, rot13Port } = parseArgs(args);
-			await this.#startServers(wwwPort, rot13Port);
+			await this.#startServersAsync(wwwPort, rot13Port);
 		}
 		catch (err) {
 			logStartupError(this._log, args, err);
 		}
 	}
 
-	async #startServers(wwwPort, rot13Port) {
+	async #startServersAsync(wwwPort, rot13Port) {
 		const wwwLog = this._log.bind({ node: "www" });
 		const rot13Log = this._log.bind({ node: "rot13" });
 
