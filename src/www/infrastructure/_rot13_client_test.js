@@ -24,7 +24,7 @@ describe("ROT-13 Service client", () => {
 
 			await transformAsync(rot13Client, 9999, "text_to_transform");
 
-			assert.deepEqual(httpRequests, [
+			assert.deepEqual(httpRequests.data, [
 				{
 					host: HOST,
 					port: 9999,
@@ -113,7 +113,7 @@ describe("ROT-13 Service client", () => {
 
 			cancelFn();
 
-			assert.deepEqual(httpRequests, [
+			assert.deepEqual(httpRequests.data, [
 				{
 					host: HOST,
 					port: 9999,
