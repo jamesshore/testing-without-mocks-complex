@@ -1,9 +1,9 @@
 {
-  "name": "livestream",
+  "name": "testing-without-mocks-complex",
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "16.16.0"
+    "node": "18.12.1"
   },
   "description": "",
   "main": "index.js",
