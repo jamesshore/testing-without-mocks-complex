@@ -79,13 +79,9 @@ describe("All servers", () => {
 async function startAsync({
 	args = VALID_ARGS,
 } = {}) {
-	ensure.signature(arguments, [
-		[
-			undefined, {
-			args: [ undefined, Array ],
-		},
-		],
-	]);
+	ensure.signature(arguments, [[ undefined, {
+		args: [ undefined, Array ],
+	}]]);
 
 	const log = Log.createNull();
 	const logOutput = log.trackOutput();
