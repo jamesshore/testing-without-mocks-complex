@@ -22,8 +22,8 @@
   },
   "scripts": {
     "test": "./build.sh",
-    "start": "./run.sh"
+    "start": "./serve_dev.sh 5010 5011"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "James Shore <jshore@jamesshore.com>",
+  "license": "MIT"
 }
