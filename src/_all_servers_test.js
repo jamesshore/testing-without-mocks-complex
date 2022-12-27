@@ -23,7 +23,7 @@ describe("All servers", () => {
 		});
 
 		it("uses ports provided on command line", async () => {
-			const { wwwServer, rot13Server } = await startAsync({ args: [ "5001", "5002" ]});
+			const { wwwServer, rot13Server } = await startAsync({ args: [ "5001", "5002" ] });
 
 			assert.equal(wwwServer.port, 5001, "www port");
 			assert.equal(rot13Server.port, 5002, "ROT-13 port");
@@ -43,28 +43,32 @@ describe("All servers", () => {
 
 		it("logs error if wrong number of arguments provided", async () => {
 			const { logOutput } = await startAsync({ args: [ "one", "two", "three" ] });
-			assert.deepEqual(logOutput, [{
-				alert: "emergency",
-				message: "startup error",
-				error: `Error: invalid command-line arguments (${AllServers.USAGE})`,
-				commandLineArguments: [ "one", "two", "three" ],
-			}]);
+			assert.deepEqual(logOutput.data, [
+				{
+					alert: "emergency",
+					message: "startup error",
+					error: `Error: invalid command-line arguments (${AllServers.USAGE})`,
+					commandLineArguments: [ "one", "two", "three" ],
+				},
+			]);
 		});
 
 		it("logs error if ports aren't numbers", async () => {
-			const { logOutput: wwwLog } = await startAsync({ args: [ "xxx", "1000" ]});
-			const { logOutput: rot13Log } = await startAsync({ args: [ "1000", "xxx" ]});
+			const { logOutput: wwwLog } = await startAsync({ args: [ "xxx", "1000" ] });
+			const { logOutput: rot13Log } = await startAsync({ args: [ "1000", "xxx" ] });
 
 			assertLogError(wwwLog, "www", [ "xxx", "1000" ]);
 			assertLogError(rot13Log, "ROT-13", [ "1000", "xxx" ]);
 
 			function assertLogError(logOutput, serverName, args) {
-				assert.deepEqual(logOutput, [{
-					alert: "emergency",
-					message: "startup error",
-					commandLineArguments: args,
-					error: `Error: ${serverName} server port is not a number`,
-				}]);
+				assert.deepEqual(logOutput.data, [
+					{
+						alert: "emergency",
+						message: "startup error",
+						commandLineArguments: args,
+						error: `Error: ${serverName} server port is not a number`,
+					},
+				]);
 			}
 		});
 
@@ -75,9 +79,13 @@ describe("All servers", () => {
 async function startAsync({
 	args = VALID_ARGS,
 } = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		args: [ undefined, Array ],
-	}]]);
+	ensure.signature(arguments, [
+		[
+			undefined, {
+			args: [ undefined, Array ],
+		},
+		],
+	]);
 
 	const log = Log.createNull();
 	const logOutput = log.trackOutput();
