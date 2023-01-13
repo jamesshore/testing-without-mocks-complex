@@ -17,7 +17,12 @@ const AllServers = module.exports = class AllServers {
 	static create() {
 		ensure.signature(arguments, []);
 
-		return new AllServers(Log.create(), CommandLine.create(), WwwServer.create(), Rot13Server.create());
+		return new AllServers(
+			Log.create(),
+			CommandLine.create(),
+			WwwServer.create(),
+			Rot13Server.create(),
+		);
 	}
 
 	constructor(log, commandLine, wwwServer, rot13Server) {
