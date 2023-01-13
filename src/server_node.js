@@ -33,10 +33,10 @@ module.exports = class ServerNode {
 		return this._config;
 	}
 
-	async startAsync(port, log, config) {
+	async startAsync(port, log, config = {}) {
 		ensure.signature(arguments, [ Number, Log, [ undefined, Object ]]);
 
-		await this._httpServer.startAsync(port, log, request => this._router.routeAsync(request, config));
+		await this._httpServer.startAsync(port, log, config, request => this._router.routeAsync(request, config));
 		this._log = log;
 		this._config = config;
 	}
