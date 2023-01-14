@@ -7,13 +7,21 @@ const HttpResponse = require("http/http_response");
 
 const REQUEST_TYPE = { text: String };
 
-/** POST endpoint for /rot13/transform */
-exports.postAsync = async function(request) {
-	const { input, err } = await parseRequestAsync(request);
-	if (err !== undefined) return badRequest(err.message);
+/** Endpoint for /rot13/transform */
+module.exports = class Rot13Controller {
 
-	const output = rot13Logic.transform(input);
-	return ok(output);
+	static create() {
+		return new Rot13Controller();
+	}
+
+	async postAsync(request) {
+		const { input, err } = await parseRequestAsync(request);
+		if (err !== undefined) return badRequest(err.message);
+
+		const output = rot13Logic.transform(input);
+		return ok(output);
+	}
+
 };
 
 async function parseRequestAsync(request) {

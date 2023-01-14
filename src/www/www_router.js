@@ -7,32 +7,55 @@ const HomePageController = require("./home_page/home_page_controller");
 const wwwView = require("./www_view");
 const GenericRouter = require("http/generic_router");
 const WwwConfig = require("./www_config");
+const Log = require("infrastructure/log");
 
-/** Router for user-facing www site */
+/** Router for user-facing website */
 module.exports = class WwwRouter {
 
-	static create() {
-		return new WwwRouter(HomePageController.create());
+	static create(log, rot13ServicePort) {
+		ensure.signature(arguments, [ Log, Number ]);
+
+		return new WwwRouter(log, rot13ServicePort);
 	}
 
-	static createNull() {
-		return new WwwRouter(HomePageController.createNull());
+	static createNull({
+		log = Log.createNull(),
+		port = 42,
+	} = {}) {
+		ensure.signature(arguments, [[ undefined, {
+			log: [ undefined, Log ],
+			port: [ undefined, Number ],
+		}]]);
+
+		return new WwwRouter(log, port);
 	}
 
-	constructor(homePageController) {
+	constructor(log, rot13ServicePort) {
+		this._config = WwwConfig.create(log, rot13ServicePort);
+
 		this._router = GenericRouter.create(errorHandler, {
-			"/": homePageController,
+			"/": HomePageController.create(),
 		});
 	}
 
-	async routeAsync(request, config) {
-		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
-		return await this._router.routeAsync(request, config);
+	get log() {
+		return this._config.log;
+	}
+
+	get rot13ServicePort() {
+		return this._config.rot13ServicePort;
+	}
+
+	async routeAsync(request) {
+		ensure.signature(arguments, [ HttpRequest ]);
+
+		return await this._router.routeAsync(request, this._config);
 	}
 
 };
 
 function errorHandler(status, errorMessage, request) {
 	ensure.signature(arguments, [ Number, String, HttpRequest ]);
+
 	return wwwView.errorPage(status, errorMessage);
 }

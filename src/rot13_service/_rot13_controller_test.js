@@ -3,7 +3,7 @@
 
 const assert = require("util/assert");
 const rot13Logic = require("./rot13_logic");
-const rot13Controller = require("./rot13_controller");
+const Rot13Controller = require("./rot13_controller");
 const HttpRequest = require("http/http_request");
 const HttpResponse = require("http/http_response");
 
@@ -63,7 +63,7 @@ async function simulateRequestAsync({
 	if (typeof body === "object") body = JSON.stringify(body);
 
 	const request = HttpRequest.createNull({ headers, body });
-	return await rot13Controller.postAsync(request);
+	return await Rot13Controller.create().postAsync(request);
 }
 
 function assertOkResponse(response, originalText) {
