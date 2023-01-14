@@ -10,6 +10,7 @@ const HttpRequest = require("http/http_request");
 const Log = require("infrastructure/log");
 const WwwRouter = require("./www/www_router");
 const Rot13Router = require("./rot13_service/rot13_router");
+const WwwConfig = require("./www/www_config");
 
 const VALID_ARGS = [ "1000", "2000" ];
 
@@ -36,6 +37,13 @@ describe("All servers", () => {
 
 			assert.deepEqual(wwwServer.log.defaults, { node: "www" });
 			assert.deepEqual(rot13Server.log.defaults, { node: "rot13" });
+		});
+
+		it("configures WWW router with log and port (ROT-13 router doesn't need it)", async () => {
+			const { wwwServer } = await startAsync({ args: [ "42", "5002" ]});
+
+			assert.equal(wwwServer.router.log, wwwServer.log, "log");
+			assert.equal(wwwServer.router.rot13ServicePort, 5002, "port");
 		});
 
 		it("routes WWW requests", async () => {
