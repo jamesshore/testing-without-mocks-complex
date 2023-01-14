@@ -10,6 +10,7 @@ const WwwConfig = require("./www_config");
 const wwwView = require("./www_view");
 const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
+const UuidGenerator = require("./infrastructure/uuid_generator");
 
 const IRRELEVANT_PORT = 42;
 
@@ -37,9 +38,28 @@ describe("WWW Router", () => {
 		assert.deepEqual(response, expected);
 	});
 
+	it("adds UUID to request log", async () => {
+		const log = Log.createNull();
+		const logOutput = log.trackOutput();
+		const uuids = UuidGenerator.createNull([ "uuid-1", "uuid-2", "uuid-3" ]);
+
+		await routeAsync({ log, uuids });
+		await routeAsync({ log, uuids });
+		await routeAsync({ log, uuids });
+
+		assert.deepEqual(logOutput.data[0].requestId, "uuid-1");
+		assert.deepEqual(logOutput.data[1].requestId, "uuid-2");
+		assert.deepEqual(logOutput.data[2].requestId, "uuid-3");
+	});
+
 	it("passes configuration with requests", async () => {
-		const { log, requests } = await routeAsync({ port: 777 });
-		assert.deepEqual(requests.data[0].config, WwwConfig.create(log, 777));
+		const uuids = UuidGenerator.createNull("my-uuid");
+
+		const { log, requests } = await routeAsync({ port: 777, uuids });
+		const config = requests.data[0].config;
+
+		assert.equal(config.rot13ServicePort, 777, "port");
+		assert.isTrue(config.log.equals(log.bind({ requestId: "my-uuid" })));
 	});
 
 	it("provides log and port", () => {
@@ -49,45 +69,46 @@ describe("WWW Router", () => {
 		assert.equal(router.rot13ServicePort, 777, "port");
 	});
 
-	it("logs requests", async () => {
-		const { logOutput } = await routeAsync({ method: "get", url: "/my_url"});
-
-		assert.deepEqual(logOutput.data, [{
-			alert: "info",
-			message: "request",
-			method: "get",
-			path: "/my_url",
-		}]);
-	});
-
 });
 
 function createRouter({
 	port = IRRELEVANT_PORT,
+	log = Log.createNull(),
+	uuids = UuidGenerator.createNull(),
 } = {}) {
 	ensure.signature(arguments, [[ undefined, {
 		port: [ undefined, Number ],
+		log: [ undefined, Log ],
+		uuids: [ undefined, UuidGenerator ],
 	}]]);
 
-	const log = Log.createNull();
 	const logOutput = log.trackOutput();
-	const router = WwwRouter.create(log, port);
+	const router = new WwwRouter(log, port, uuids);
 	const requests = router._router.trackRequests();
 
 	return { router, log, logOutput, requests };
 }
 
-async function routeAsync(options = {}) {
+async function routeAsync({
+	port,
+	log,
+	uuids,
+	url,
+	method,
+} = {}) {
 	ensure.signatureMinimum(arguments, [[ undefined, {
 		port: [ undefined, Number ],
+		log: [ undefined, Log ],
+		uuids: [ undefined, UuidGenerator ],
+		url: [ undefined, String ],
+		method: [ undefined, String ],
 	}]]);
 
-	const { port, ...requestOptions} = options;
-	const { router, log, logOutput, requests } = createRouter({ port });
-	const request = createRequest(requestOptions);
+	const { router, log: aLog, logOutput, requests } = createRouter({ port, log, uuids });
+	const request = createRequest({ url, method });
 	const response = await router.routeAsync(request);
 
-	return { log, logOutput, requests, response };
+	return { logOutput, log: aLog, requests, response };
 }
 
 async function controllerResponse(requestOptions) {
