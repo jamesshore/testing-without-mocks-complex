@@ -3,9 +3,13 @@
 
 const assert = require("util/assert");
 const Rot13Router = require("./rot13_router");
+const HttpServer = require("http/http_server");
 const HttpRequest = require("http/http_request");
 const Rot13Controller = require("./rot13_controller");
 const HttpResponse = require("http/http_response");
+const Log = require("infrastructure/log");
+
+const IRRELEVANT_PORT = 42;
 
 const VALID_URL = "/rot13/transform";
 const VALID_METHOD = "POST";
@@ -14,7 +18,7 @@ const VALID_BODY = JSON.stringify({ text: "hello" });
 
 describe("ROT-13 Router", () => {
 
-	it("routes request", async () => {
+	it("integrates with server", async () => {
 		const requestOptions = {
 			url: VALID_URL,
 			method: VALID_METHOD,
@@ -23,7 +27,7 @@ describe("ROT-13 Router", () => {
 		};
 
 		const expected = await controllerResponse(requestOptions);
-		let actual = await simulateRequestAsync(requestOptions);
+		const actual = await simulateRequestAsync(requestOptions);
 		assert.deepEqual(actual, expected);
 	});
 
@@ -46,7 +50,10 @@ async function controllerResponse(requestOptions) {
 async function simulateRequestAsync(requestOptions) {
 	const request = createNullRequest(requestOptions);
 	const router = Rot13Router.create();
-	return await router.routeAsync(request);
+	const server = HttpServer.createNull();
+
+	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), {}, router);
+	return await server.simulateRequestAsync(request);
 }
 
 function createNullRequest({
