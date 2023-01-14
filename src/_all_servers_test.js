@@ -6,7 +6,7 @@ const ensure = require("util/ensure");
 const AllServers = require("./all_servers");
 const CommandLine = require("infrastructure/command_line");
 const WwwServer = require("./www/www_server");
-const Rot13Server = require("./rot13_service/rot13_server");
+const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
 
 const VALID_ARGS = [ "1000", "2000" ];
@@ -18,8 +18,8 @@ describe("All servers", () => {
 		it("starts servers", async () => {
 			const { wwwServer, rot13Server } = await startAsync();
 
-			assert.equal(wwwServer.isStarted, true, "www server should be started");
-			assert.equal(rot13Server.isStarted, true, "Rot-13 service should be started");
+			assert.equal(wwwServer.isStarted, true, "WWW server should be started");
+			assert.equal(rot13Server.isStarted, true, "ROT-13 service should be started");
 		});
 
 		it("uses ports provided on command line", async () => {
@@ -89,7 +89,7 @@ async function startAsync({
 	const commandLine = CommandLine.createNull({ args });
 
 	const wwwServer = WwwServer.createNull();
-	const rot13Server = Rot13Server.createNull();
+	const rot13Server = HttpServer.createNull();
 
 	const servers = new AllServers(log, commandLine, wwwServer, rot13Server);
 	await servers.startAsync();
