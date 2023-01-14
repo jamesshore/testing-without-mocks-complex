@@ -49,7 +49,7 @@ module.exports = class WwwRouter {
 	async routeAsync(request) {
 		ensure.signature(arguments, [ HttpRequest ]);
 
-		return await this._router.routeAsync(request, this._config);
+		return await this._router.routeAsync(request, Log.createNull(), this._config);
 	}
 
 };
