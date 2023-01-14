@@ -6,8 +6,10 @@ const ensure = require("util/ensure");
 const AllServers = require("./all_servers");
 const CommandLine = require("infrastructure/command_line");
 const HttpServer = require("http/http_server");
+const HttpRequest = require("http/http_request");
 const Log = require("infrastructure/log");
-const WwwConfig = require("./www/www_config");
+const WwwRouter = require("./www/www_router");
+const Rot13Router = require("./rot13_service/rot13_router");
 
 const VALID_ARGS = [ "1000", "2000" ];
 
@@ -36,9 +38,26 @@ describe("All servers", () => {
 			assert.deepEqual(rot13Server.log.defaults, { node: "rot13" });
 		});
 
-		it.skip("creates WWW config", async () => {
-			const { wwwServer } = await startAsync({ args: [ "999", "5002" ] });
-			assert.deepEqual(wwwServer.config, WwwConfig.create(wwwServer.log, 5002));
+		it("routes WWW requests", async () => {
+			const { wwwServer } = await startAsync();
+
+			const request = HttpRequest.createNull({ url: "/", method: "GET" });
+
+			const expectedResponse = await WwwRouter.createNull().routeAsync(request);
+			const actualResponse = await wwwServer.simulateRequestAsync(request);
+
+			assert.deepEqual(actualResponse, expectedResponse);
+		});
+
+		it("routes ROT-13 service requests", async () => {
+			const { rot13Server } = await startAsync();
+
+			const request = HttpRequest.createNull({ url: "/rot13/transform", method: "POST" });
+
+			const expectedResponse = await Rot13Router.createNull().routeAsync(request);
+			const actualResponse = await rot13Server.simulateRequestAsync(request);
+
+			assert.deepEqual(actualResponse, expectedResponse);
 		});
 
 	});

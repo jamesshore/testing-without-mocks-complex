@@ -16,6 +16,12 @@ module.exports = class Rot13Router {
 		return new Rot13Router();
 	}
 
+	static createNull() {
+		ensure.signature(arguments, []);
+
+		return new Rot13Router();
+	}
+
 	constructor() {
 		this._router = GenericRouter.create(errorHandler, {
 			"/rot13/transform": Rot13Controller.create(),

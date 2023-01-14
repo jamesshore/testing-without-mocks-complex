@@ -17,6 +17,16 @@ module.exports = class WwwRouter {
 		return new WwwRouter(config);
 	}
 
+	static createNull({
+		config = WwwConfig.createNull(),
+	} = {}) {
+		ensure.signature(arguments, [[ undefined, {
+			config: [ undefined, WwwConfig ],
+		}]]);
+
+		return new WwwRouter(config);
+	}
+
 	constructor(config) {
 		this._config = config;
 
