@@ -5,9 +5,9 @@ const assert = require("util/assert");
 const ensure = require("util/ensure");
 const AllServers = require("./all_servers");
 const CommandLine = require("infrastructure/command_line");
-const WwwServer = require("./www/www_server");
 const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
+const WwwConfig = require("./www/www_config");
 
 const VALID_ARGS = [ "1000", "2000" ];
 
@@ -34,6 +34,11 @@ describe("All servers", () => {
 
 			assert.deepEqual(wwwServer.log.defaults, { node: "www" });
 			assert.deepEqual(rot13Server.log.defaults, { node: "rot13" });
+		});
+
+		it("creates WWW config", async () => {
+			const { wwwServer } = await startAsync({ args: [ "999", "5002" ] });
+			assert.deepEqual(wwwServer.config, WwwConfig.create(wwwServer.log, 5002));
 		});
 
 	});
@@ -88,7 +93,7 @@ async function startAsync({
 
 	const commandLine = CommandLine.createNull({ args });
 
-	const wwwServer = WwwServer.createNull();
+	const wwwServer = HttpServer.createNull();
 	const rot13Server = HttpServer.createNull();
 
 	const servers = new AllServers(log, commandLine, wwwServer, rot13Server);
