@@ -35,6 +35,10 @@ module.exports = class Rot13Router {
 		});
 	}
 
+	get log() {
+		return this._log;
+	}
+
 	async routeAsync(request) {
 		ensure.signature(arguments, [ HttpRequest ]);
 
