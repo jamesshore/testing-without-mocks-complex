@@ -17,12 +17,9 @@ module.exports = class WwwRouter {
 		return new WwwRouter(config, HomePageController.create());
 	}
 
-	static createNull() {
-		return new WwwRouter(HomePageController.createNull());
-	}
-
 	constructor(config, homePageController) {
 		this._config = config;
+
 		this._router = GenericRouter.create(errorHandler, {
 			"/": homePageController,
 		});
@@ -30,6 +27,7 @@ module.exports = class WwwRouter {
 
 	async routeAsync(request, config) {
 		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
+
 		return await this._router.routeAsync(request, this._config);
 	}
 
@@ -37,5 +35,6 @@ module.exports = class WwwRouter {
 
 function errorHandler(status, errorMessage, request) {
 	ensure.signature(arguments, [ Number, String, HttpRequest ]);
+
 	return wwwView.errorPage(status, errorMessage);
 }
