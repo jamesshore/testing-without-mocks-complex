@@ -37,10 +37,8 @@ describe("WWW Router", () => {
 		assert.deepEqual(response, expected);
 	});
 
-	it("provides configuration with requests", async () => {
-		const { router, log, requests } = createRouter({ port: 777 });
-
-		await routeAsync({ router });
+	it("passes configuration with requests", async () => {
+		const { log, requests } = await routeAsync({ port: 777 });
 		assert.deepEqual(requests.data[0].config, WwwConfig.create(log, 777));
 	});
 
@@ -49,6 +47,17 @@ describe("WWW Router", () => {
 
 		assert.equal(router.log, log, "log");
 		assert.equal(router.rot13ServicePort, 777, "port");
+	});
+
+	it("logs requests", async () => {
+		const { logOutput } = await routeAsync({ method: "get", url: "/my_url"});
+
+		assert.deepEqual(logOutput.data, [{
+			alert: "info",
+			message: "request",
+			method: "get",
+			path: "/my_url",
+		}]);
 	});
 
 });
@@ -61,20 +70,24 @@ function createRouter({
 	}]]);
 
 	const log = Log.createNull();
+	const logOutput = log.trackOutput();
 	const router = WwwRouter.create(log, port);
 	const requests = router._router.trackRequests();
 
-	return { router, log, requests };
+	return { router, log, logOutput, requests };
 }
 
 async function routeAsync(options = {}) {
 	ensure.signatureMinimum(arguments, [[ undefined, {
-		router: [ undefined, WwwRouter ],
+		port: [ undefined, Number ],
 	}]]);
 
-	const { router, ...requestOptions} = options;
+	const { port, ...requestOptions} = options;
+	const { router, log, logOutput, requests } = createRouter({ port });
 	const request = createRequest(requestOptions);
-	return await router.routeAsync(request);
+	const response = await router.routeAsync(request);
+
+	return { log, logOutput, requests, response };
 }
 
 async function controllerResponse(requestOptions) {

@@ -6,23 +6,30 @@ const HttpRequest = require("http/http_request");
 const HttpResponse = require("http/http_response");
 const GenericRouter = require("http/generic_router");
 const Rot13Controller = require("./rot13_controller");
+const Log = require("infrastructure/log");
 
 /** Router for ROT-13 service */
 module.exports = class Rot13Router {
 
-	static create() {
-		ensure.signature(arguments, []);
+	static create(log) {
+		ensure.signature(arguments, [ Log ]);
 
-		return new Rot13Router();
+		return new Rot13Router(log);
 	}
 
-	static createNull() {
-		ensure.signature(arguments, []);
+	static createNull({
+		log = Log.createNull(),
+	} = {}) {
+		ensure.signature(arguments, [[ undefined, {
+			log: [ undefined, Log ],
+		}]]);
 
-		return new Rot13Router();
+		return new Rot13Router(log);
 	}
 
-	constructor() {
+	constructor(log) {
+		this._log = log;
+
 		this._router = GenericRouter.create(errorHandler, {
 			"/rot13/transform": Rot13Controller.create(),
 		});
@@ -31,7 +38,7 @@ module.exports = class Rot13Router {
 	async routeAsync(request) {
 		ensure.signature(arguments, [ HttpRequest ]);
 
-		return await this._router.routeAsync(request);
+		return await this._router.routeAsync(request, this._log);
 	}
 
 };
