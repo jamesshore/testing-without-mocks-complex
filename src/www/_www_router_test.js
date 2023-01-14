@@ -7,7 +7,6 @@ const HttpRequest = require("http/http_request");
 const WwwRouter = require("./www_router");
 const WwwConfig = require("./www_config");
 const wwwView = require("./www_view");
-const Rot13Router = require("../rot13_service/rot13_router");
 const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
 
@@ -39,9 +38,9 @@ describe("WWW Router", () => {
 		const log = Log.createNull();
 		const port = 777;
 
-		const router = WwwRouter.create(WwwConfig.create(log, port));
-		assert.equal(router.log, log);
-		assert.equal(router.rot13ServicePort, port);
+		const router = WwwRouter.create(log, port);
+		assert.equal(router.log, log, "log");
+		assert.equal(router.rot13ServicePort, port, "port");
 	});
 
 });
@@ -53,8 +52,7 @@ async function controllerResponse(requestOptions) {
 
 async function simulateRequestAsync(requestOptions) {
 	const request = createNullRequest(requestOptions);
-	const config = WwwConfig.createNull();
-	const router = WwwRouter.create(config);
+	const router = WwwRouter.create(Log.createNull(), IRRELEVANT_PORT);
 	const server = HttpServer.createNull();
 
 	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), router);

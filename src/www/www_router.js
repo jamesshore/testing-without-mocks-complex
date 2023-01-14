@@ -7,28 +7,31 @@ const HomePageController = require("./home_page/home_page_controller");
 const wwwView = require("./www_view");
 const GenericRouter = require("http/generic_router");
 const WwwConfig = require("./www_config");
+const Log = require("infrastructure/log");
 
 /** Router for user-facing website */
 module.exports = class WwwRouter {
 
-	static create(config) {
-		ensure.signature(arguments, [ WwwConfig ]);
+	static create(log, rot13ServicePort) {
+		ensure.signature(arguments, [ Log, Number ]);
 
-		return new WwwRouter(config);
+		return new WwwRouter(log, rot13ServicePort);
 	}
 
 	static createNull({
-		config = WwwConfig.createNull(),
+		log = Log.createNull(),
+		port = 42,
 	} = {}) {
 		ensure.signature(arguments, [[ undefined, {
-			config: [ undefined, WwwConfig ],
+			log: [ undefined, Log ],
+			port: [ undefined, Number ],
 		}]]);
 
-		return new WwwRouter(config);
+		return new WwwRouter(log, port);
 	}
 
-	constructor(config) {
-		this._config = config;
+	constructor(log, rot13ServicePort) {
+		this._config = WwwConfig.create(log, rot13ServicePort);
 
 		this._router = GenericRouter.create(errorHandler, {
 			"/": HomePageController.create(),

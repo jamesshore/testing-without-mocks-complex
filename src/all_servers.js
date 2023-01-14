@@ -51,9 +51,7 @@ const AllServers = module.exports = class AllServers {
 		const wwwLog = this._log.bind({ node: "www" });
 		const rot13Log = this._log.bind({ node: "rot13" });
 
-		const wwwConfig = WwwConfig.create(wwwLog, rot13Port);
-
-		const wwwRouter = WwwRouter.create(wwwConfig);
+		const wwwRouter = WwwRouter.create(wwwLog, rot13Port);
 		const rot13Router = Rot13Router.create();
 
 		await Promise.all([
