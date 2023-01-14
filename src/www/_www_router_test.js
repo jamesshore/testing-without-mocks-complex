@@ -1,6 +1,7 @@
 // Copyright Titanium I.T. LLC.
 "use strict";
 
+const ensure = require("util/ensure");
 const assert = require("util/assert");
 const HomePageController = require("./home_page/home_page_controller");
 const HttpRequest = require("http/http_request");
@@ -36,6 +37,13 @@ describe("WWW Router", () => {
 		assert.deepEqual(response, expected);
 	});
 
+	it("provides configuration with requests", async () => {
+		const { router, log, requests } = createRouter({ port: 777 });
+
+		await routeAsync({ router });
+		assert.deepEqual(requests.data[0].config, WwwConfig.create(log, 777));
+	});
+
 	it("provides log and port", () => {
 		const { router, log } = createRouter({ port: 777 });
 
@@ -48,10 +56,25 @@ describe("WWW Router", () => {
 function createRouter({
 	port = IRRELEVANT_PORT,
 } = {}) {
+	ensure.signature(arguments, [[ undefined, {
+		port: [ undefined, Number ],
+	}]]);
+
 	const log = Log.createNull();
 	const router = WwwRouter.create(log, port);
+	const requests = router._router.trackRequests();
 
-	return { router, log };
+	return { router, log, requests };
+}
+
+async function routeAsync(options = {}) {
+	ensure.signatureMinimum(arguments, [[ undefined, {
+		router: [ undefined, WwwRouter ],
+	}]]);
+
+	const { router, ...requestOptions} = options;
+	const request = createRequest(requestOptions);
+	return await router.routeAsync(request);
 }
 
 async function controllerResponse(requestOptions) {
@@ -74,6 +97,11 @@ function createRequest({
 	url = VALID_URL,
 	method = VALID_METHOD,
 } = {}) {
+	ensure.signature(arguments, [[ undefined, {
+		url: [ undefined, String ],
+		method: [ undefined, String ],
+	}]]);
+
 	return HttpRequest.createNull({ url, method });
 }
 
