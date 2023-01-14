@@ -8,18 +8,21 @@ const wwwView = require("./www_view");
 const GenericRouter = require("http/generic_router");
 const WwwConfig = require("./www_config");
 
-/** Router for user-facing www site */
+/** Router for user-facing website */
 module.exports = class WwwRouter {
 
-	static create() {
-		return new WwwRouter(HomePageController.create());
+	static create(config) {
+		ensure.signature(arguments, [ WwwConfig ]);
+
+		return new WwwRouter(config, HomePageController.create());
 	}
 
 	static createNull() {
 		return new WwwRouter(HomePageController.createNull());
 	}
 
-	constructor(homePageController) {
+	constructor(config, homePageController) {
+		this._config = config;
 		this._router = GenericRouter.create(errorHandler, {
 			"/": homePageController,
 		});
@@ -27,7 +30,7 @@ module.exports = class WwwRouter {
 
 	async routeAsync(request, config) {
 		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
-		return await this._router.routeAsync(request, config);
+		return await this._router.routeAsync(request, this._config);
 	}
 
 };

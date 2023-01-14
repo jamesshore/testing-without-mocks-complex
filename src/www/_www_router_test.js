@@ -39,7 +39,7 @@ async function controllerResponse(requestOptions) {
 
 async function simulateRequestAsync(requestOptions) {
 	const request = createNullRequest(requestOptions);
-	const router = WwwRouter.create();
+	const router = WwwRouter.create(WwwConfig.createNull());
 	return await router.routeAsync(request, WwwConfig.createNull());
 }
 

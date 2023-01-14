@@ -51,11 +51,11 @@ const AllServers = module.exports = class AllServers {
 		const wwwLog = this._log.bind({ node: "www" });
 		const rot13Log = this._log.bind({ node: "rot13" });
 
-		const wwwRouter = WwwRouter.create();
-		const rot13Router = Rot13Router.create();
-
 		const wwwConfig = WwwConfig.create(wwwLog, rot13Port);
 		const rot13Config = {};
+
+		const wwwRouter = WwwRouter.create(wwwConfig);
+		const rot13Router = Rot13Router.create();
 
 		await Promise.all([
 			this._wwwServer.startAsync(wwwPort, wwwLog, wwwConfig, wwwRouter),
