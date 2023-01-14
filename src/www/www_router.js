@@ -14,14 +14,14 @@ module.exports = class WwwRouter {
 	static create(config) {
 		ensure.signature(arguments, [ WwwConfig ]);
 
-		return new WwwRouter(config, HomePageController.create());
+		return new WwwRouter(config);
 	}
 
-	constructor(config, homePageController) {
+	constructor(config) {
 		this._config = config;
 
 		this._router = GenericRouter.create(errorHandler, {
-			"/": homePageController,
+			"/": HomePageController.create(),
 		});
 	}
 
