@@ -35,6 +35,14 @@ module.exports = class WwwRouter {
 		});
 	}
 
+	get log() {
+		return this._config.log;
+	}
+
+	get rot13ServicePort() {
+		return this._config.rot13ServicePort;
+	}
+
 	async routeAsync(request) {
 		ensure.signature(arguments, [ HttpRequest ]);
 

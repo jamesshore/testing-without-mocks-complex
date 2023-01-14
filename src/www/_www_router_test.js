@@ -35,6 +35,15 @@ describe("WWW Router", () => {
 		assert.deepEqual(actual, expected);
 	});
 
+	it("provides log and port", () => {
+		const log = Log.createNull();
+		const port = 777;
+
+		const router = WwwRouter.create(WwwConfig.create(log, port));
+		assert.equal(router.log, log);
+		assert.equal(router.rot13ServicePort, port);
+	});
+
 });
 
 async function controllerResponse(requestOptions) {
