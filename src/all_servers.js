@@ -55,8 +55,7 @@ const AllServers = module.exports = class AllServers {
 		await Promise.all([
 			this._wwwServer.startAsync(wwwPort, wwwLog, rot13Port),
 
-			this._rot13Server.startAsync(rot13Port, rot13Log,
-				{ config: "my config" }, (request, config) => rot13Router.routeAsync(request, config)),
+			this._rot13Server.startAsync(rot13Port, rot13Log, {}, (request, config) => rot13Router.routeAsync(request, config)),
 		]);
 	}
 
