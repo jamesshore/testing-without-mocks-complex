@@ -79,7 +79,7 @@ function createRouter({
 
 async function routeAsync(options = {}) {
 	ensure.signatureMinimum(arguments, [[ undefined, {
-		router: [ undefined, WwwRouter ],
+		port: [ undefined, Number ],
 	}]]);
 
 	const { port, ...requestOptions} = options;
