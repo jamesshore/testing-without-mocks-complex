@@ -4,7 +4,7 @@
 const assert = require("util/assert");
 const Rot13Router = require("./rot13_router");
 const HttpRequest = require("http/http_request");
-const rot13Controller = require("./rot13_controller");
+const Rot13Controller = require("./rot13_controller");
 const HttpResponse = require("http/http_response");
 
 const VALID_URL = "/rot13/transform";
@@ -40,7 +40,7 @@ describe("ROT-13 Router", () => {
 
 async function controllerResponse(requestOptions) {
 	const request = createNullRequest(requestOptions);
-	return await rot13Controller.postAsync(request);
+	return await Rot13Controller.create().postAsync(request);
 }
 
 async function simulateRequestAsync(requestOptions) {
