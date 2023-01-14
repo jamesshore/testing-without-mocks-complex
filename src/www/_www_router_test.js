@@ -7,6 +7,11 @@ const HttpRequest = require("http/http_request");
 const WwwRouter = require("./www_router");
 const WwwConfig = require("./www_config");
 const wwwView = require("./www_view");
+const Rot13Router = require("../rot13_service/rot13_router");
+const HttpServer = require("http/http_server");
+const Log = require("infrastructure/log");
+
+const IRRELEVANT_PORT = 42;
 
 const VALID_URL = "/";
 const VALID_METHOD = "GET";
@@ -39,8 +44,12 @@ async function controllerResponse(requestOptions) {
 
 async function simulateRequestAsync(requestOptions) {
 	const request = createNullRequest(requestOptions);
-	const router = WwwRouter.create(WwwConfig.createNull());
-	return await router.routeAsync(request, WwwConfig.createNull());
+	const config = WwwConfig.createNull();
+	const router = WwwRouter.create(config);
+	const server = HttpServer.createNull();
+
+	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), config, router);
+	return await server.simulateRequestAsync(request);
 }
 
 function createNullRequest({

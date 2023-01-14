@@ -18,7 +18,7 @@ const VALID_BODY = JSON.stringify({ text: "hello" });
 
 describe("ROT-13 Router", () => {
 
-	it("integrates with server", async () => {
+	it("routes transform endpoint", async () => {
 		const requestOptions = {
 			url: VALID_URL,
 			method: VALID_METHOD,
