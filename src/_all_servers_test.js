@@ -5,9 +5,9 @@ const assert = require("util/assert");
 const ensure = require("util/ensure");
 const AllServers = require("./all_servers");
 const CommandLine = require("infrastructure/command_line");
-const WwwServer = require("./www/www_server");
-const Rot13Server = require("./rot13_service/rot13_server");
+const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
+const WwwConfig = require("./www/www_config");
 
 const VALID_ARGS = [ "1000", "2000" ];
 
@@ -18,8 +18,8 @@ describe("All servers", () => {
 		it("starts servers", async () => {
 			const { wwwServer, rot13Server } = await startAsync();
 
-			assert.equal(wwwServer.isStarted, true, "www server should be started");
-			assert.equal(rot13Server.isStarted, true, "Rot-13 service should be started");
+			assert.equal(wwwServer.isStarted, true, "WWW server should be started");
+			assert.equal(rot13Server.isStarted, true, "ROT-13 service should be started");
 		});
 
 		it("uses ports provided on command line", async () => {
@@ -34,6 +34,11 @@ describe("All servers", () => {
 
 			assert.deepEqual(wwwServer.log.defaults, { node: "www" });
 			assert.deepEqual(rot13Server.log.defaults, { node: "rot13" });
+		});
+
+		it("creates WWW config", async () => {
+			const { wwwServer } = await startAsync({ args: [ "999", "5002" ] });
+			assert.deepEqual(wwwServer.config, WwwConfig.create(wwwServer.log, 5002));
 		});
 
 	});
@@ -88,8 +93,8 @@ async function startAsync({
 
 	const commandLine = CommandLine.createNull({ args });
 
-	const wwwServer = WwwServer.createNull();
-	const rot13Server = Rot13Server.createNull();
+	const wwwServer = HttpServer.createNull();
+	const rot13Server = HttpServer.createNull();
 
 	const servers = new AllServers(log, commandLine, wwwServer, rot13Server);
 	await servers.startAsync();

@@ -3,9 +3,11 @@
 
 const ensure = require("util/ensure");
 const CommandLine = require("infrastructure/command_line");
-const WwwServer = require("./www/www_server");
-const Rot13Server = require("./rot13_service/rot13_server");
+const HttpServer = require("http/http_server");
 const Log = require("infrastructure/log");
+const WwwRouter = require("./www/www_router");
+const Rot13Router = require("./rot13_service/rot13_router");
+const WwwConfig = require("./www/www_config");
 
 /** Application startup (parse command line and start servers) */
 const AllServers = module.exports = class AllServers {
@@ -17,7 +19,12 @@ const AllServers = module.exports = class AllServers {
 	static create() {
 		ensure.signature(arguments, []);
 
-		return new AllServers(Log.create(), CommandLine.create(), WwwServer.create(), Rot13Server.create());
+		return new AllServers(
+			Log.create(),
+			CommandLine.create(),
+			HttpServer.create(),
+			HttpServer.create(),
+		);
 	}
 
 	constructor(log, commandLine, wwwServer, rot13Server) {
@@ -44,9 +51,15 @@ const AllServers = module.exports = class AllServers {
 		const wwwLog = this._log.bind({ node: "www" });
 		const rot13Log = this._log.bind({ node: "rot13" });
 
+		const wwwRouter = WwwRouter.create();
+		const rot13Router = Rot13Router.create();
+
+		const wwwConfig = WwwConfig.create(wwwLog, rot13Port);
+		const rot13Config = {};
+
 		await Promise.all([
-			this._wwwServer.startAsync(wwwPort, wwwLog, rot13Port),
-			this._rot13Server.startAsync(rot13Port, rot13Log),
+			this._wwwServer.startAsync(wwwPort, wwwLog, wwwConfig, wwwRouter),
+			this._rot13Server.startAsync(rot13Port, rot13Log, rot13Config, rot13Router),
 		]);
 	}
 
