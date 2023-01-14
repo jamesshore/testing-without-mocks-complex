@@ -25,8 +25,8 @@ module.exports = class WwwRouter {
 		});
 	}
 
-	async routeAsync(request, config) {
-		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
+	async routeAsync(request) {
+		ensure.signature(arguments, [ HttpRequest ]);
 
 		return await this._router.routeAsync(request, this._config);
 	}

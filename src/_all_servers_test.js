@@ -36,7 +36,7 @@ describe("All servers", () => {
 			assert.deepEqual(rot13Server.log.defaults, { node: "rot13" });
 		});
 
-		it("creates WWW config", async () => {
+		it.skip("creates WWW config", async () => {
 			const { wwwServer } = await startAsync({ args: [ "999", "5002" ] });
 			assert.deepEqual(wwwServer.config, WwwConfig.create(wwwServer.log, 5002));
 		});

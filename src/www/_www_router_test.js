@@ -48,7 +48,7 @@ async function simulateRequestAsync(requestOptions) {
 	const router = WwwRouter.create(config);
 	const server = HttpServer.createNull();
 
-	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), config, router);
+	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), router);
 	return await server.simulateRequestAsync(request);
 }
 

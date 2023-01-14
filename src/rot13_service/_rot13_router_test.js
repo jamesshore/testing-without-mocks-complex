@@ -52,7 +52,7 @@ async function simulateRequestAsync(requestOptions) {
 	const router = Rot13Router.create();
 	const server = HttpServer.createNull();
 
-	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), {}, router);
+	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), router);
 	return await server.simulateRequestAsync(request);
 }
 
