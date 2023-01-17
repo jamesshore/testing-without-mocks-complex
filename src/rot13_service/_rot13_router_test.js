@@ -56,10 +56,15 @@ describe("ROT-13 Router", () => {
 	});
 
 	it("logs requests", async () => {
-		const { logOutput } = await routeAsync({ method: "get", url: "/my_url"});
+		const { logOutput } = await routeAsync({
+			method: "get",
+			url: "/my_url",
+			headers: { "x-request-id": "my-request-id" },
+		});
 
 		assert.deepEqual(logOutput.data, [{
 			alert: "info",
+			requestId: "my-request-id",
 			message: "request",
 			method: "get",
 			path: "/my_url",
