@@ -42,6 +42,10 @@ module.exports = class Rot13Router {
 	async routeAsync(request) {
 		ensure.signature(arguments, [ HttpRequest ]);
 
+		if (request.headers["x-request-id"] === undefined) {
+			return errorHandler(400, "missing x-request-id header", request);
+		}
+
 		return await this._router.routeAsync(request, this._log);
 	}
 
