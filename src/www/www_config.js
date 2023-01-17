@@ -7,27 +7,30 @@ const Log = require("infrastructure/log");
 /** Configuration used by all www routes */
 module.exports = class WwwConfig {
 
-	static create(log, rot13ServicePort) {
+	static create(log, rot13ServicePort, requestId) {
 		ensure.signature(arguments, [ Log, Number ]);
 
-		return new WwwConfig(log, rot13ServicePort);
+		return new WwwConfig(log, rot13ServicePort, requestId);
 	}
 
 	static createNull({
 		log = Log.createNull(),
 		rot13ServicePort = 42,
+		requestId = "nulled-request-id"
 	} = {}) {
 		ensure.signature(arguments, [[ undefined, {
 			log: [ undefined, Log ],
 			rot13ServicePort: [ undefined, Number ],
+			requestId: [ undefined, String ],
 		}]]);
 
-		return new WwwConfig(log, rot13ServicePort);
+		return new WwwConfig(log, rot13ServicePort, requestId);
 	}
 
-	constructor(log, rot13ServicePort) {
+	constructor(log, rot13ServicePort, requestId) {
 		this._log = log;
 		this._rot13ServicePort = rot13ServicePort;
+		this._requestId = requestId;
 	}
 
 	get log() {
@@ -36,6 +39,10 @@ module.exports = class WwwConfig {
 
 	get rot13ServicePort() {
 		return this._rot13ServicePort;
+	}
+
+	get requestId() {
+		return this._requestId;
 	}
 
 };
