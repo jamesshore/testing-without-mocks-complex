@@ -54,7 +54,7 @@ module.exports = class Rot13Client {
 	transform(port, text, requestId) {
 		ensure.signature(arguments, [ Number, String, String ]);
 
-		const { responsePromise, cancelFn } = performRequest(port, text, this._httpClient, this._emitter);
+		const { responsePromise, cancelFn } = performRequest(port, text, requestId, this._httpClient, this._emitter);
 		const transformPromise = validateAndParseResponseAsync(responsePromise, port);
 		return { transformPromise, cancelFn };
 	}
@@ -67,8 +67,8 @@ module.exports = class Rot13Client {
 
 };
 
-function performRequest(port, text, httpClient, emitter) {
-	const requestData = { port, text };
+function performRequest(port, text, requestId, httpClient, emitter) {
+	const requestData = { port, text, requestId };
 	emitter.emit(REQUEST_EVENT, requestData);
 
 	const { responsePromise, cancelFn: httpCancelFn } = httpClient.request({

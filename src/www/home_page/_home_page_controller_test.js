@@ -29,12 +29,11 @@ describe("Home Page Controller", () => {
 				rot13Port: 9999,
 			});
 
-			assert.deepEqual(rot13Requests, [
-				{
-					port: 9999,       // should match config
-					text: "my_text",  // should match post body
-				},
-			]);
+			assert.deepEqual(rot13Requests, [{
+				port: 9999,       // should match config
+				text: "my_text",  // should match post body
+				requestId: "TBD",
+			}]);
 		});
 
 		it("POST renders result of ROT-13 service call", async () => {
@@ -58,6 +57,7 @@ describe("Home Page Controller", () => {
 				{
 					port: IRRELEVANT_PORT,
 					text: "two",
+					requestId: "TBD",
 				},
 			]);
 		});
@@ -129,10 +129,12 @@ describe("Home Page Controller", () => {
 				{
 					port: IRRELEVANT_PORT,
 					text: IRRELEVANT_INPUT,
+					requestId: "TBD",
 				}, {
 					cancelled: true,
 					port: IRRELEVANT_PORT,
 					text: IRRELEVANT_INPUT,
+					requestId: "TBD",
 				},
 			]);
 			assert.deepEqual(logOutput, [

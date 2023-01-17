@@ -52,11 +52,12 @@ describe("ROT-13 Service client", () => {
 			const { rot13Client } = createClient();
 			const requests = rot13Client.trackRequests();
 
-			await transformAsync(rot13Client, 9999, "my text");
+			await transformAsync(rot13Client, 9999, "my text", "my-request-id");
 			assert.deepEqual(requests.data, [
 				{
 					port: 9999,
 					text: "my text",
+					requestId: "my-request-id",
 				},
 			]);
 		});
@@ -144,17 +145,19 @@ describe("ROT-13 Service client", () => {
 		it("tracks requests that are cancelled", async () => {
 			const { rot13Client } = createClient({ hang: true });
 			const requests = rot13Client.trackRequests();
-			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text", IRRELEVANT_REQUEST_ID);
+			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text", "my-request-id");
 
 			cancelFn();
 			assert.deepEqual(requests.data, [
 				{
 					port: 9999,
 					text: "my text",
+					requestId: "my-request-id",
 				},
 				{
 					port: 9999,
 					text: "my text",
+					requestId: "my-request-id",
 					cancelled: true,
 				},
 			]);
@@ -165,7 +168,7 @@ describe("ROT-13 Service client", () => {
 		it("doesn't track cancellations that happen after response received", async () => {
 			const { rot13Client } = createClient();
 			const requests = rot13Client.trackRequests();
-			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text", IRRELEVANT_REQUEST_ID);
+			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text", "my-request-id");
 
 			await transformPromise;
 			cancelFn();
@@ -174,6 +177,7 @@ describe("ROT-13 Service client", () => {
 				{
 					port: 9999,
 					text: "my text",
+					requestId: "my-request-id",
 				},
 			]);
 		});
