@@ -23,18 +23,19 @@ describe("ROT-13 Service client", () => {
 		it("makes request", async () => {
 			const { httpRequests, rot13Client } = createClient();
 
-			await transformAsync(rot13Client, 9999, "text_to_transform");
+			await transformAsync(rot13Client, 9999, "text_to_transform", "my-request-id");
 
-			assert.deepEqual(httpRequests.data, [
-				{
-					host: HOST,
-					port: 9999,
-					path: "/rot13/transform",
-					method: "post",
-					headers: { "content-type": "application/json" },
-					body: JSON.stringify({ text: "text_to_transform" }),
+			assert.deepEqual(httpRequests.data, [{
+				host: HOST,
+				port: 9999,
+				path: "/rot13/transform",
+				method: "post",
+				headers: {
+					"content-type": "application/json",
+					"x-request-id": "my-request-id",
 				},
-			]);
+				body: JSON.stringify({ text: "text_to_transform" }),
+			}]);
 		});
 
 		it("parses response", async () => {
@@ -111,29 +112,32 @@ describe("ROT-13 Service client", () => {
 
 		it("can cancel requests", async () => {
 			const { rot13Client, httpRequests } = createClient({ hang: true });
-			const { transformPromise, cancelFn } = rot13Client.transform(9999, "text_to_transform", IRRELEVANT_REQUEST_ID);
+			const { transformPromise, cancelFn } = rot13Client.transform(9999, "text_to_transform", "my-request-id");
 
 			cancelFn();
 
-			assert.deepEqual(httpRequests.data, [
-				{
-					host: HOST,
-					port: 9999,
-					path: "/rot13/transform",
-					method: "post",
-					headers: { "content-type": "application/json" },
-					body: JSON.stringify({ text: "text_to_transform" }),
+			assert.deepEqual(httpRequests.data, [{
+				host: HOST,
+				port: 9999,
+				path: "/rot13/transform",
+				method: "post",
+				headers: {
+					"content-type": "application/json",
+					"x-request-id": "my-request-id",
 				},
-				{
-					host: HOST,
-					port: 9999,
-					path: "/rot13/transform",
-					method: "post",
-					headers: { "content-type": "application/json" },
-					body: JSON.stringify({ text: "text_to_transform" }),
-					cancelled: true,
+				body: JSON.stringify({ text: "text_to_transform" }),
+			}, {
+				host: HOST,
+				port: 9999,
+				path: "/rot13/transform",
+				method: "post",
+				headers: {
+					"content-type": "application/json",
+					"x-request-id": "my-request-id",
 				},
-			]);
+				body: JSON.stringify({ text: "text_to_transform" }),
+				cancelled: true,
+			}]);
 			await assert.throwsAsync(
 				() => transformPromise,
 				"ROT-13 service request cancelled\n" +

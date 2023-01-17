@@ -76,7 +76,10 @@ function performRequest(port, text, requestId, httpClient, emitter) {
 		port,
 		method: "POST",
 		path: TRANSFORM_ENDPOINT,
-		headers: { "content-type": "application/json" },
+		headers: {
+			"content-type": "application/json",
+			"x-request-id": requestId,
+		},
 		body: JSON.stringify({ text }),
 	});
 
