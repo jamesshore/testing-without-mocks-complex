@@ -47,9 +47,9 @@ describe("WWW Router", () => {
 		await routeAsync({ log, uuids });
 		await routeAsync({ log, uuids });
 
-		assert.deepEqual(logOutput.data[0].requestId, "uuid-1");
-		assert.deepEqual(logOutput.data[1].requestId, "uuid-2");
-		assert.deepEqual(logOutput.data[2].requestId, "uuid-3");
+		assert.deepEqual(logOutput.data[0].correlationId, "uuid-1");
+		assert.deepEqual(logOutput.data[1].correlationId, "uuid-2");
+		assert.deepEqual(logOutput.data[2].correlationId, "uuid-3");
 	});
 
 	it("provides configuration to requests", async () => {
@@ -59,8 +59,8 @@ describe("WWW Router", () => {
 		const config = requests.data[0].config;
 
 		assert.equal(config.rot13ServicePort, 777, "port");
-		assert.equal(config.requestId, "my-uuid", "request ID");
-		assert.isTrue(config.log.equals(log.bind({ requestId: "my-uuid" })), "log defaults");
+		assert.equal(config.correlationId, "my-uuid", "request ID");
+		assert.isTrue(config.log.equals(log.bind({ correlationId: "my-uuid" })), "log defaults");
 	});
 
 	it("provides log and port", () => {

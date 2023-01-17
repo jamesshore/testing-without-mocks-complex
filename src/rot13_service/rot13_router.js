@@ -42,12 +42,12 @@ module.exports = class Rot13Router {
 	async routeAsync(request) {
 		ensure.signature(arguments, [ HttpRequest ]);
 
-		const requestId = request.headers["x-request-id"];
-		if (requestId === undefined) {
-			return errorHandler(400, "missing x-request-id header", request);
+		const correlationId = request.headers["x-correlation-id"];
+		if (correlationId === undefined) {
+			return errorHandler(400, "missing x-correlation-id header", request);
 		}
 
-		const log = this._log.bind({ requestId });
+		const log = this._log.bind({ correlationId });
 		return await this._router.routeAsync(request, log);
 	}
 
