@@ -32,18 +32,17 @@ describe("All servers", () => {
 			assert.equal(rot13Server.port, 5002, "ROT-13 port");
 		});
 
-		it("binds node name to server logs", async () => {
-			const { wwwServer, rot13Server } = await startAsync();
+		it("provides WWW router with ROT-13 service port", async () => {
+			const { wwwRouter } = await startAsync({ args: [ "5001", "5002" ]});
 
-			assert.deepEqual(wwwServer.log.defaults, { node: "www" });
-			assert.deepEqual(rot13Server.log.defaults, { node: "rot13" });
+			assert.equal(wwwRouter.rot13ServicePort, 5002, "port");
 		});
 
-		it("configures WWW router with log and port (ROT-13 router doesn't need it)", async () => {
-			const { wwwServer } = await startAsync({ args: [ "42", "5002" ]});
+		it("binds node name to router logs", async () => {
+			const { wwwRouter, rot13Router } = await startAsync();
 
-			assert.equal(wwwServer.router.log, wwwServer.log, "log");
-			assert.equal(wwwServer.router.rot13ServicePort, 5002, "port");
+			assert.deepEqual(wwwRouter.log.defaults, { node: "www" });
+			assert.deepEqual(rot13Router.log.defaults, { node: "rot13" });
 		});
 
 		it("routes WWW requests", async () => {
@@ -129,6 +128,8 @@ async function startAsync({
 	return {
 		wwwServer,
 		rot13Server,
+		wwwRouter: servers.wwwRouter,
+		rot13Router: servers.rot13Router,
 		logOutput,
 	};
 }

@@ -47,16 +47,24 @@ const AllServers = module.exports = class AllServers {
 		}
 	}
 
+	get wwwRouter() {
+		return this._wwwRouter;
+	}
+
+	get rot13Router() {
+		return this._rot13Router;
+	}
+
 	async #startServersAsync(wwwPort, rot13Port) {
 		const wwwLog = this._log.bind({ node: "www" });
 		const rot13Log = this._log.bind({ node: "rot13" });
 
-		const wwwRouter = WwwRouter.create(wwwLog, rot13Port);
-		const rot13Router = Rot13Router.create(rot13Log);
+		this._wwwRouter = WwwRouter.create(wwwLog, rot13Port);
+		this._rot13Router = Rot13Router.create(rot13Log);
 
 		await Promise.all([
-			this._wwwServer.startAsync(wwwPort, wwwLog, wwwRouter),
-			this._rot13Server.startAsync(rot13Port, rot13Log, rot13Router),
+			this._wwwServer.startAsync(wwwPort, wwwLog, this._wwwRouter),
+			this._rot13Server.startAsync(rot13Port, rot13Log, this._rot13Router),
 		]);
 	}
 
