@@ -13,6 +13,7 @@ const Clock = require("infrastructure/clock");
 
 const IRRELEVANT_PORT = 42;
 const IRRELEVANT_INPUT = "irrelevant_input";
+const IRRELEVANT_REQUEST_ID = "irrelevant-request-id";
 
 describe("Home Page Controller", () => {
 
@@ -27,14 +28,14 @@ describe("Home Page Controller", () => {
 			const { rot13Requests } = await simulatePostAsync({
 				body: "text=my_text",
 				rot13Port: 9999,
+				requestId: "my-request-id",
 			});
 
-			assert.deepEqual(rot13Requests, [
-				{
-					port: 9999,       // should match config
-					text: "my_text",  // should match post body
-				},
-			]);
+			assert.deepEqual(rot13Requests, [{
+				port: 9999,       // should match config
+				text: "my_text",  // should match post body
+				requestId: "my-request-id",
+			}]);
 		});
 
 		it("POST renders result of ROT-13 service call", async () => {
@@ -56,8 +57,9 @@ describe("Home Page Controller", () => {
 
 			assert.deepEqual(rot13Requests, [
 				{
-					port: IRRELEVANT_PORT,
 					text: "two",
+					port: IRRELEVANT_PORT,
+					requestId: IRRELEVANT_REQUEST_ID,
 				},
 			]);
 		});
@@ -129,10 +131,12 @@ describe("Home Page Controller", () => {
 				{
 					port: IRRELEVANT_PORT,
 					text: IRRELEVANT_INPUT,
+					requestId: IRRELEVANT_REQUEST_ID,
 				}, {
 					cancelled: true,
 					port: IRRELEVANT_PORT,
 					text: IRRELEVANT_INPUT,
+					requestId: IRRELEVANT_REQUEST_ID,
 				},
 			]);
 			assert.deepEqual(logOutput, [
@@ -170,23 +174,21 @@ function simulatePost({
 	body = `text=${IRRELEVANT_INPUT}`,
 	rot13Client = Rot13Client.createNull(),
 	rot13Port = IRRELEVANT_PORT,
+	requestId = IRRELEVANT_REQUEST_ID,
 } = {}) {
-	ensure.signature(arguments, [
-		[
-			undefined, {
-			body: [ undefined, String ],
-			rot13Client: [ undefined, Rot13Client ],
-			rot13Port: [ undefined, Number ],
-		},
-		],
-	]);
+	ensure.signature(arguments, [[ undefined, {
+		body: [ undefined, String ],
+		rot13Client: [ undefined, Rot13Client ],
+		rot13Port: [ undefined, Number ],
+		requestId: [ undefined, String ],
+	}]]);
 
 	const rot13Requests = rot13Client.trackRequests();
 	const clock = Clock.createNull();
 	const request = HttpRequest.createNull({ body });
 	const log = Log.createNull();
 	const logOutput = log.trackOutput();
-	const config = WwwConfig.createNull({ rot13ServicePort: rot13Port, log });
+	const config = WwwConfig.createNull({ rot13ServicePort: rot13Port, log, requestId });
 
 	const controller = HomePageController.createNull({ rot13Client, clock });
 	const responsePromise = controller.postAsync(request, config);

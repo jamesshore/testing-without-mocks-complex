@@ -14,7 +14,10 @@ const IRRELEVANT_PORT = 42;
 
 const VALID_URL = "/rot13/transform";
 const VALID_METHOD = "POST";
-const VALID_HEADERS = { "content-type": "application/json" };
+const VALID_HEADERS = {
+	"content-type": "application/json",
+	"x-request-id": "irrelevant-request-id",
+};
 const VALID_BODY = JSON.stringify({ text: "hello" });
 
 describe("ROT-13 Router", () => {
@@ -28,24 +31,40 @@ describe("ROT-13 Router", () => {
 		};
 
 		const expected = await controllerResponse(requestOptions);
-		const actual = await simulateRequestAsync(requestOptions);
-		assert.deepEqual(actual, expected);
+		const response = await simulateRequestAsync(requestOptions);
+		assert.deepEqual(response, expected);
 	});
 
 	it("returns JSON errors", async () => {
-		const actual = await simulateRequestAsync({ url: "/no-such-url" });
 		const expected = HttpResponse.createJsonResponse({
 			status: 404,
 			body: { error: "not found" }
 		});
-		assert.deepEqual(actual, expected);
+
+		const response = await simulateRequestAsync({ url: "/no-such-url" });
+		assert.deepEqual(response, expected);
+	});
+
+	it("fails fast if requests don't include request ID header", async () => {
+		const expected = HttpResponse.createJsonResponse({
+			status: 400,
+			body: { error: "missing x-request-id header" },
+		});
+
+		const { response } = await routeAsync({ headers: {} });
+		assert.deepEqual(response, expected);
 	});
 
 	it("logs requests", async () => {
-		const { logOutput } = await routeAsync({ method: "get", url: "/my_url"});
+		const { logOutput } = await routeAsync({
+			method: "get",
+			url: "/my_url",
+			headers: { "x-request-id": "my-request-id" },
+		});
 
 		assert.deepEqual(logOutput.data, [{
 			alert: "info",
+			requestId: "my-request-id",
 			message: "request",
 			method: "get",
 			path: "/my_url",

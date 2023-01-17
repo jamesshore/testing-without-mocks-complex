@@ -52,14 +52,15 @@ describe("WWW Router", () => {
 		assert.deepEqual(logOutput.data[2].requestId, "uuid-3");
 	});
 
-	it("passes configuration with requests", async () => {
+	it("provides configuration to requests", async () => {
 		const uuids = UuidGenerator.createNull("my-uuid");
 
 		const { log, requests } = await routeAsync({ port: 777, uuids });
 		const config = requests.data[0].config;
 
 		assert.equal(config.rot13ServicePort, 777, "port");
-		assert.isTrue(config.log.equals(log.bind({ requestId: "my-uuid" })));
+		assert.equal(config.requestId, "my-uuid", "request ID");
+		assert.isTrue(config.log.equals(log.bind({ requestId: "my-uuid" })), "log defaults");
 	});
 
 	it("provides log and port", () => {

@@ -45,16 +45,16 @@ module.exports = class Rot13Client {
 		this._emitter = new EventEmitter();
 	}
 
-	async transformAsync(port, text) {
-		ensure.signature(arguments, [ Number, String ]);
+	async transformAsync(port, text, requestId) {
+		ensure.signature(arguments, [ Number, String, String ]);
 
-		return await this.transform(port, text).transformPromise;
+		return await this.transform(port, text, requestId).transformPromise;
 	}
 
-	transform(port, text) {
-		ensure.signature(arguments, [ Number, String ]);
+	transform(port, text, requestId) {
+		ensure.signature(arguments, [ Number, String, String ]);
 
-		const { responsePromise, cancelFn } = performRequest(port, text, this._httpClient, this._emitter);
+		const { responsePromise, cancelFn } = performRequest(port, text, requestId, this._httpClient, this._emitter);
 		const transformPromise = validateAndParseResponseAsync(responsePromise, port);
 		return { transformPromise, cancelFn };
 	}
@@ -67,8 +67,8 @@ module.exports = class Rot13Client {
 
 };
 
-function performRequest(port, text, httpClient, emitter) {
-	const requestData = { port, text };
+function performRequest(port, text, requestId, httpClient, emitter) {
+	const requestData = { port, text, requestId };
 	emitter.emit(REQUEST_EVENT, requestData);
 
 	const { responsePromise, cancelFn: httpCancelFn } = httpClient.request({
@@ -76,7 +76,10 @@ function performRequest(port, text, httpClient, emitter) {
 		port,
 		method: "POST",
 		path: TRANSFORM_ENDPOINT,
-		headers: { "content-type": "application/json" },
+		headers: {
+			"content-type": "application/json",
+			"x-request-id": requestId,
+		},
 		body: JSON.stringify({ text }),
 	});
 
