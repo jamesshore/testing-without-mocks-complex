@@ -9,6 +9,7 @@ const testHelper = require("util/test_helper");
 const HOST = "localhost";
 const IRRELEVANT_PORT = 42;
 const IRRELEVANT_TEXT = "irrelevant text";
+const IRRELEVANT_REQUEST_ID = "irrelevant request-id";
 
 const VALID_STATUS = 200;
 const VALID_HEADERS = { "content-type": "application/json" };
@@ -109,7 +110,7 @@ describe("ROT-13 Service client", () => {
 
 		it("can cancel requests", async () => {
 			const { rot13Client, httpRequests } = createClient({ hang: true });
-			const { transformPromise, cancelFn } = rot13Client.transform(9999, "text_to_transform");
+			const { transformPromise, cancelFn } = rot13Client.transform(9999, "text_to_transform", IRRELEVANT_REQUEST_ID);
 
 			cancelFn();
 
@@ -143,7 +144,7 @@ describe("ROT-13 Service client", () => {
 		it("tracks requests that are cancelled", async () => {
 			const { rot13Client } = createClient({ hang: true });
 			const requests = rot13Client.trackRequests();
-			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text");
+			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text", IRRELEVANT_REQUEST_ID);
 
 			cancelFn();
 			assert.deepEqual(requests.data, [
@@ -164,7 +165,7 @@ describe("ROT-13 Service client", () => {
 		it("doesn't track cancellations that happen after response received", async () => {
 			const { rot13Client } = createClient();
 			const requests = rot13Client.trackRequests();
-			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text");
+			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text", IRRELEVANT_REQUEST_ID);
 
 			await transformPromise;
 			cancelFn();
@@ -211,7 +212,7 @@ describe("ROT-13 Service client", () => {
 
 		it("simulates hangs", async () => {
 			const rot13Client = Rot13Client.createNull([ { hang: true } ]);
-			const { transformPromise } = rot13Client.transform(IRRELEVANT_PORT, IRRELEVANT_TEXT);
+			const { transformPromise } = rot13Client.transform(IRRELEVANT_PORT, IRRELEVANT_TEXT, IRRELEVANT_REQUEST_ID);
 			await assert.promiseDoesNotResolveAsync(transformPromise);
 		});
 
@@ -233,8 +234,8 @@ function createClient({
 	return { httpRequests, rot13Client };
 }
 
-async function transformAsync(rot13Client, port, text) {
-	return await rot13Client.transformAsync(port, text);
+async function transformAsync(rot13Client, port, text, requestId=IRRELEVANT_REQUEST_ID) {
+	return await rot13Client.transformAsync(port, text, requestId);
 }
 
 async function assertFailureAsync({

@@ -45,14 +45,14 @@ module.exports = class Rot13Client {
 		this._emitter = new EventEmitter();
 	}
 
-	async transformAsync(port, text) {
-		ensure.signature(arguments, [ Number, String ]);
+	async transformAsync(port, text, requestId) {
+		ensure.signature(arguments, [ Number, String, String ]);
 
-		return await this.transform(port, text).transformPromise;
+		return await this.transform(port, text, requestId).transformPromise;
 	}
 
-	transform(port, text) {
-		ensure.signature(arguments, [ Number, String ]);
+	transform(port, text, requestId) {
+		ensure.signature(arguments, [ Number, String, String ]);
 
 		const { responsePromise, cancelFn } = performRequest(port, text, this._httpClient, this._emitter);
 		const transformPromise = validateAndParseResponseAsync(responsePromise, port);

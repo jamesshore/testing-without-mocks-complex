@@ -78,7 +78,7 @@ function parseBody(body, log) {
 
 async function transformAsync(rot13Client, clock, config, input) {
 	try {
-		const { transformPromise, cancelFn } = rot13Client.transform(config.rot13ServicePort, input);
+		const { transformPromise, cancelFn } = rot13Client.transform(config.rot13ServicePort, input, "XXX");
 		const output = await clock.timeoutAsync(
 			TIMEOUT_IN_MS,
 			transformPromise,
