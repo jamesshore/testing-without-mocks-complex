@@ -8,7 +8,7 @@ const Log = require("infrastructure/log");
 module.exports = class WwwConfig {
 
 	static create(log, rot13ServicePort, requestId) {
-		ensure.signature(arguments, [ Log, Number ]);
+		ensure.signature(arguments, [ Log, Number, String ]);
 
 		return new WwwConfig(log, rot13ServicePort, requestId);
 	}
