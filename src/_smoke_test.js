@@ -54,8 +54,7 @@ async function forkAsync() {
 			return fail(new Error("Startup timed out"));
 		}, STARTUP_TIMEOUT_IN_MS);
 
-		process.stdout.on("data", (chunkBuffer) => {
-			const chunk = chunkBuffer.toString();
+		process.stdout.on("data", (chunk) => {
 			stdout += chunk;
 			if (STARTUP_FAILED_REGEX.test(stdout)) {
 				return fail(new Error("Startup logged emergency"));
