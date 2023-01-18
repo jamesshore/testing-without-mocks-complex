@@ -54,9 +54,9 @@ module.exports = class WwwRouter {
 	async routeAsync(request) {
 		ensure.signature(arguments, [ HttpRequest ]);
 
-		const requestId = this._uuids.generate();
-		const log = this._log.bind({ requestId });
-		const config = WwwConfig.create(log, this._rot13ServicePort, requestId);
+		const correlationId = this._uuids.generate();
+		const log = this._log.bind({ correlationId });
+		const config = WwwConfig.create(log, this._rot13ServicePort, correlationId);
 
 		return await this._router.routeAsync(request, log, config);
 	}

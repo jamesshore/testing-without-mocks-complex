@@ -45,16 +45,16 @@ module.exports = class Rot13Client {
 		this._emitter = new EventEmitter();
 	}
 
-	async transformAsync(port, text, requestId) {
+	async transformAsync(port, text, correlationId) {
 		ensure.signature(arguments, [ Number, String, String ]);
 
-		return await this.transform(port, text, requestId).transformPromise;
+		return await this.transform(port, text, correlationId).transformPromise;
 	}
 
-	transform(port, text, requestId) {
+	transform(port, text, correlationId) {
 		ensure.signature(arguments, [ Number, String, String ]);
 
-		const { responsePromise, cancelFn } = performRequest(port, text, requestId, this._httpClient, this._emitter);
+		const { responsePromise, cancelFn } = performRequest(port, text, correlationId, this._httpClient, this._emitter);
 		const transformPromise = validateAndParseResponseAsync(responsePromise, port);
 		return { transformPromise, cancelFn };
 	}
@@ -67,8 +67,8 @@ module.exports = class Rot13Client {
 
 };
 
-function performRequest(port, text, requestId, httpClient, emitter) {
-	const requestData = { port, text, requestId };
+function performRequest(port, text, correlationId, httpClient, emitter) {
+	const requestData = { port, text, correlationId };
 	emitter.emit(REQUEST_EVENT, requestData);
 
 	const { responsePromise, cancelFn: httpCancelFn } = httpClient.request({
@@ -78,7 +78,7 @@ function performRequest(port, text, requestId, httpClient, emitter) {
 		path: TRANSFORM_ENDPOINT,
 		headers: {
 			"content-type": "application/json",
-			"x-request-id": requestId,
+			"x-correlation-id": correlationId,
 		},
 		body: JSON.stringify({ text }),
 	});

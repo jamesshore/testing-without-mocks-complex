@@ -16,7 +16,7 @@ const VALID_URL = "/rot13/transform";
 const VALID_METHOD = "POST";
 const VALID_HEADERS = {
 	"content-type": "application/json",
-	"x-request-id": "irrelevant-request-id",
+	"x-correlation-id": "irrelevant-correlation-id",
 };
 const VALID_BODY = JSON.stringify({ text: "hello" });
 
@@ -48,7 +48,7 @@ describe("ROT-13 Router", () => {
 	it("fails fast if requests don't include request ID header", async () => {
 		const expected = HttpResponse.createJsonResponse({
 			status: 400,
-			body: { error: "missing x-request-id header" },
+			body: { error: "missing x-correlation-id header" },
 		});
 
 		const { response } = await routeAsync({ headers: {} });
@@ -59,12 +59,12 @@ describe("ROT-13 Router", () => {
 		const { logOutput } = await routeAsync({
 			method: "get",
 			url: "/my_url",
-			headers: { "x-request-id": "my-request-id" },
+			headers: { "x-correlation-id": "my-correlation-id" },
 		});
 
 		assert.deepEqual(logOutput.data, [{
 			alert: "info",
-			requestId: "my-request-id",
+			correlationId: "my-correlation-id",
 			message: "request",
 			method: "get",
 			path: "/my_url",
