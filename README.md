@@ -185,6 +185,120 @@ Top-level directories and files:
 * `rot13_client.js`: Client for ROT-13 service.
 
 
+
+
+## About the Patterns
+
+The purpose of this repository is to demonstrate the [Testing Without Mocks patterns](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks). Here are each of the patterns in the article and how they're used in this code:
+
+
+### Foundational Patterns
+
+#### [Narrow Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-tests)
+
+
+#### [State-Based Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#state-based-tests)
+
+
+#### [Overlapping Sociable Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#sociable-tests)
+
+All tests are “sociable tests,” which means the code under test isn’t isolated from the rest of the application. Specifically:
+
+* `_app_test.js` runs real code in `CommandLine` and `rot13`, which are `App`'s dependencies.
+
+There are no broad integration tests (end-to-end tests), but `_app_test.js` and `_command_line_test.js` overlap to provide the same safety net that broad tests do. The one gap is `run.js`, which could be covered by a smoke test. (But it's so simple it's hard to imagine it breaking.) 
+
+#### [Smoke Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#smoke-tests)
+
+
+
+#### [Zero-Impact Instantiation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#zero-impact)
+
+
+#### [Parameterless Instantiation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#instantiation)
+
+Every class can be instantiated without providing any parameters.
+
+#### [Signature Shielding](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#sig-shielding)
+
+
+#### [Collaborator-Based Isolation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#isolation)
+
+
+
+
+### Architectural Patterns
+
+#### [A-Frame Architecture](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#a-frame-arch)
+
+
+#### [Logic Sandwich](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#logic-sandwich)
+
+
+#### [Traffic Cop](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#traffic-cop)
+
+
+#### [Grow Evolutionary Seeds](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#grow-seeds)
+
+The code was built evolutionarily. You can get a sense of how it evolved by looking at the commit history.
+
+
+### Logic Patterns
+
+#### [Easily-Visible Behavior](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#visible-behavior)
+
+The `rot13` encoding function, `transform()`, is a pure function.
+
+#### [Testable Libraries](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#testable-libraries)
+
+This program doesn’t use any third-party logic libraries.
+
+
+### Infrastructure Patterns
+
+#### [Infrastructure Wrappers](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#infrastructure-wrappers)
+
+
+#### [Narrow Integration Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-integration-tests)
+
+
+#### [Paranoic Telemetry](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#paranoic-telemetry)
+
+
+
+### Nullability Patterns
+
+#### [Nullables](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#nullables)
+
+
+#### [Embedded Stub](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#embedded-stub)
+
+
+#### [Thin Wrapper](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#thin-wrapper)
+
+The code is written in JavaScript, so Thin Wrappers aren't needed.
+
+#### [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses)
+
+
+#### [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking)
+
+
+#### [Behavior Simulation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#behavior-simulation)
+
+This code doesn’t respond to events from external systems, so Behavior Simulation isn't needed.
+
+#### [Fake It Once You Make It](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#fake-it)
+
+
+### Legacy Code Patterns
+
+The code was a green-field project, so the legacy code patterns weren't needed.
+
+
+
+
+
 License
 -------
 
