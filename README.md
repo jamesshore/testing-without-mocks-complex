@@ -199,14 +199,12 @@ The purpose of this repository is to demonstrate the [Testing Without Mocks patt
 
 #### [State-Based Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#state-based-tests)
 
+_all_servers_test.js, all_servers.js (wwwRouter, rot13Router)
+
 
 #### [Overlapping Sociable Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#sociable-tests)
 
-All tests are “sociable tests,” which means the code under test isn’t isolated from the rest of the application. Specifically:
 
-* `_app_test.js` runs real code in `CommandLine` and `rot13`, which are `App`'s dependencies.
-
-There are no broad integration tests (end-to-end tests), but `_app_test.js` and `_command_line_test.js` overlap to provide the same safety net that broad tests do. The one gap is `run.js`, which could be covered by a smoke test. (But it's so simple it's hard to imagine it breaking.) 
 
 #### [Smoke Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#smoke-tests)
 
@@ -223,6 +221,8 @@ Every class can be instantiated without providing any parameters.
 
 
 #### [Collaborator-Based Isolation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#isolation)
+
+_all_servers_test.js
 
 
 
