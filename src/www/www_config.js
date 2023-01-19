@@ -4,7 +4,7 @@
 const ensure = require("util/ensure");
 const Log = require("infrastructure/log");
 
-/** Configuration used by all www routes */
+/** Configuration used by all website routes */
 module.exports = class WwwConfig {
 
 	static create(log, rot13ServicePort, correlationId) {
@@ -13,7 +13,7 @@ module.exports = class WwwConfig {
 		return new WwwConfig(log, rot13ServicePort, correlationId);
 	}
 
-	static createNull({
+	static createTestInstance({
 		log = Log.createNull(),
 		rot13ServicePort = 42,
 		correlationId = "nulled-correlation-id"

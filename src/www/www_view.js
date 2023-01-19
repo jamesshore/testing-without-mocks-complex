@@ -3,7 +3,7 @@
 
 const HttpResponse = require("http/http_response");
 
-/** Overall HTML template for WWW site */
+/** Overall HTML template for website */
 exports.pageTemplate = function(title, body) {
 	return `
 		<html lang="en">

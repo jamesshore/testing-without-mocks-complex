@@ -4,7 +4,6 @@
 const ensure = require("util/ensure");
 const type = require("util/type");
 const HttpClient = require("http/http_client");
-const HttpResponse = require("http/http_response");
 const OutputTracker = require("util/output_tracker");
 const EventEmitter = require("events");
 
@@ -13,49 +12,36 @@ const TRANSFORM_ENDPOINT = "/rot13/transform";
 const RESPONSE_TYPE = { transformed: String };
 const REQUEST_EVENT = "request";
 
-/** ROT-13 service client */
+/** Client for ROT-13 service */
 module.exports = class Rot13Client {
 
 	static create() {
 		ensure.signature(arguments, []);
+		
 		return new Rot13Client(HttpClient.create());
 	}
 
 	static createNull(options) {
 		ensure.signature(arguments, [ [ undefined, Array ] ]);
 
-		const httpResponses = nullHttpResponses(options);
-		return new Rot13Client(HttpClient.createNull({
-			[TRANSFORM_ENDPOINT]: httpResponses,
-		}));
-	}
-
-	static nullErrorString(port, error) {
-		ensure.signature(arguments, [ Number, String ]);
-
-		const errorResponse = HttpResponse.create({
-			status: 500,
-			body: error,
+		const httpClient = HttpClient.createNull({
+			[TRANSFORM_ENDPOINT]: nulledHttpResponses(options),
 		});
-		return formatError("Unexpected status from ROT-13 service", port, errorResponse);
+		return new Rot13Client(httpClient);
 	}
 
 	constructor(httpClient) {
+		ensure.signature(arguments, [ HttpClient ]);
+
 		this._httpClient = httpClient;
 		this._emitter = new EventEmitter();
-	}
-
-	async transformAsync(port, text, correlationId) {
-		ensure.signature(arguments, [ Number, String, String ]);
-
-		return await this.transform(port, text, correlationId).transformPromise;
 	}
 
 	transform(port, text, correlationId) {
 		ensure.signature(arguments, [ Number, String, String ]);
 
-		const { responsePromise, cancelFn } = performRequest(port, text, correlationId, this._httpClient, this._emitter);
-		const transformPromise = validateAndParseResponseAsync(responsePromise, port);
+		const { responsePromise, cancelFn } = this.#performRequest(port, text, correlationId);
+		const transformPromise = this.#parseResponseAsync(responsePromise, port);
 		return { transformPromise, cancelFn };
 	}
 
@@ -65,93 +51,86 @@ module.exports = class Rot13Client {
 		return new OutputTracker(this._emitter, REQUEST_EVENT);
 	}
 
+	#performRequest(port, text, correlationId) {
+		const requestData = { port, text, correlationId };
+		this._emitter.emit(REQUEST_EVENT, requestData);
+
+		const { responsePromise, cancelFn: httpCancelFn } = this._httpClient.request({
+			host: HOST,
+			port,
+			method: "POST",
+			path: TRANSFORM_ENDPOINT,
+			headers: {
+				"content-type": "application/json",
+				"x-correlation-id": correlationId,
+			},
+			body: JSON.stringify({ text }),
+		});
+
+		const cancelFn = () => {
+			const cancelled = httpCancelFn(
+				"ROT-13 service request cancelled\n" +
+				`Host: ${HOST}:${port}\n` +
+				`Endpoint: ${TRANSFORM_ENDPOINT}`,
+			);
+			if (cancelled) this._emitter.emit(REQUEST_EVENT, { ...requestData, cancelled: true });
+		};
+
+		return { responsePromise, cancelFn };
+	}
+
+	async #parseResponseAsync(responsePromise, port) {
+		const response = await responsePromise;
+		if (response.status !== 200) {
+			throwError("Unexpected status from ROT-13 service", port, response);
+		}
+		if (response.body === "") {
+			throwError("Body missing from ROT-13 service", port, response);
+		}
+
+		let parsedBody;
+		try {
+			parsedBody = JSON.parse(response.body);
+		}
+		catch(err) {
+			throwError(`Unparseable body from ROT-13 service: ${err.message}`, port, response);
+		}
+
+		const typeError = type.check(parsedBody, RESPONSE_TYPE, { name: "body", allowExtraKeys: true });
+		if (typeError !== null) {
+			throwError(`Unexpected body from ROT-13 service: ${typeError}`, port, response);
+		}
+		return parsedBody.transformed;
+	}
+
 };
 
-function performRequest(port, text, correlationId, httpClient, emitter) {
-	const requestData = { port, text, correlationId };
-	emitter.emit(REQUEST_EVENT, requestData);
-
-	const { responsePromise, cancelFn: httpCancelFn } = httpClient.request({
-		host: HOST,
-		port,
-		method: "POST",
-		path: TRANSFORM_ENDPOINT,
-		headers: {
-			"content-type": "application/json",
-			"x-correlation-id": correlationId,
-		},
-		body: JSON.stringify({ text }),
-	});
-
-	const cancelFn = () => {
-		const cancelled = httpCancelFn(
-			"ROT-13 service request cancelled\n" +
-			`Host: ${HOST}:${port}\n` +
-			`Endpoint: ${TRANSFORM_ENDPOINT}`,
-		);
-		if (cancelled) emitter.emit(REQUEST_EVENT, { ...requestData, cancelled: true });
-	};
-
-	return { responsePromise, cancelFn };
-}
-
-async function validateAndParseResponseAsync(responsePromise, port) {
-	const response = await responsePromise;
-	if (response.status !== 200) {
-		throwError("Unexpected status from ROT-13 service", port, response);
-	}
-	if (response.body === "") {
-		throwError("Body missing from ROT-13 service", port, response);
-	}
-
-	let parsedBody;
-	try {
-		parsedBody = JSON.parse(response.body);
-	}
-	catch(err) {
-		throwError(`Unparseable body from ROT-13 service: ${err.message}`, port, response);
-	}
-
-	const typeError = type.check(parsedBody, RESPONSE_TYPE, { name: "body", allowExtraKeys: true });
-	if (typeError !== null) {
-		throwError(`Unexpected body from ROT-13 service: ${typeError}`, port, response);
-	}
-	return parsedBody.transformed;
-}
 
 function throwError(message, port, response) {
-	throw new Error(formatError(message, port, response));
-}
-
-function formatError(message, port, response) {
-	return "" +
-		`${message}
+	throw new Error(
+`${message}
 Host: ${HOST}:${port}
 Endpoint: ${TRANSFORM_ENDPOINT}
 Status: ${response.status}
 Headers: ${JSON.stringify(response.headers)}
-Body: ${response.body}`;
+Body: ${response.body}`
+	);
 }
 
-
-function nullHttpResponses(responses = [ {} ]) {
-	return responses.map((response) => nullHttpResponse(response));
+function nulledHttpResponses(responses = [ {} ]) {
+	return responses.map((response) => nulledHttpResponse(response));
 }
 
-function nullHttpResponse({
+function nulledHttpResponse({
 	response = "Null Rot13Client response",
 	error,
 	hang = false,
 } = {}) {
-	ensure.signature(arguments, [
-		[
-			undefined, {
-			response: [ undefined, String ],
-			error: [ undefined, String ],
-			hang: [ undefined, Boolean ],
-		},
-		],
-	]);
+	ensure.signature(arguments, [[ undefined, {
+		response: [ undefined, String ],
+		error: [ undefined, String ],
+		hang: [ undefined, Boolean ],
+	}]]);
 
 	if (error !== undefined) {
 		return {
