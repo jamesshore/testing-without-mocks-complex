@@ -19,10 +19,14 @@ module.exports = class UuidGenerator {
 	}
 
 	constructor(uuid) {
+		ensure.signatureMinimum(arguments, [{ v4: Function }]);
+
 		this._uuid = uuid;
 	}
 
 	generate() {
+		ensure.signature(arguments, []);
+
 		return this._uuid.v4();
 	}
 
