@@ -7,8 +7,8 @@ const Rot13Client = require("../infrastructure/rot13_client");
 const HttpRequest = require("http/http_request");
 const WwwConfig = require("../www_config");
 const Clock = require("infrastructure/clock");
-const { homePage } = require("./home_page_view");
 
+const ENDPOINT = "/";
 const INPUT_FIELD_NAME = "text";
 const TIMEOUT_IN_MS = 5000;
 
@@ -47,10 +47,12 @@ module.exports = class HomePageController {
 	async postAsync(request, config) {
 		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
 
-		const { input, inputErr } = parseBody(await request.readBodyAsync(), config.log);
+		const log = config.log.bind({ endpoint: ENDPOINT, method: "POST" });
+
+		const { input, inputErr } = parseBody(await request.readBodyAsync(), log);
 		if (inputErr !== undefined) return homePageView.homePage();
 
-		const { output, outputErr } = await transformAsync(this._rot13Client, this._clock, config, input);
+		const { output, outputErr } = await transformAsync(this._rot13Client, this._clock, log, config, input);
 		if (outputErr !== undefined) return homePageView.homePage("ROT-13 service failed");
 
 		return homePageView.homePage(output);
@@ -70,26 +72,26 @@ function parseBody(body, log) {
 	}
 	catch (inputErr) {
 		log.monitor({
-			message: "form parse error in POST /",
-			details: inputErr.message,
+			message: "form parse error",
+			error: inputErr.message,
 			body,
 		});
 		return { inputErr };
 	}
 }
 
-async function transformAsync(rot13Client, clock, config, input) {
+async function transformAsync(rot13Client, clock, log, config, input) {
 	try {
 		const { transformPromise, cancelFn } = rot13Client.transform(config.rot13ServicePort, input, config.correlationId);
 		const output = await clock.timeoutAsync(
 			TIMEOUT_IN_MS,
 			transformPromise,
-			() => timeout(config.log, cancelFn));
+			() => timeout(log, cancelFn));
 		return { output };
 	}
 	catch (outputErr) {
-		config.log.emergency({
-			message: "ROT-13 service error in POST /",
+		log.emergency({
+			message: "ROT-13 service error",
 			error: outputErr,
 		});
 		return { outputErr };
@@ -98,7 +100,7 @@ async function transformAsync(rot13Client, clock, config, input) {
 
 function timeout(log, cancelFn) {
 	log.emergency({
-		message: "ROT-13 service timed out in POST /",
+		message: "ROT-13 service timed out",
 		timeoutInMs: TIMEOUT_IN_MS,
 	});
 	cancelFn();

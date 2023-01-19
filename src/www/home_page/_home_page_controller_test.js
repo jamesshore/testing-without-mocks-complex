@@ -67,8 +67,10 @@ describe("Home Page Controller", () => {
 
 			assert.deepEqual(logOutput.data, [{
 				alert: Log.MONITOR,
-				message: "form parse error in POST /",
-				details: "'text' form field not found",
+				endpoint: "/",
+				method: "POST",
+				message: "form parse error",
+				error: "'text' form field not found",
 				body: "",
 			}], "should log warning");
 
@@ -83,8 +85,10 @@ describe("Home Page Controller", () => {
 
 			assert.deepEqual(logOutput.data, [{
 				alert: Log.MONITOR,
-				message: "form parse error in POST /",
-				details: "multiple 'text' form fields found",
+				endpoint: "/",
+				method: "POST",
+				message: "form parse error",
+				error: "multiple 'text' form fields found",
 				body: "text=one&text=two",
 			}], "should log warning");
 
@@ -104,7 +108,9 @@ describe("Home Page Controller", () => {
 
 			assert.deepEqual(logOutput.data, [{
 				alert: Log.EMERGENCY,
-				message: "ROT-13 service error in POST /",
+				endpoint: "/",
+				method: "POST",
+				message: "ROT-13 service error",
 				error: "Error: " + Rot13Client.nullErrorString(9999, "my_error"),
 			}], "should log error");
 		});
@@ -130,7 +136,9 @@ describe("Home Page Controller", () => {
 
 			assert.deepEqual(logOutput.data, [{
 				alert: Log.EMERGENCY,
-				message: "ROT-13 service timed out in POST /",
+				endpoint: "/",
+				method: "POST",
+				message: "ROT-13 service timed out",
 				timeoutInMs: 5000,
 			}], "should log error");
 		});
