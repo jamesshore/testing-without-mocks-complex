@@ -20,28 +20,26 @@ describe("Home Page Controller", () => {
 	describe("happy paths", () => {
 
 		it("GET renders home page", async () => {
-			const { response } = await simulateGetAsync();
+			const { response } = await getAsync();
 			assert.deepEqual(response, homePageView.homePage());
 		});
 
 		it("POST asks ROT-13 service to transform text", async () => {
-			const { rot13Requests } = await simulatePostAsync({
+			const { rot13Requests } = await postAsync({
 				body: "text=my_text",
-				rot13Port: 9999,
+				rot13ServicePort: 9999,
 				correlationId: "my-correlation-id",
 			});
 
-			assert.deepEqual(rot13Requests, [{
-				port: 9999,       // should match config
-				text: "my_text",  // should match post body
+			assert.deepEqual(rot13Requests.data, [{
+				text: "my_text",
+				port: 9999,
 				correlationId: "my-correlation-id",
 			}]);
 		});
 
 		it("POST renders result of ROT-13 service call", async () => {
-			const rot13Client = Rot13Client.createNull([ { response: "my_response" } ]);
-			const { response } = await simulatePostAsync({ body: "text=my_text", rot13Client });
-
+			const { response } = await postAsync({ rot13Response: "my_response" });
 			assert.deepEqual(response, homePageView.homePage("my_response"));
 		});
 
@@ -51,51 +49,47 @@ describe("Home Page Controller", () => {
 	describe("parse edge cases", () => {
 
 		it("finds correct form field when there are unrelated fields", async () => {
-			const { rot13Requests } = await simulatePostAsync({
+			const { rot13Requests } = await postAsync({
 				body: "unrelated=one&text=two&also_unrelated=three",
 			});
 
-			assert.deepEqual(rot13Requests, [
-				{
-					text: "two",
-					port: IRRELEVANT_PORT,
-					correlationId: IRRELEVANT_CORRELATION_ID,
-				},
-			]);
+			assert.deepEqual(rot13Requests.data, [{
+				text: "two",
+				port: IRRELEVANT_PORT,
+				correlationId: IRRELEVANT_CORRELATION_ID,
+			}]);
 		});
 
 		it("logs warning when form field not found (and treats request like GET)", async () => {
-			const { response, rot13Requests, logOutput } = await simulatePostAsync({
+			const { response, rot13Requests, logOutput } = await postAsync({
 				body: "",
 			});
 
-			assert.deepEqual(response, homePageView.homePage());
-			assert.deepEqual(rot13Requests, []);
-			assert.deepEqual(logOutput, [
-				{
-					alert: Log.MONITOR,
-					message: "form parse error in POST /",
-					details: "'text' form field not found",
-					body: "",
-				},
-			]);
+			assert.deepEqual(logOutput.data, [{
+				alert: Log.MONITOR,
+				message: "form parse error in POST /",
+				details: "'text' form field not found",
+				body: "",
+			}], "should log warning");
+
+			assert.deepEqual(response, homePageView.homePage(), "should render home page");
+			assert.deepEqual(rot13Requests.data, [], "shouldn't call ROT-13 service");
 		});
 
 		it("logs warning when duplicated form field found (and treats request like GET)", async () => {
-			const { response, rot13Requests, logOutput } = await simulatePostAsync({
+			const { response, rot13Requests, logOutput } = await postAsync({
 				body: "text=one&text=two",
 			});
 
-			assert.deepEqual(response, homePageView.homePage());
-			assert.deepEqual(rot13Requests, []);
-			assert.deepEqual(logOutput, [
-				{
-					alert: Log.MONITOR,
-					message: "form parse error in POST /",
-					details: "multiple 'text' form fields found",
-					body: "text=one&text=two",
-				},
-			]);
+			assert.deepEqual(logOutput.data, [{
+				alert: Log.MONITOR,
+				message: "form parse error in POST /",
+				details: "multiple 'text' form fields found",
+				body: "text=one&text=two",
+			}], "should log warning");
+
+			assert.deepEqual(response, homePageView.homePage(), "should render home page");
+			assert.deepEqual(rot13Requests.data, [], "shouldn't call ROT-13 service");
 		});
 
 	});
@@ -103,31 +97,25 @@ describe("Home Page Controller", () => {
 
 	describe("ROT-13 service edge cases", () => {
 
-		it("fails gracefully, and logs error, when service returns error", async () => {
-			const rot13Client = Rot13Client.createNull([ { error: "my_error" } ]);
-			const { response, logOutput } = await simulatePostAsync({ rot13Client, rot13Port: 9999 });
+		it("fails gracefully and logs error when service returns error", async () => {
+			const { response, logOutput } = await postAsync({ rot13ServicePort: 9999, rot13Error: "my_error" });
 
-			assert.deepEqual(response, homePageView.homePage("ROT-13 service failed"));
-			assert.deepEqual(logOutput, [
-				{
-					alert: Log.EMERGENCY,
-					message: "ROT-13 service error in POST /",
-					error: "Error: " + Rot13Client.nullErrorString(9999, "my_error"),
-				},
-			]);
+			assert.deepEqual(response, homePageView.homePage("ROT-13 service failed"), "should render error");
+
+			assert.deepEqual(logOutput.data, [{
+				alert: Log.EMERGENCY,
+				message: "ROT-13 service error in POST /",
+				error: "Error: " + Rot13Client.nullErrorString(9999, "my_error"),
+			}], "should log error");
 		});
 
 		it("fails gracefully, cancels request, and logs error, when service responds too slowly", async () => {
-			const rot13Client = Rot13Client.createNull([ { hang: true } ]);
-			const { responsePromise, rot13Requests, logOutput, clock } = simulatePost({
-				rot13Client,
-			});
+			const { responsePromise, rot13Requests, logOutput, clock } = post({ rot13Hang: true });
+			const response = await waitForRequestToTimeoutAsync(clock, responsePromise);
 
-			await clock.advanceNulledClockUntilTimersExpireAsync();
-			const response = await responsePromise;
+			assert.deepEqual(response, homePageView.homePage("ROT-13 service timed out"), "should render error");
 
-			assert.deepEqual(response, homePageView.homePage("ROT-13 service timed out"), "graceful failure");
-			assert.deepEqual(rot13Requests, [
+			assert.deepEqual(rot13Requests.data, [
 				{
 					port: IRRELEVANT_PORT,
 					text: IRRELEVANT_INPUT,
@@ -138,21 +126,19 @@ describe("Home Page Controller", () => {
 					text: IRRELEVANT_INPUT,
 					correlationId: IRRELEVANT_CORRELATION_ID,
 				},
-			]);
-			assert.deepEqual(logOutput, [
-				{
-					alert: Log.EMERGENCY,
-					message: "ROT-13 service timed out in POST /",
-					timeoutInMs: 5000,
-				},
-			]);
-		});
+			], "should cancel request");
 
+			assert.deepEqual(logOutput.data, [{
+				alert: Log.EMERGENCY,
+				message: "ROT-13 service timed out in POST /",
+				timeoutInMs: 5000,
+			}], "should log error");
+		});
 	});
 
 });
 
-async function simulateGetAsync() {
+async function getAsync() {
 	ensure.signature(arguments, []);
 
 	const controller = HomePageController.createNull();
@@ -161,8 +147,8 @@ async function simulateGetAsync() {
 	return { response };
 }
 
-async function simulatePostAsync(options) {
-	const { responsePromise, ...remainder } = simulatePost(options);
+async function postAsync(options) {
+	const { responsePromise, ...remainder } = post(options);
 
 	return {
 		response: await responsePromise,
@@ -170,33 +156,45 @@ async function simulatePostAsync(options) {
 	};
 }
 
-function simulatePost({
+function post({
 	body = `text=${IRRELEVANT_INPUT}`,
-	rot13Client = Rot13Client.createNull(),
-	rot13Port = IRRELEVANT_PORT,
 	correlationId = IRRELEVANT_CORRELATION_ID,
+	rot13ServicePort = IRRELEVANT_PORT,
+	rot13Response = "irrelevant_response",
+	rot13Error = undefined,
+	rot13Hang = false,
 } = {}) {
 	ensure.signature(arguments, [[ undefined, {
 		body: [ undefined, String ],
-		rot13Client: [ undefined, Rot13Client ],
-		rot13Port: [ undefined, Number ],
 		correlationId: [ undefined, String ],
+		rot13ServicePort: [ undefined, Number ],
+		rot13Response: [ undefined, String ],
+		rot13Error: [ undefined, String ],
+		rot13Hang: [ undefined, Boolean ],
 	}]]);
 
+	const rot13Client = Rot13Client.createNull([{ response: rot13Response, error: rot13Error, hang: rot13Hang }]);
 	const rot13Requests = rot13Client.trackRequests();
-	const clock = Clock.createNull();
-	const request = HttpRequest.createNull({ body });
+
 	const log = Log.createNull();
 	const logOutput = log.trackOutput();
-	const config = WwwConfig.createTestInstance({ rot13ServicePort: rot13Port, log, correlationId });
+
+	const clock = Clock.createNull();
+	const request = HttpRequest.createNull({ body });
+	const config = WwwConfig.createTestInstance({ rot13ServicePort, log, correlationId });
 
 	const controller = HomePageController.createNull({ rot13Client, clock });
 	const responsePromise = controller.postAsync(request, config);
 
 	return {
 		responsePromise,
-		rot13Requests: rot13Requests.data,
-		logOutput: logOutput.data,
+		rot13Requests,
+		logOutput,
 		clock,
 	};
+}
+
+async function waitForRequestToTimeoutAsync(clock, responsePromise) {
+	await clock.advanceNulledClockUntilTimersExpireAsync();
+	return await responsePromise;
 }

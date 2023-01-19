@@ -32,6 +32,8 @@ module.exports = class HomePageController {
 	}
 
 	constructor(rot13Client, clock) {
+		ensure.signature(arguments, [ Rot13Client, Clock ]);
+
 		this._rot13Client = rot13Client;
 		this._clock = clock;
 	}
