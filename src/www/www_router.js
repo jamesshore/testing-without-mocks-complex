@@ -16,7 +16,12 @@ module.exports = class WwwRouter {
 	static create(log, rot13ServicePort) {
 		ensure.signature(arguments, [ Log, Number ]);
 
-		return new WwwRouter(log, rot13ServicePort, UuidGenerator.create());
+		return new WwwRouter(
+			log,
+			rot13ServicePort,
+			UuidGenerator.create(),
+			HomePageController.create(),
+		);
 	}
 
 	static createNull({
@@ -30,16 +35,23 @@ module.exports = class WwwRouter {
 			uuids: [ undefined, UuidGenerator ],
 		}]]);
 
-		return new WwwRouter(log, port, uuids);
+		return new WwwRouter(
+			log,
+			port,
+			uuids,
+			HomePageController.createNull(),
+		);
 	}
 
-	constructor(log, rot13ServicePort, uuids) {
+	constructor(log, rot13ServicePort, uuids, homePageController) {
+		ensure.signature(arguments, [ Log, Number, UuidGenerator, HomePageController ]);
+
 		this._log = log;
 		this._rot13ServicePort = rot13ServicePort;
 		this._uuids = uuids;
 
 		this._router = GenericRouter.create(errorHandler, {
-			"/": HomePageController.create(),
+			"/": homePageController,
 		});
 	}
 

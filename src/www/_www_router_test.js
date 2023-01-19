@@ -127,7 +127,7 @@ function createRouter({
 		uuid: [ undefined, String ],
 	}]]);
 
-	const router = new WwwRouter(log, port, UuidGenerator.createNull(uuid));
+	const router = new WwwRouter(log, port, UuidGenerator.createNull(uuid), HomePageController.createNull());
 	const requests = router._router.trackRequests();
 
 	return { router, requests };
