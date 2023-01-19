@@ -20,12 +20,14 @@ const VALID_METHOD = "GET";
 describe("WWW Router", () => {
 
 	it("routes home page", async () => {
-		const { request, response } = await simulateHttpRequestAsync({
+		const requestOptions = {
 			url: VALID_URL,
 			method: VALID_METHOD,
-		});
+		};
+		const request = HttpRequest.createNull(requestOptions);
 		const expected = await HomePageController.createNull().getAsync(request, WwwConfig.createTestInstance());
 
+		const { response } = await simulateHttpRequestAsync(requestOptions);
 		assert.deepEqual(response, expected);
 	});
 
@@ -37,7 +39,7 @@ describe("WWW Router", () => {
 	});
 
 	it("configures requests", async () => {
-		const { config } = await routeAsync({
+		const { config } = await simulateHttpRequestAsync({
 			port: 777,
 			uuid: "my-uuid",
 		});
@@ -48,7 +50,7 @@ describe("WWW Router", () => {
 	});
 
 	it("logs requests", async () => {
-		const { logOutput } = await routeAsync({
+		const { logOutput } = await simulateHttpRequestAsync({
 			method: "get",
 			url: "/my_url",
 			uuid: "my-uuid",
@@ -64,8 +66,7 @@ describe("WWW Router", () => {
 	});
 
 	it("has port for ROT-13 service and log", () => {
-		const log = Log.createNull();
-		const { router } = createRouter({ port: 777, log });
+		const { router, log } = createRouter({ port: 777 });
 
 		assert.equal(router.rot13ServicePort, 777, "port");
 		assert.equal(router.log, log, "log");
@@ -74,61 +75,45 @@ describe("WWW Router", () => {
 });
 
 async function simulateHttpRequestAsync({
-	url = VALID_URL,
-	method = VALID_METHOD,
-} = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		url: [ undefined, String ],
-		method: [ undefined, String ],
-	}]]);
-
-	const log = Log.createNull();
-	const request = HttpRequest.createNull({ url, method });
-	const { router } = createRouter({ log });
-	const server = HttpServer.createNull();
-
-	await server.startAsync(IRRELEVANT_PORT, log, router);
-	const response = await server.simulateRequestAsync(request);
-
-	return { request, response };
-}
-
-async function routeAsync({
 	port = IRRELEVANT_PORT,
-	method = VALID_METHOD,
 	url = VALID_URL,
+	method = VALID_METHOD,
 	uuid = "irrelevant-uuid",
 } = {}) {
 	ensure.signature(arguments, [[ undefined, {
 		port: [ undefined, Number ],
 		method: [ undefined, String ],
 		url: [ undefined, String ],
+		uuid: [ undefined, String ],
+	}]]);
+
+	const { router, log, logOutput } = createRouter({ port, uuid });
+	const requests = router._router.trackRequests();
+
+	const server = HttpServer.createNull();
+	await server.startAsync(port, log, router);
+	logOutput.clear();
+
+	const request = HttpRequest.createNull({ url, method });
+	const response = await server.simulateRequestAsync(request);
+	const config = requests.data[0].config;
+
+	return { response, logOutput, config };
+}
+
+function createRouter({
+	port = IRRELEVANT_PORT,
+	uuid = "irrelevant-uuid",
+} = {}) {
+	ensure.signature(arguments, [[ undefined, {
+		port: [ undefined, Number ],
 		uuid: [ undefined, String ],
 	}]]);
 
 	const log = Log.createNull();
 	const logOutput = log.trackOutput();
-	const { router, requests } = createRouter({ port, log, uuid });
-	const request = HttpRequest.createNull({ method, url });
-	const response = await router.routeAsync(request);
-	const config = requests.data[0].config;
-
-	return { logOutput, response, config };
-}
-
-function createRouter({
-	port = IRRELEVANT_PORT,
-	log = Log.createNull(),
-	uuid = "irrelevant-uuid",
-} = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		port: [ undefined, Number ],
-		log: [ undefined, Log ],
-		uuid: [ undefined, String ],
-	}]]);
 
 	const router = new WwwRouter(log, port, UuidGenerator.createNull(uuid), HomePageController.createNull());
-	const requests = router._router.trackRequests();
 
-	return { router, requests };
+	return { router, log, logOutput };
 }
