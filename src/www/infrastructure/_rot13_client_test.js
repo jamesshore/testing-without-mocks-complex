@@ -1,6 +1,7 @@
 // Copyright Titanium I.T. LLC.
 "use strict";
 
+const ensure = require("util/ensure");
 const assert = require("util/assert");
 const HttpClient = require("http/http_client");
 const Rot13Client = require("./rot13_client");
@@ -11,19 +12,21 @@ const IRRELEVANT_PORT = 42;
 const IRRELEVANT_TEXT = "irrelevant text";
 const IRRELEVANT_CORRELATION_ID = "irrelevant correlation-id";
 
-const VALID_STATUS = 200;
-const VALID_HEADERS = { "content-type": "application/json" };
-const VALID_BODY_TEXT = "transformed_text";
-const VALID_BODY = JSON.stringify({ transformed: VALID_BODY_TEXT });
+const VALID_ROT13_STATUS = 200;
+const VALID_ROT13_HEADERS = { "content-type": "application/json" };
+const VALID_RESPONSE = "transformed_text";
+const VALID_ROT13_BODY = JSON.stringify({ transformed: VALID_RESPONSE });
 
 describe("ROT-13 Service client", () => {
 
 	describe("happy path", () => {
 
 		it("makes request", async () => {
-			const { httpRequests, rot13Client } = createClient();
-
-			await transformAsync(rot13Client, 9999, "text_to_transform", "my-correlation-id");
+			const { httpRequests } = await transformAsync({
+				port: 9999,
+				text: "text_to_transform",
+				correlationId: "my-correlation-id"
+			});
 
 			assert.deepEqual(httpRequests.data, [{
 				host: HOST,
@@ -39,28 +42,27 @@ describe("ROT-13 Service client", () => {
 		});
 
 		it("parses response", async () => {
-			const { rot13Client } = createClient({
-				status: VALID_STATUS,
-				headers: VALID_HEADERS,
-				body: VALID_BODY,
+			const { response } = await transformAsync({
+				rot13ServiceStatus: VALID_ROT13_STATUS,
+				rot13ServiceHeaders: VALID_ROT13_HEADERS,
+				rot13ServiceBody: VALID_ROT13_BODY,
 			});
 
-			const response = await transformAsync(rot13Client, IRRELEVANT_PORT, IRRELEVANT_TEXT);
-			assert.equal(response, VALID_BODY_TEXT);
+			assert.equal(response, VALID_RESPONSE);
 		});
 
 		it("tracks requests", async () => {
-			const { rot13Client } = createClient();
-			const requests = rot13Client.trackRequests();
+			const { requests } = await transformAsync({
+				port: 9999,
+				text: "my text",
+				correlationId: "my-correlation-id"
+			});
 
-			await transformAsync(rot13Client, 9999, "my text", "my-correlation-id");
-			assert.deepEqual(requests.data, [
-				{
-					port: 9999,
-					text: "my text",
-					correlationId: "my-correlation-id",
-				},
-			]);
+			assert.deepEqual(requests.data, [{
+				port: 9999,
+				text: "my text",
+				correlationId: "my-correlation-id",
+			}]);
 		});
 
 	});
@@ -70,38 +72,36 @@ describe("ROT-13 Service client", () => {
 
 		it("fails gracefully when status code has unexpected value", async () => {
 			await assertFailureAsync({
-				status: 400,
+				rot13ServiceStatus: 400,
 				message: "Unexpected status from ROT-13 service",
 			});
 		});
 
 		it("fails gracefully if body doesn't exist", async () => {
 			await assertFailureAsync({
-				body: "",
+				rot13ServiceBody: "",
 				message: "Body missing from ROT-13 service",
 			});
 		});
 
 		it("fails gracefully if body is unparseable", async () => {
 			await assertFailureAsync({
-				body: "xxx",
+				rot13ServiceBody: "xxx",
 				message: "Unparseable body from ROT-13 service: Unexpected token x in JSON at position 0",
 			});
 		});
 
 		it("fails gracefully if body has unexpected value", async () => {
 			await assertFailureAsync({
-				body: JSON.stringify({ foo: "bar" }),
+				rot13ServiceBody: JSON.stringify({ foo: "bar" }),
 				message: "Unexpected body from ROT-13 service: body.transformed must be a string, but it was undefined",
 			});
 		});
 
 		it("doesn't fail when body has more fields than we expect", async () => {
-			const { rot13Client } = createClient({
-				body: JSON.stringify({ transformed: "response", foo: "bar" }),
-			});
+			const rot13ServiceBody = JSON.stringify({ transformed: "response", foo: "bar" });
 			await assert.doesNotThrowAsync(
-				() => transformAsync(rot13Client, IRRELEVANT_PORT, IRRELEVANT_TEXT),
+				() => transformAsync({ rot13ServiceBody }),
 			);
 		});
 
@@ -111,79 +111,76 @@ describe("ROT-13 Service client", () => {
 	describe("cancellation", () => {
 
 		it("can cancel requests", async () => {
-			const { rot13Client, httpRequests } = createClient({ hang: true });
-			const { transformPromise, cancelFn } = rot13Client.transform(9999, "text_to_transform", "my-correlation-id");
+			const { responsePromise, cancelFn, httpRequests } = transform({
+				port: 9999,
+				text: "text_to_transform",
+				correlationId: "my-correlation-id",
+				rot13ServiceHang: true,
+			});
+			const expectedRequest = {
+				host: HOST,
+				port: 9999,
+				path: "/rot13/transform",
+				method: "post",
+				headers: {
+					"content-type": "application/json",
+					"x-correlation-id": "my-correlation-id",
+				},
+				body: JSON.stringify({ text: "text_to_transform" }),
+			};
 
 			cancelFn();
 
-			assert.deepEqual(httpRequests.data, [{
-				host: HOST,
-				port: 9999,
-				path: "/rot13/transform",
-				method: "post",
-				headers: {
-					"content-type": "application/json",
-					"x-correlation-id": "my-correlation-id",
-				},
-				body: JSON.stringify({ text: "text_to_transform" }),
-			}, {
-				host: HOST,
-				port: 9999,
-				path: "/rot13/transform",
-				method: "post",
-				headers: {
-					"content-type": "application/json",
-					"x-correlation-id": "my-correlation-id",
-				},
-				body: JSON.stringify({ text: "text_to_transform" }),
-				cancelled: true,
-			}]);
+			assert.deepEqual(httpRequests.data, [
+				expectedRequest,
+				{ ...expectedRequest, cancelled: true },
+			], "should cancel request");
 			await assert.throwsAsync(
-				() => transformPromise,
+				() => responsePromise,
 				"ROT-13 service request cancelled\n" +
-				`Host: ${HOST}:9999\n` +
-				"Endpoint: /rot13/transform",
+					`Host: ${HOST}:9999\n` +
+					"Endpoint: /rot13/transform",
+				"should throw exception",
 			);
 		});
 
 		it("tracks requests that are cancelled", async () => {
-			const { rot13Client } = createClient({ hang: true });
-			const requests = rot13Client.trackRequests();
-			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text", "my-correlation-id");
+			const { responsePromise, cancelFn, requests } = transform({
+				port: 9999,
+				text: "my text",
+				correlationId: "my-correlation-id",
+				rot13ServiceHang: true,
+			});
+			const expectedData = {
+				port: 9999,
+				text: "my text",
+				correlationId: "my-correlation-id",
+			};
 
 			cancelFn();
-			assert.deepEqual(requests.data, [
-				{
-					port: 9999,
-					text: "my text",
-					correlationId: "my-correlation-id",
-				},
-				{
-					port: 9999,
-					text: "my text",
-					correlationId: "my-correlation-id",
-					cancelled: true,
-				},
-			]);
+			await testHelper.ignorePromiseErrorAsync(responsePromise);
 
-			await testHelper.ignorePromiseErrorAsync(transformPromise);
+			assert.deepEqual(requests.data, [
+				expectedData,
+				{ ...expectedData, cancelled: true },
+			], "should track cancellation");
 		});
 
-		it("doesn't track cancellations that happen after response received", async () => {
-			const { rot13Client } = createClient();
-			const requests = rot13Client.trackRequests();
-			const { transformPromise, cancelFn } = rot13Client.transform(9999, "my text", "my-correlation-id");
+		it("doesn't track attempted cancellations that don't actually cancel the request", async () => {
+			const { cancelFn, requests } = await transformAsync({   // wait for request to complete
+				port: 9999,
+				text: "my text",
+				correlationId: "my-correlation-id",
+				rot13ServiceHang: false,
+			});
 
-			await transformPromise;
 			cancelFn();
 
-			assert.deepEqual(requests.data, [
-				{
-					port: 9999,
-					text: "my text",
-					correlationId: "my-correlation-id",
-				},
-			]);
+			assert.deepEqual(requests.data, [{
+				port: 9999,
+				text: "my text",
+				correlationId: "my-correlation-id",
+			}]);
 		});
 
 	});
@@ -193,7 +190,7 @@ describe("ROT-13 Service client", () => {
 
 		it("provides default response", async () => {
 			const rot13Client = Rot13Client.createNull();
-			const response = await transformAsync(rot13Client, IRRELEVANT_PORT, IRRELEVANT_TEXT);
+			const { response } = await transformAsync({ rot13Client });
 			assert.equal(response, "Null Rot13Client response");
 		});
 
@@ -203,8 +200,8 @@ describe("ROT-13 Service client", () => {
 				{ response: "response 2" },
 			]);
 
-			const response1 = await transformAsync(rot13Client, IRRELEVANT_PORT, IRRELEVANT_TEXT);
-			const response2 = await transformAsync(rot13Client, IRRELEVANT_PORT, IRRELEVANT_TEXT);
+			const { response: response1 } = await transformAsync({ rot13Client });
+			const { response: response2 } = await transformAsync({ rot13Client });
 
 			assert.equal(response1, "response 1");
 			assert.equal(response2, "response 2");
@@ -213,53 +210,91 @@ describe("ROT-13 Service client", () => {
 		it("can force an error (and provides expected error string)", async () => {
 			const rot13Client = Rot13Client.createNull([ { error: "my error" } ]);
 			await assert.throwsAsync(
-				() => transformAsync(rot13Client, 999, IRRELEVANT_TEXT),
+				() => transformAsync({ rot13Client, port: 999 }),
 				Rot13Client.nullErrorString(999, "my error"),
 			);
 		});
 
 		it("simulates hangs", async () => {
 			const rot13Client = Rot13Client.createNull([ { hang: true } ]);
-			const { transformPromise } = rot13Client.transform(IRRELEVANT_PORT, IRRELEVANT_TEXT, IRRELEVANT_CORRELATION_ID);
-			await assert.promiseDoesNotResolveAsync(transformPromise);
+			const { responsePromise } = transform({ rot13Client });
+			await assert.promiseDoesNotResolveAsync(responsePromise);
 		});
 
 	});
 
 });
 
-function createClient({
-	status = VALID_STATUS,
-	headers = VALID_HEADERS,
-	body = VALID_BODY,
+function transform({
+	rot13Client,
+	port = IRRELEVANT_PORT,
+	text = IRRELEVANT_TEXT,
+	correlationId = IRRELEVANT_CORRELATION_ID,
+	rot13ServiceStatus = VALID_ROT13_STATUS,
+	rot13ServiceHeaders = VALID_ROT13_HEADERS,
+	rot13ServiceBody = VALID_ROT13_BODY,
+	rot13ServiceHang = false,
 } = {}) {
+	ensure.signature(arguments, [[ undefined, {
+		rot13Client: [ undefined, Rot13Client ],
+		port: [ undefined, Number ],
+		text: [ undefined, String ],
+		correlationId: [ undefined, String ],
+		rot13ServiceStatus: [ undefined, Number ],
+		rot13ServiceHeaders: [ undefined, Object ],
+		rot13ServiceBody: [ undefined, String ],
+		rot13ServiceHang: [ undefined, Boolean ],
+	}]]);
+
 	const httpClient = HttpClient.createNull({
-		"/rot13/transform": [ { status, headers, body } ],
+		"/rot13/transform": [{
+			status: rot13ServiceStatus,
+			headers: rot13ServiceHeaders,
+			body: rot13ServiceBody,
+			hang: rot13ServiceHang,
+		}],
 	});
 	const httpRequests = httpClient.trackRequests();
 
-	const rot13Client = new Rot13Client(httpClient);
-	return { httpRequests, rot13Client };
+	rot13Client = rot13Client ?? new Rot13Client(httpClient);
+	const requests = rot13Client.trackRequests();
+	const { transformPromise, cancelFn } = rot13Client.transform(port, text, correlationId);
+	return { responsePromise: transformPromise, cancelFn, requests, httpRequests };
 }
 
-async function transformAsync(rot13Client, port, text, correlationId=IRRELEVANT_CORRELATION_ID) {
-	return await rot13Client.transformAsync(port, text, correlationId);
+async function transformAsync(options) {
+	const { responsePromise, ...results } = transform(options);
+	return { response: await responsePromise, ...results };
 }
 
 async function assertFailureAsync({
-	status = VALID_STATUS,
-	headers = VALID_HEADERS,
-	body = VALID_BODY,
+	rot13ServiceStatus = VALID_ROT13_STATUS,
+	rot13ServiceHeaders = VALID_ROT13_HEADERS,
+	rot13ServiceBody = VALID_ROT13_BODY,
 	message,
-} = {}) {
-	const { rot13Client } = createClient({ status, headers, body });
-	await assert.throwsAsync(
-		() => transformAsync(rot13Client, 9999, IRRELEVANT_TEXT),
+}) {
+	ensure.signature(arguments, [{
+		rot13ServiceStatus: [ undefined, Number ],
+		rot13ServiceHeaders: [ undefined, Object ],
+		rot13ServiceBody: [ undefined, String ],
+		message: String,
+	}]);
+
+	const expectedError =
 		`${message}\n` +
 		`Host: ${HOST}:9999\n` +
 		"Endpoint: /rot13/transform\n" +
-		`Status: ${status}\n` +
-		`Headers: ${JSON.stringify(headers)}\n` +
-		`Body: ${body}`,
+		`Status: ${rot13ServiceStatus}\n` +
+		`Headers: ${JSON.stringify(rot13ServiceHeaders)}\n` +
+		`Body: ${rot13ServiceBody}`;
+
+	await assert.throwsAsync(
+		() => transformAsync({
+			rot13ServiceStatus,
+			rot13ServiceHeaders,
+			rot13ServiceBody,
+			port: 9999,
+		}),
+		expectedError
 	);
 }
