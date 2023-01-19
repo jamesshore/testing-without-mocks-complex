@@ -123,7 +123,7 @@ describe("Home Page Controller", () => {
 				rot13Client,
 			});
 
-			await clock.advanceNullTimersAsync();
+			await clock.advanceNulledClockUntilTimersExpireAsync();
 			const response = await responsePromise;
 
 			assert.deepEqual(response, homePageView.homePage("ROT-13 service timed out"), "graceful failure");
