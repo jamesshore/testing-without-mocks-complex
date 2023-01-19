@@ -156,7 +156,7 @@ async function simulateGetAsync() {
 	ensure.signature(arguments, []);
 
 	const controller = HomePageController.createNull();
-	const response = await controller.getAsync(HttpRequest.createNull(), WwwConfig.createNull());
+	const response = await controller.getAsync(HttpRequest.createNull(), WwwConfig.createTestInstance());
 
 	return { response };
 }
@@ -188,7 +188,7 @@ function simulatePost({
 	const request = HttpRequest.createNull({ body });
 	const log = Log.createNull();
 	const logOutput = log.trackOutput();
-	const config = WwwConfig.createNull({ rot13ServicePort: rot13Port, log, correlationId });
+	const config = WwwConfig.createTestInstance({ rot13ServicePort: rot13Port, log, correlationId });
 
 	const controller = HomePageController.createNull({ rot13Client, clock });
 	const responsePromise = controller.postAsync(request, config);

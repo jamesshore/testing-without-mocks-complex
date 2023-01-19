@@ -215,6 +215,8 @@ _all_servers_test.js, all_servers.js (wwwRouter, rot13Router)
 
 #### [Parameterless Instantiation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#instantiation)
 
+WwwConfig.createTestInstance()
+
 Every class can be instantiated without providing any parameters.
 
 #### [Signature Shielding](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#sig-shielding)

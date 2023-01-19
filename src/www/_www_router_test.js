@@ -32,7 +32,7 @@ describe("WWW Router", () => {
 			url: VALID_URL,
 			method: VALID_METHOD,
 		});
-		const expected = await HomePageController.createNull().getAsync(request, WwwConfig.createNull());
+		const expected = await HomePageController.createNull().getAsync(request, WwwConfig.createTestInstance());
 
 		assert.deepEqual(response, expected);
 	});
