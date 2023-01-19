@@ -1,6 +1,7 @@
 // Copyright Titanium I.T. LLC.
 "use strict";
 
+const ensure = require("util/ensure");
 const assert = require("util/assert");
 const Rot13Router = require("./rot13_router");
 const HttpServer = require("http/http_server");
@@ -8,7 +9,7 @@ const HttpRequest = require("http/http_request");
 const Rot13Controller = require("./rot13_controller");
 const HttpResponse = require("http/http_response");
 const Log = require("infrastructure/log");
-const ensure = require("util/ensure");
+const rot13View = require("./rot13_view");
 
 const IRRELEVANT_PORT = 42;
 
@@ -18,7 +19,7 @@ const VALID_HEADERS = {
 	"content-type": "application/json",
 	"x-correlation-id": "irrelevant-correlation-id",
 };
-const VALID_BODY = JSON.stringify({ text: "hello" });
+const VALID_BODY = JSON.stringify({ text: "irrelevant_text" });
 
 describe("ROT-13 Router", () => {
 
@@ -29,20 +30,15 @@ describe("ROT-13 Router", () => {
 			headers: VALID_HEADERS,
 			body: VALID_BODY,
 		};
+		const expected = await Rot13Controller.create().postAsync(HttpRequest.createNull(requestOptions));
 
-		const expected = await controllerResponse(requestOptions);
-		const response = await simulateRequestAsync(requestOptions);
+		const { response } = await simulateHttpRequestAsync(requestOptions);
 		assert.deepEqual(response, expected);
 	});
 
 	it("returns JSON errors", async () => {
-		const expected = HttpResponse.createJsonResponse({
-			status: 404,
-			body: { error: "not found" }
-		});
-
-		const response = await simulateRequestAsync({ url: "/no-such-url" });
-		assert.deepEqual(response, expected);
+		const { response } = await simulateHttpRequestAsync({ url: "/no-such-url" });
+		assert.deepEqual(response, rot13View.error(404, "not found"));
 	});
 
 	it("fails fast if requests don't include request ID header", async () => {
@@ -51,12 +47,12 @@ describe("ROT-13 Router", () => {
 			body: { error: "missing x-correlation-id header" },
 		});
 
-		const { response } = await routeAsync({ headers: {} });
+		const { response } = await simulateHttpRequestAsync({ headers: {} });
 		assert.deepEqual(response, expected);
 	});
 
 	it("logs requests", async () => {
-		const { logOutput } = await routeAsync({
+		const { logOutput } = await simulateHttpRequestAsync({
 			method: "get",
 			url: "/my_url",
 			headers: { "x-correlation-id": "my-correlation-id" },
@@ -73,45 +69,30 @@ describe("ROT-13 Router", () => {
 
 });
 
-function createRouter() {
-	ensure.signature(arguments, []);
-
-	const log = Log.createNull();
-	const logOutput = log.trackOutput();
-	const router = Rot13Router.create(log);
-	const requests = router._router.trackRequests();
-
-	return { router, log, logOutput, requests };
-}
-
-async function routeAsync(requestOptions) {
-	const { router, log, logOutput, requests } = createRouter();
-	const request = createRequest(requestOptions);
-	const response = await router.routeAsync(request);
-
-	return { log, logOutput, requests, response };
-}
-
-async function controllerResponse(requestOptions) {
-	const request = createRequest(requestOptions);
-	return await Rot13Controller.create().postAsync(request);
-}
-
-async function simulateRequestAsync(requestOptions) {
-	const request = createRequest(requestOptions);
-	const { router } = createRouter();
-	const server = HttpServer.createNull();
-
-	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), router);
-	return await server.simulateRequestAsync(request);
-}
-
-function createRequest({
+async function simulateHttpRequestAsync({
 	url = VALID_URL,
 	method = VALID_METHOD,
 	headers = VALID_HEADERS,
 	body = VALID_BODY,
 } = {}) {
-	return HttpRequest.createNull({ url, method, headers, body });
+	ensure.signature(arguments, [[ undefined, {
+		url: [ undefined, String ],
+		method: [ undefined, String ],
+		headers: [ undefined, Object ],
+		body : [ undefined, String ],
+	}]]);
+
+	const log = Log.createNull();
+	const logOutput = log.trackOutput();
+	const router = new Rot13Router(log);
+
+	const request = HttpRequest.createNull({ url, method, headers, body });
+
+	const server = HttpServer.createNull();
+	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), router);
+
+	const response = await server.simulateRequestAsync(request);
+
+	return { response, logOutput };
 }
 

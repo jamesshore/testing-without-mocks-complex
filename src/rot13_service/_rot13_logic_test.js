@@ -7,35 +7,39 @@ const rot13Logic = require("./rot13_logic");
 describe("ROT-13 Logic", () => {
 
 	it("does nothing when input is empty", () => {
-		assert.equal(rot13Logic.transform(""), "");
+		assertTransform("", "");
 	});
 
 	it("transforms lower-case letters", () => {
-		assert.equal(rot13Logic.transform("abcdefghijklmnopqrstuvwxyz"), "nopqrstuvwxyzabcdefghijklm");
+		assertTransform("abcdefghijklmnopqrstuvwxyz", "nopqrstuvwxyzabcdefghijklm");
 	});
 
 	it("transforms upper-case letters", () => {
-		assert.equal(rot13Logic.transform("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), "NOPQRSTUVWXYZABCDEFGHIJKLM");
+		assertTransform("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "NOPQRSTUVWXYZABCDEFGHIJKLM");
 	});
 
 	it("doesn't transform symbols", () => {
-		assertNoTransform(rot13Logic, "`{@[");
+		assertNoTransform("`{@[");
 	});
 
 	it("doesn't transform numbers", () => {
-		assertNoTransform(rot13Logic, "1234567890");
+		assertNoTransform("1234567890");
 	});
 
 	it("doesn't transform non-English letters", () => {
-		assertNoTransform(rot13Logic, "åéîøüçñ");
+		assertNoTransform("åéîøüçñ");
 	});
 
 	it("doesn't break when given emojis", () => {
-		assertNoTransform(rot13Logic, "✅🚫🙋");
+		assertNoTransform("✅🚫🙋");
 	});
 
 });
 
-function assertNoTransform(rot13, input) {
-	assert.equal(rot13.transform(input), input);
+function assertTransform(input, output) {
+	assert.equal(rot13Logic.transform(input), output);
+}
+
+function assertNoTransform(input) {
+	assert.equal(rot13Logic.transform(input), input);
 }

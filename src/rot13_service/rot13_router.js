@@ -7,6 +7,7 @@ const HttpResponse = require("http/http_response");
 const GenericRouter = require("http/generic_router");
 const Rot13Controller = require("./rot13_controller");
 const Log = require("infrastructure/log");
+const rot13View = require("./rot13_view");
 
 /** Router for ROT-13 service */
 module.exports = class Rot13Router {
@@ -28,8 +29,9 @@ module.exports = class Rot13Router {
 	}
 
 	constructor(log) {
-		this._log = log;
+		ensure.signature(arguments, [ Log ]);
 
+		this._log = log;
 		this._router = GenericRouter.create(errorHandler, {
 			"/rot13/transform": Rot13Controller.create(),
 		});
@@ -44,7 +46,7 @@ module.exports = class Rot13Router {
 
 		const correlationId = request.headers["x-correlation-id"];
 		if (correlationId === undefined) {
-			return errorHandler(400, "missing x-correlation-id header", request);
+			return rot13View.error(400, "missing x-correlation-id header");
 		}
 
 		const log = this._log.bind({ correlationId });
@@ -56,8 +58,5 @@ module.exports = class Rot13Router {
 function errorHandler(status, error, request) {
 	ensure.signature(arguments, [ Number, String, HttpRequest ]);
 
-	return HttpResponse.createJsonResponse({
-		status,
-		body: { error }
-	});
+	return rot13View.error(status, error);
 }
