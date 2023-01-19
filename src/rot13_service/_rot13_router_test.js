@@ -18,7 +18,7 @@ const VALID_HEADERS = {
 	"content-type": "application/json",
 	"x-correlation-id": "irrelevant-correlation-id",
 };
-const VALID_BODY = JSON.stringify({ text: "hello" });
+const VALID_BODY = JSON.stringify({ text: "irrelevant_text" });
 
 describe("ROT-13 Router", () => {
 
@@ -29,9 +29,9 @@ describe("ROT-13 Router", () => {
 			headers: VALID_HEADERS,
 			body: VALID_BODY,
 		};
+		const expected = await Rot13Controller.create().postAsync(HttpRequest.createNull(requestOptions));
 
-		const expected = await controllerResponse(requestOptions);
-		const response = await simulateRequestAsync(requestOptions);
+		const { response } = await simulateHttpRequestAsync(requestOptions);
 		assert.deepEqual(response, expected);
 	});
 
@@ -41,7 +41,7 @@ describe("ROT-13 Router", () => {
 			body: { error: "not found" }
 		});
 
-		const response = await simulateRequestAsync({ url: "/no-such-url" });
+		const { response } = await simulateHttpRequestAsync({ url: "/no-such-url" });
 		assert.deepEqual(response, expected);
 	});
 
@@ -51,12 +51,12 @@ describe("ROT-13 Router", () => {
 			body: { error: "missing x-correlation-id header" },
 		});
 
-		const { response } = await routeAsync({ headers: {} });
+		const { response } = await simulateHttpRequestAsync({ headers: {} });
 		assert.deepEqual(response, expected);
 	});
 
 	it("logs requests", async () => {
-		const { logOutput } = await routeAsync({
+		const { logOutput } = await simulateHttpRequestAsync({
 			method: "get",
 			url: "/my_url",
 			headers: { "x-correlation-id": "my-correlation-id" },
@@ -73,45 +73,23 @@ describe("ROT-13 Router", () => {
 
 });
 
-function createRouter() {
-	ensure.signature(arguments, []);
-
-	const log = Log.createNull();
-	const logOutput = log.trackOutput();
-	const router = Rot13Router.create(log);
-	const requests = router._router.trackRequests();
-
-	return { router, log, logOutput, requests };
-}
-
-async function routeAsync(requestOptions) {
-	const { router, log, logOutput, requests } = createRouter();
-	const request = createRequest(requestOptions);
-	const response = await router.routeAsync(request);
-
-	return { log, logOutput, requests, response };
-}
-
-async function controllerResponse(requestOptions) {
-	const request = createRequest(requestOptions);
-	return await Rot13Controller.create().postAsync(request);
-}
-
-async function simulateRequestAsync(requestOptions) {
-	const request = createRequest(requestOptions);
-	const { router } = createRouter();
-	const server = HttpServer.createNull();
-
-	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), router);
-	return await server.simulateRequestAsync(request);
-}
-
-function createRequest({
+async function simulateHttpRequestAsync({
 	url = VALID_URL,
 	method = VALID_METHOD,
 	headers = VALID_HEADERS,
 	body = VALID_BODY,
 } = {}) {
-	return HttpRequest.createNull({ url, method, headers, body });
+	const log = Log.createNull();
+	const logOutput = log.trackOutput();
+	const router = new Rot13Router(log);
+
+	const request = HttpRequest.createNull({ url, method, headers, body });
+
+	const server = HttpServer.createNull();
+	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), router);
+
+	const response = await server.simulateRequestAsync(request);
+
+	return { response, logOutput };
 }
 

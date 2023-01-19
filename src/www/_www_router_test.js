@@ -19,14 +19,6 @@ const VALID_METHOD = "GET";
 
 describe("WWW Router", () => {
 
-	it("has log and ROT-13 service port", () => {
-		const log = Log.createNull();
-		const { router } = createRouter({ port: 777, log });
-
-		assert.equal(router.log, log, "log");
-		assert.equal(router.rot13ServicePort, 777, "port");
-	});
-
 	it("routes home page", async () => {
 		const { request, response } = await simulateHttpRequestAsync({
 			url: VALID_URL,
@@ -69,6 +61,14 @@ describe("WWW Router", () => {
 			method: "get",
 			path: "/my_url",
 		}]);
+	});
+
+	it("has port for ROT-13 service and log", () => {
+		const log = Log.createNull();
+		const { router } = createRouter({ port: 777, log });
+
+		assert.equal(router.rot13ServicePort, 777, "port");
+		assert.equal(router.log, log, "log");
 	});
 
 });
