@@ -1,6 +1,7 @@
 // Copyright Titanium I.T. LLC.
 "use strict";
 
+const ensure = require("util/ensure");
 const assert = require("util/assert");
 const Rot13Router = require("./rot13_router");
 const HttpServer = require("http/http_server");
@@ -8,7 +9,7 @@ const HttpRequest = require("http/http_request");
 const Rot13Controller = require("./rot13_controller");
 const HttpResponse = require("http/http_response");
 const Log = require("infrastructure/log");
-const ensure = require("util/ensure");
+const rot13View = require("./rot13_view");
 
 const IRRELEVANT_PORT = 42;
 
@@ -36,13 +37,8 @@ describe("ROT-13 Router", () => {
 	});
 
 	it("returns JSON errors", async () => {
-		const expected = HttpResponse.createJsonResponse({
-			status: 404,
-			body: { error: "not found" }
-		});
-
 		const { response } = await simulateHttpRequestAsync({ url: "/no-such-url" });
-		assert.deepEqual(response, expected);
+		assert.deepEqual(response, rot13View.error(404, "not found"));
 	});
 
 	it("fails fast if requests don't include request ID header", async () => {
@@ -79,6 +75,13 @@ async function simulateHttpRequestAsync({
 	headers = VALID_HEADERS,
 	body = VALID_BODY,
 } = {}) {
+	ensure.signature(arguments, [[ undefined, {
+		url: [ undefined, String ],
+		method: [ undefined, String ],
+		headers: [ undefined, Object ],
+		body : [ undefined, String ],
+	}]]);
+
 	const log = Log.createNull();
 	const logOutput = log.trackOutput();
 	const router = new Rot13Router(log);

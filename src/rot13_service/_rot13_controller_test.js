@@ -6,6 +6,7 @@ const rot13Logic = require("./rot13_logic");
 const Rot13Controller = require("./rot13_controller");
 const HttpRequest = require("http/http_request");
 const HttpResponse = require("http/http_response");
+const rot13View = require("./rot13_view");
 
 const VALID_HEADERS = { "content-type": "application/json" };
 
@@ -67,17 +68,11 @@ async function simulateRequestAsync({
 }
 
 function assertOkResponse(response, originalText) {
-	const expectedResponse = HttpResponse.createJsonResponse({
-		status: 200,
-		body: { transformed: rot13Logic.transform(originalText) }
-	});
+	const expectedResponse = rot13View.ok(rot13Logic.transform(originalText));
 
 	assert.deepEqual(response, expectedResponse);
 }
 
 function assertBadRequest(response, error) {
-	assert.deepEqual(response, HttpResponse.createJsonResponse({
-		status: 400,
-		body: { error }
-	}));
+	assert.deepEqual(response, rot13View.error(400, error));
 }
