@@ -17,7 +17,7 @@ describe("ROT-13 Controller", () => {
 	describe("happy paths", () => {
 
 		it("transforms requests", async () => {
-			const response = await simulateRequestAsync({
+			const { response } = await postAsync({
 				headers: VALID_HEADERS,
 				body: validBody("hello"),
 			});
@@ -26,7 +26,7 @@ describe("ROT-13 Controller", () => {
 
 		it("ignores extraneous fields", async () => {
 			const body = { ignoreMe: "wrong field", text: "right field" };
-			const response = await simulateRequestAsync({ body });
+			const { response } = await postAsync({ body });
 			assertOkResponse(response, "right field");
 		});
 
@@ -37,18 +37,18 @@ describe("ROT-13 Controller", () => {
 
 		it("returns 'bad request' when content-type header isn't JSON", async () => {
 			const headers = { "content-type": "text/plain" };
-			const response = await simulateRequestAsync({ headers });
+			const { response } = await postAsync({ headers });
 			assertBadRequest(response, "invalid content-type header");
 		});
 
 		it("returns 'bad request' when JSON fails to parse", async () => {
-			const response = await simulateRequestAsync({ body: "not-json" });
+			const { response } = await postAsync({ body: "not-json" });
 			assertBadRequest(response, "Unexpected token o in JSON at position 1");
 		});
 
 		it("returns 'bad request' when JSON doesn't have text field", async () => {
 			const body = { wrongField: "foo" };
-			const response = await simulateRequestAsync({ body });
+			const { response } = await postAsync({ body });
 			assertBadRequest(response, "request.text must be a string, but it was undefined");
 		});
 
@@ -57,14 +57,16 @@ describe("ROT-13 Controller", () => {
 });
 
 
-async function simulateRequestAsync({
+async function postAsync({
 	headers = VALID_HEADERS,
 	body = { text: "irrelevant-body" },
 } = {}) {
 	if (typeof body === "object") body = JSON.stringify(body);
 
 	const request = HttpRequest.createNull({ headers, body });
-	return await Rot13Controller.create().postAsync(request);
+	const response = await Rot13Controller.create().postAsync(request);
+
+	return { response };
 }
 
 function assertOkResponse(response, originalText) {
