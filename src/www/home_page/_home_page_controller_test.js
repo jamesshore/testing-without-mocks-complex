@@ -101,7 +101,7 @@ describe("Home Page Controller", () => {
 
 	describe("ROT-13 service edge cases", () => {
 
-		it("fails gracefully and logs error when service returns error", async () => {
+		it("fails gracefully, and logs error, when service returns error", async () => {
 			const { response, logOutput } = await postAsync({ rot13ServicePort: 9999, rot13Error: "my_error" });
 
 			assert.deepEqual(response, homePageView.homePage("ROT-13 service failed"), "should render error");
@@ -111,7 +111,12 @@ describe("Home Page Controller", () => {
 				endpoint: "/",
 				method: "POST",
 				message: "ROT-13 service error",
-				error: "Error: " + Rot13Client.nullErrorString(9999, "my_error"),
+				error: "Error: Unexpected status from ROT-13 service\n" +
+					"Host: localhost:9999\n" +
+					"Endpoint: /rot13/transform\n" +
+					"Status: 500\n" +
+					"Headers: {}\n" +
+					"Body: my_error",
 			}], "should log error");
 		});
 

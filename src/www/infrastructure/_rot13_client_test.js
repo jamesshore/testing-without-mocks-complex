@@ -207,12 +207,15 @@ describe("ROT-13 Service client", () => {
 			assert.equal(response2, "response 2");
 		});
 
-		it("can force an error (and provides expected error string)", async () => {
-			const rot13Client = Rot13Client.createNull([ { error: "my error" } ]);
-			await assert.throwsAsync(
-				() => transformAsync({ rot13Client, port: 999 }),
-				Rot13Client.nullErrorString(999, "my error"),
-			);
+		it("simulates errors", async () => {
+			const rot13Client = Rot13Client.createNull([{ error: "my error" }]);
+			await assertFailureAsync({
+				rot13Client,
+				message: "Unexpected status from ROT-13 service",
+				rot13ServiceStatus: 500,
+				rot13ServiceHeaders: {},
+				rot13ServiceBody: "my error"
+			});
 		});
 
 		it("simulates hangs", async () => {
@@ -268,12 +271,14 @@ async function transformAsync(options) {
 }
 
 async function assertFailureAsync({
+	rot13Client,
 	rot13ServiceStatus = VALID_ROT13_STATUS,
 	rot13ServiceHeaders = VALID_ROT13_HEADERS,
 	rot13ServiceBody = VALID_ROT13_BODY,
 	message,
 }) {
 	ensure.signature(arguments, [{
+		rot13Client: [ undefined, Rot13Client ],
 		rot13ServiceStatus: [ undefined, Number ],
 		rot13ServiceHeaders: [ undefined, Object ],
 		rot13ServiceBody: [ undefined, String ],
@@ -290,6 +295,7 @@ async function assertFailureAsync({
 
 	await assert.throwsAsync(
 		() => transformAsync({
+			rot13Client,
 			rot13ServiceStatus,
 			rot13ServiceHeaders,
 			rot13ServiceBody,
