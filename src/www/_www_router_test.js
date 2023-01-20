@@ -39,14 +39,14 @@ describe("WWW Router", () => {
 	});
 
 	it("configures requests", async () => {
-		const { config } = await simulateHttpRequestAsync({
+		const { context } = await simulateHttpRequestAsync({
 			port: 777,
 			uuid: "my-uuid",
 		});
 
-		assert.equal(config.rot13ServicePort, 777, "port");
-		assert.equal(config.correlationId, "my-uuid", "request ID");
-		assert.deepEqual(config.log.defaults, { correlationId: "my-uuid" }, "log");
+		assert.equal(context.rot13ServicePort, 777, "port");
+		assert.equal(context.correlationId, "my-uuid", "request ID");
+		assert.deepEqual(context.log.defaults, { correlationId: "my-uuid" }, "log");
 	});
 
 	it("logs requests", async () => {
@@ -96,9 +96,9 @@ async function simulateHttpRequestAsync({
 
 	const request = HttpRequest.createNull({ url, method });
 	const response = await server.simulateRequestAsync(request);
-	const config = requests.data[0].config;
+	const context = requests.data[0].context;
 
-	return { response, logOutput, config };
+	return { response, logOutput, context };
 }
 
 function createRouter({

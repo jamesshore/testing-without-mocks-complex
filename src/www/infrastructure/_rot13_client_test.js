@@ -186,7 +186,7 @@ describe("ROT-13 Service client", () => {
 	});
 
 
-	describe("nullability", () => {
+	describe("nulled instance", () => {
 
 		it("provides default response", async () => {
 			const rot13Client = Rot13Client.createNull();
