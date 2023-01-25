@@ -31,7 +31,15 @@ describe("UUID factory", () => {
 			assert.equal(generator.generate(), "00000000-0000-0000-0000-000000000000");
 		});
 
-		it("allows UUIDs to be configured", () => {
+		it("allows UUID to be configured", () => {
+			const generator = UuidGenerator.createNull("my_uuid");
+
+			assert.equal(generator.generate(), "my_uuid");
+			assert.equal(generator.generate(), "my_uuid");
+			assert.equal(generator.generate(), "my_uuid");
+		});
+
+		it("supports multiple UUIDs", () => {
 			const generator = UuidGenerator.createNull([ "uuid1", "uuid2", "uuid3" ]);
 
 			assert.equal(generator.generate(), "uuid1");
