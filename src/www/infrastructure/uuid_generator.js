@@ -3,6 +3,7 @@
 
 const ensure = require("util/ensure");
 const uuid = require("uuid");
+const ConfigurableResponses = require("util/configurable_responses");
 
 module.exports = class UuidGenerator {
 
@@ -36,15 +37,11 @@ module.exports = class UuidGenerator {
 class StubbedUuid {
 
 	constructor(uuids) {
-		this._uuids = uuids;
+		this._responses = ConfigurableResponses.create(uuids, "nulled UUID generator");
 	}
 
 	v4() {
-		if (!Array.isArray(this._uuids)) return this._uuids;
-
-		const result = this._uuids.shift();
-		if (result === undefined) throw new Error("No more UUIDs configured in nulled UUID generator");
-		return result;
+		return this._responses.next();
 	}
 
 }

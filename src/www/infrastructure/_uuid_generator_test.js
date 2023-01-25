@@ -31,31 +31,20 @@ describe("UUID factory", () => {
 			assert.equal(generator.generate(), "00000000-0000-0000-0000-000000000000");
 		});
 
-		it("provides an infinite stream of identical UUIDs", () => {
-			const generator = UuidGenerator.createNull("my-uuid");
+		it("allows UUID to be configured", () => {
+			const generator = UuidGenerator.createNull("my_uuid");
 
-			assert.equal(generator.generate(), "my-uuid");
-			assert.equal(generator.generate(), "my-uuid");
-			assert.equal(generator.generate(), "my-uuid");
+			assert.equal(generator.generate(), "my_uuid");
+			assert.equal(generator.generate(), "my_uuid");
+			assert.equal(generator.generate(), "my_uuid");
 		});
 
-		it("provides a finite stream of preconfigured UUIDs", () => {
+		it("supports multiple UUIDs", () => {
 			const generator = UuidGenerator.createNull([ "uuid1", "uuid2", "uuid3" ]);
 
 			assert.equal(generator.generate(), "uuid1");
 			assert.equal(generator.generate(), "uuid2");
 			assert.equal(generator.generate(), "uuid3");
-		});
-
-		it("throws an exception when it runs out of preconfigued UUIDs", () => {
-			const generator = UuidGenerator.createNull([ "uuid1", "uuid2" ]);
-
-			assert.equal(generator.generate(), "uuid1");
-			assert.equal(generator.generate(), "uuid2");
-			assert.throws(
-				() => generator.generate(),
-				"No more UUIDs configured in nulled UUID generator",
-			);
 		});
 
 	});
