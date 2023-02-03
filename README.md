@@ -27,7 +27,7 @@ You’ll need [Node.js](http://nodejs.org) installed to run the code.
 
 ## Running the Tests
 
-To run the tests, install the version of [Node.js](http://nodejs.org) listed in [./package.json]() under `node`. (If you have a different version of Node, the tests will probably work, but you may experience some unexpected test failures.)
+To run the tests, install the version of [Node.js](http://nodejs.org) listed in [package.json](package.json) under `node`. (If you have a different version of Node, the tests will probably work, but you may experience some unexpected test failures.)
 
 * To run the build and automated tests, run `./watch.sh quick` (Mac/Linux) or `.\watch.cmd quick` (Windows). The build will automatically re-run every time you change a file.
 
