@@ -1,24 +1,39 @@
 # Testing Without Mocks: Complex Example
 
-Readme TBD
+This is an elaborate example of the ideas in James Shore's [Testing Without Mocks](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks) pattern language. It has several real-world features:
+
+* *Microservice architecture.* User requests are processed by a web server and work is performed by a separate microservice (which is part of the same codebase).
+* *Structured logs.* Logs are written as JSON with arbitrary properties.
+* *Correlation IDs.* All logs related to a single user-side request have the same `correlationId` field, which is passed from the web server to the microservice.
+* *Error handling.* Microservice failures are handled gracefully, with appropriate logging and error recovery.
+* *Timeouts and request cancellation.* When the microservice doesn't respond quickly enough, the request is cancelled.
+
+For educational purposes, the code is written "close to the metal" with minimal dependencies.
 
 
-Running the Code
-----------------
+## About the Program
 
-To run the code in this repository, install [Node.js](http://nodejs.org). Make sure you have version 16.15.1. If you have a different version of Node, the code will probably work, but you may experience some unexpected test failures. If that happens, make sure you have the correct version of Node installed.
+The program is a ROT-13 encoder. It consists of a web server, which provides the web-based user interface, and a ROT-13 microservice, which performs the ROT-13 encoding.
 
-* To run the build and automated tests, run `.\watch.cmd quick` (Windows) or `./watch.sh quick` (Mac/Linux) from the root directory of the repo. The build will automatically re-run every time you change a file.
+To start the servers, run `./serve_dev.sh [web_server_port] [rot13_server_port]` (Mac/Linux) or `serve_dev [web_server_port] [rot13_server_port]` (Windows). Then you can access the web interface through a browser at `http://localhost:[web_server_port]`. For example, if you started the server with `./serve_dev.sh 5010 5011`, you would visit `http://localhost:5010` in your browser.
 
-* The build only runs tests for files that have changed. Sometimes it can get confused. Restarting the script is usually enough. To make it start from scratch, run `.\clean.cmd` (Windows) or `./clean.sh` (Mac/Linux).
+You’ll need [Node.js](http://nodejs.org) installed to run the code.
 
-* To run the servers, run `.\serve_dev.cmd 5010 5011` (Windows) or `./serve_dev 5010 5011` (Mac/Linux) from the root directory of the repo. Then visit `http://localhost:5010` in a browser. The server will automatically restart every time you change a file.
+
+## Running the Tests
+
+To run the tests, install the version of [Node.js](http://nodejs.org) listed in [packages.json]() under `node`. (If you have a different version of Node, the code will probably work, but you may experience some unexpected test failures.)
+
+* To run the build and automated tests, run `./watch.sh quick` (Mac/Linux) or `.\watch.cmd quick` (Windows). The build will automatically re-run every time you change a file.
+
+* The build only runs tests for files that have changed. Sometimes it can get confused. Restarting the script is usually enough. To make it start from scratch, run `./clean.sh` (Mac/Linux) or `.\clean.cmd` (Windows).
+
+* To run the servers, run `./serve_dev 5010 5011` (Mac/Linux) or `.\serve_dev.cmd 5010 5011` (Windows). Then visit `http://localhost:5010` in a browser. The server will automatically restart every time you change a file.
 
 *Note:* The `watch` script plays sounds when it runs. (One sound for success, another for lint failure, and a third for test failure.) If this bothers you, you can delete or rename the files in `build/sounds`.
 
 
-How the Servers Work
---------------------
+## How the Servers Work
 
 Start the servers using the serve command described above. E.g., `./serve_dev.sh 5010 5011`. This starts two servers: a WWW server on port 5010 and a ROT-13 service on port 5011.
 
@@ -83,108 +98,65 @@ Date: Tue, 30 Jun 2020 01:14:15 GMT
 ```
 
 
-Finding Your Way Around
------------------------
+## Finding Your Way Around
 
-You don't need to know the ins-and-outs of the codebase to do the exercises. But in case you want to know more:
+The source code is in the `src/` directory. Test files start with an underscore and are in the same directories as production code.
 
-Branches:
+* **[src/](): **Source code**
+  * [all_servers.js](src/all_servers.js): Parse command-line and start servers.
+  * [serve.js](src/serve.js): Program entry point. Just launches [all_servers.js](src/all_servers.js).
+  * **[node_modules/](src/node_modules): Code shared by both servers (*not* third-party code)**
+    * **[http/](src/node_modules/http): HTTP infrastructure wrappers**
+      * [generic_router.js](src/node_modules/http/generic_router.js) A utility for converting [HttpRequest](src/node_modules/http/http_request.js)s to method calls.
+      * [http_client.js](src/node_modules/http/http_client.js) Makes HTTP requests.
+      * [http_request.js](src/node_modules/http/http_request.js) Server-side HTTP request received from the client.
+      * [http_response.js](src/node_modules/http/http_response.js) Server-side HTTP response to be sent to the client.
+      * [http_server.js](src/node_modules/http/http_server.js) An HTTP server.
+    * **[infrastructure/](src/node_modules/infrastructure): Other shared infrastructure wrappers**
+      * [clock.js](src/node_modules/infrastructure/clock.js): Current time, timeouts, etc.
+      * [command_line.js](src/node_modules/infrastructure/command_line.js): Command-line I/O.
+      * [log.js](src/node_modules/infrastructure/log.js): Logger.
+    * **[util/](src/node_modules/util): Miscellaneous libraries**
+      * [assert.js](src/node_modules/util/assert.js): Assertion library used by tests.
+      * [configurable_responses.js](src/node_modules/util/configurable_responses.js): Utility library for implementing [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses) pattern.
+      * [ensure.js](src/node_modules/util/ensure.js): Runtime assertions for production code. Most notably used for runtime type checking of method signatures.
+      * [output_tracker.js](src/node_modules/util/output_tracker.js): Utility library for implementing [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking) pattern.
+      * [test_helper.js](src/node_modules/util/test_helper.js): Utility library for implementing integration tests.
+      * [type.js](src/node_modules/util/type.js): Runtime type checker.
+  * **[rot13_service/](src/rot13_service): ROT-13 microservice**
+    * [rot13_controller.js](src/rot13_service/rot13_controller.js): Controller for `/rot13/transform` endpoint.
+    * [rot13_logic.js](src/rot13_service/rot13_logic.js): ROT-13 encoder.
+    * [rot13_router.js](src/rot13_service/rot13_router.js): Entry point into ROT-13 microservice.
+    * [rot13_view.js](src/rot13_service/rot13_view.js): Renderer for ROT-13 microservice's responses.
+  * **[www/](src/www): Front-end website**
+    * [www_config.js](src/www/www_config.js): Configuration used by all front-end website routes
+    * [www_router.js](src/www/www_router.js): Entry point into front-end website.
+    * [www_view.js](src/www/www_view.js): Generic renderer for front-end website’s responses.
+    * **[home_page/](src/www/home_page): '/' endpoint**
+      * [home_page_controller.js](src/www/home_page/home_page_controller.js): Controller for `/` endpoint.
+      * [home_page_view.js](src/www/home_page/home_page_view.js): Renderer for `/` responses.
+    * **[infrastructure/](src/www/infrastructure): Front-end-specific infrastructure wrappers**
+      * [rot13_client.js](src/www/infrastructure/rot13_client.js): Client for ROT-13 microservice.
+      * [uuid_generator.js](src/www/infrastructure/uuid_generator.js): Create random unique identifiers (UUIDs).
 
-* `dev`: Used by James Shore for work in progress.
-* `exercise1`: **Challenges demonstrating how to use nullable infrastructure wrappers to test glue code.**
-* `exercise2`: **Challenges demonstrating how to create nullable infrastructure wrappers from scratch.**
-* `integration`: **The completed code.**
-* `part1`: Same as `exercise1`. Allows you to start the exercise again.
-* `part2`: Same as `exercise2`. Allows you to start the exercise again.
+Third-party modules are in the top-level `node_modules/` directory (not to be confused with `src/node_modules`). The following modules are used by the production code:
 
-Top-level directories and files:
+* `@sinonjs/fake-timers`: Used to make [Clock](src/node_modules/infrastructure/clock.js) Nullable.
+* `uuid`: Wrapped by [UuidGenerator](src/www/infrastructure/uuid_generator.js), which is used to create correlation IDs.
 
-* `build/`: Scripts for running the build, the servers, etc.
-* `generated/`: Files generated by the build.
-* `node_modules/`: Third-party modules from npm, such as Mocha (the test framework) and Chai (the assertion library)
-* `src/`: **Source code**
-* `build.cmd` and `build.sh`: Run the build and exit. Use the `quick` option to only build files that have changed. Use the `-T` option to see other build targets.
-* `clean.cmd` and `clean.sh`: **Reset the incremental build.**
-* `integrate.sh`: Merge the `dev` branch into the `integration` branch (only for use by James Shore)
-* `LICENSE.txt`: Copyright and license.
-* `package.json` and `package-lock.json`: Generated by `npm` (the Node package manager).
-* `README.md`: This file.
-* `serve_dev.cmd` and `serve_dev.sh`: **Start the servers and automatically restart when files change.** Takes two port numbers. The first is the port of the WWW server; the second is the port of the ROT-13 service.
-* `watch.cmd` and `watch.sh`: **Automatically re-run the build every time a file changes.** Uses the same options as `build`.
+The remaining modules are used by the automated build:
 
-`src/`:
-
-* `node_modules/`: **Code shared by both servers.** Note that these are *not* third-party modules from npm.
-* `rot13_service/`: **Code for the ROT-13 service.**
-* `www/`: **Code for the user-facing web server.**
-* `_all_servers_test.js`: Unit tests for `all_servers.js`.
-* `_server_node_test.js`: Unit tests for `server_node.js`.
-* `_smoke_test.js`: End-to-end integration test.
-* `all_servers.js:` **Application start-up code.**
-* `serve.js:` Entry point for the application (just runs all_servers.js).
-* `server_node.js` Base class for both servers.
-
-`src/node_modules/`:
-
-* `http/`: HTTP infrastructure
-* `infrastructure/`: Other infrastructure
-* `util/`: Utility modules
-
-`src/node_modules/http/`:
-
-* `_*_test.js`: Unit and narrow integration tests.
-* `generic_router.js`: A general-purpose router than can be configured to convert URL paths to method calls.
-* `http_client.js`: Makes HTTP requests.
-* `http_request.js`: Represents an HTTP request on the server.
-* `http_response.js`: Represents an HTTP response from the server.
-* `http_server.js`: Starts an HTTP server.
-
-`src/node_modules/infrastructure/`:
-
-* `_*_test.js`: Unit and narrow integration tests.
-* `clock.js`: The system clock and time-related functions.
-* `command_line.js`: Command-line arguments, stdout, and stderr. **Used in exercise 2.**
-* `log.js`: Logging (used by the servers).
-
-`src/node_modules/util/`:
-
-* `_*_test.js`: Unit tests.
-* `assert.js`: A thin wrapper around Chai (an assertion library). Contains some extra assertions.
-* `ensure.js`: A run-time assertion library meant for use in production code. `ensure.signature()` is particularly useful for run-time type checking.
-* `infrastructure_helper.js`: Useful functions for infrastructure wrappers. Only contains `trackOutput()` at present.
-* `test_helper.js`: Useful functions for tests.
-* `type.js` A run-time type checker.
-
-`src/rot13_service/`:
-
-* `_*_test.js`: Unit tests.
-* `rot13_controller.js`: Endpoint for ROT-13 service.
-* `rot13_logic.js`: ROT-13 transformation logic.
-* `rot13_router.js`: Router for ROT-13 service.
-* `rot13_server.js`: ROT-13 server.
-
-`src/www/`:
-
-* `home_page/`: **Code related to serving the home page.**
-* `infrastructure/`: Infrastructure wrappers for the WWW server.
-* `_*_test.js`: Unit tests.
-* `www_config.js`: Configuration variables.
-* `www_router.js`: Router for WWW server.
-* `www_server.js`: WWW server.
-* `www_view.js`: HTML template and error responses.
-
-`src/www/home_page`:
-
-* `_*_test.js`: Unit tests.
-* `home_page_controller.js`: Endpoints for home page. **Used in exercise 1.**
-* `home_page_view.js`: HTML response for home page.
-
-`src/www/infrastructure`:
-
-* `_*_test.js`: Unit tests.
-* `rot13_client.js`: Client for ROT-13 service.
+* `chai`: Assertion library used by tests.
+* `eslint`: Static code analyzer (linter) used by build.
+* `gaze`: File system watcher used by build to detect when files change.
+* `glob`: File system analyzer used by build to convert globs (such as `src/**/_*_test.js`) to filenames.
+* `minimist`: Command-line parser used to parse build's command-line.
+* `mocha`: Test runner used by build and tests.
+* `shelljs`: Unix command emulator used to simplify aspects of the build.
+* `sound-play`: Sound player used by the `watch` script to play sounds when the build completes. 
 
 
+All other files are related to the automated build.
 
 
 ## About the Patterns
