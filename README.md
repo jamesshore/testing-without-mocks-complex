@@ -107,7 +107,7 @@ Date: Tue, 30 Jun 2020 01:14:15 GMT
 
 The source code is in the `src/` directory. Test files start with an underscore and are in the same directories as production code.
 
-* **[src/](): **Source code**
+* **[src/](src/): Source code**
   * [all_servers.js](src/all_servers.js): Parse command-line and start servers.
   * [serve.js](src/serve.js): Program entry point. Just launches [all_servers.js](src/all_servers.js).
   * **[node_modules/](src/node_modules): Code shared by both servers (*not* third-party code)**
@@ -134,10 +134,10 @@ The source code is in the `src/` directory. Test files start with an underscore 
     * [rot13_router.js](src/rot13_service/rot13_router.js): Entry point into ROT-13 microservice.
     * [rot13_view.js](src/rot13_service/rot13_view.js): Renderer for ROT-13 microservice's responses.
   * **[www/](src/www): Front-end website**
-    * [www_config.js](src/www/www_config.js): Configuration used by all front-end website routes
+    * [www_config.js](src/www/www_config.js): Configuration used by all front-end website routes.
     * [www_router.js](src/www/www_router.js): Entry point into front-end website.
     * [www_view.js](src/www/www_view.js): Generic renderer for front-end website’s responses.
-    * **[home_page/](src/www/home_page): '/' endpoint**
+    * **[home_page/](src/www/home_page): Front-end '/' endpoint**
       * [home_page_controller.js](src/www/home_page/home_page_controller.js): Controller for `/` endpoint.
       * [home_page_view.js](src/www/home_page/home_page_view.js): Renderer for `/` responses.
     * **[infrastructure/](src/www/infrastructure): Front-end-specific infrastructure wrappers**
@@ -149,7 +149,7 @@ Third-party modules are in the top-level `node_modules/` directory (not to be co
 * `@sinonjs/fake-timers`: Used to make [Clock](src/node_modules/infrastructure/clock.js) Nullable.
 * `uuid`: Wrapped by [UuidGenerator](src/www/infrastructure/uuid_generator.js), which is used to create correlation IDs.
 
-The remaining modules are used by the automated build:
+The remaining modules are used by the build and tests:
 
 * `chai`: Assertion library used by tests.
 * `eslint`: Static code analyzer (linter) used by build.
