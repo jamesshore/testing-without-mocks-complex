@@ -6,7 +6,7 @@ This is an elaborate example of the ideas in James Shore's [Testing Without Mock
 * *Structured logs.* Logs are written as JSON with arbitrary properties.
 * *Correlation IDs.* All logs related to a single user-side request have the same `correlationId` field, which is passed from the web server to the microservice.
 * *Error handling.* Microservice failures are handled gracefully, with appropriate logging and error recovery.
-* *Timeouts and request cancellation.* When the microservice doesn't respond quickly enough, the request is cancelled.
+* *Timeouts and request cancellation.* When the microservice doesn't respond quickly enough, the request is cancelled, and the failure is handled gracefully.
 
 For educational purposes, the code is written "close to the metal" with minimal dependencies.
 
@@ -15,7 +15,12 @@ For educational purposes, the code is written "close to the metal" with minimal 
 
 The program is a ROT-13 encoder. It consists of a web server, which provides the web-based user interface, and a ROT-13 microservice, which performs the ROT-13 encoding.
 
-To start the servers, run `./serve_dev.sh [web_server_port] [rot13_server_port]` (Mac/Linux) or `serve_dev [web_server_port] [rot13_server_port]` (Windows). Then you can access the web interface through a browser at `http://localhost:[web_server_port]`. For example, if you started the server with `./serve_dev.sh 5010 5011`, you would visit `http://localhost:5010` in your browser.
+To start the servers, run:
+
+* Mac/Linux: `./serve_dev.sh [web_server_port] [rot13_server_port]`
+* Windows: `serve_dev [web_server_port] [rot13_server_port]`
+
+Access the web interface through a browser. For example, if you started the server with `./serve_dev.sh 5010 5011`, you would visit `http://localhost:5010` in your browser.
 
 You’ll need [Node.js](http://nodejs.org) installed to run the code.
 
