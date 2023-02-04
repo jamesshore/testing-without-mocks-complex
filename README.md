@@ -173,51 +173,59 @@ The purpose of this repository is to demonstrate the [Testing Without Mocks patt
 
 #### [Narrow Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-tests)
 
+All tests except [_smoke_test.js](src/_smoke_test.js) are “narrow tests,” which means they’re focused on a specific class, module, or concept. Most of them are narrow unit tests, but the infrastructure wrappers have narrow integration tests.
 
 #### [State-Based Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#state-based-tests)
 
-_all_servers_test.js, all_servers.js (wwwRouter, rot13Router)
-
+All tests are “state-based tests,” which means they make assertions about the return values or state of the unit under test, rather than making assertions about which methods it calls.
 
 #### [Overlapping Sociable Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#sociable-tests)
 
-
+All tests are “sociable tests,” which means the code under test isn’t isolated from the rest of the application.
 
 #### [Smoke Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#smoke-tests)
 
-
+There is one smoke test: the aptly-named [_smoke_test.js](src/_smoke_test.js). It’s a broad integration test that tests the code from end to end. It starts both servers and simulates an HTTP request, then checks the HTML that’s returned.
 
 #### [Zero-Impact Instantiation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#zero-impact)
 
+None of the classes do any significant work in their constructors. The servers have a separate `startAsync()` method that is used to start the server after it’s been instantiated.
 
 #### [Parameterless Instantiation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#instantiation)
 
-WwwConfig.createTestInstance()
-
-Every class can be instantiated without providing any parameters.
+Every class can be instantiated without providing any parameters. [WwwConfig](src/www/www_config.js) can’t be instantiated without parameters, so it provides a `createTestInstance()` method for use by tests.
 
 #### [Signature Shielding](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#sig-shielding)
 
+Almost every test has helper methods that are used to simplify tests and shield them from changes.
 
 #### [Collaborator-Based Isolation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#isolation)
 
-_all_servers_test.js
-_www_router_test.js
-_rot13_router_test.js
+The following tests use Collaborator-Based Isolation to prevent changes in dependencies’ behavior from breaking the tests:
 
-
+* [_all_servers_test.js](src/_all_servers_test.js)
+* [_www_router_test.js](src/www/_www_router_test.js)
+* [_rot13_router_test.js](src/rot13_service/_rot13_router_test.js)
 
 
 ### Architectural Patterns
 
 #### [A-Frame Architecture](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#a-frame-arch)
 
+The code is infrastructure-heavy, with almost no logic, so the A-Frame Architecture pattern doesn’t apply to most of the code. However, the ROT-13 service has a small A-Frame Architecture:
+
+* The *Application/UI* layer is represented by [Rot13Router](src/rot13_service/rot13_router.js) and [Rot13Controller](src/rot13_service/rot13_controller.js).
+* The *Logic* layer is represented by [Rot13Logic](src/rot13_service/rot13_logic.js) and [Rot13View](src/rot13_service/rot13_view.js).
+* The *Infrastructure* layer is represented by [HttpServer](src/node_modules/http/http_server.js), [HttpRequest](src/node_modules/http/http_request.js), and [HttpResponse](src/node_modules/http/http_response.js).
+* There is no *Values* layer.
 
 #### [Logic Sandwich](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#logic-sandwich)
 
+[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.js), calls [Rot13Logic](src/rot13_service/rot13_logic.js), renders it with [Rot13View](src/rot13_service/rot13_view.js), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.js) (which is then served by [HttpServer](src/node_modules/http/http_server.js)).
 
 #### [Traffic Cop](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#traffic-cop)
 
+The [WwwRouter](src/www/www_router.js) and [Rot13Router](src/rot13_service/rot13_router.js) routers are traffic cops. They receive events from the [HttpServer](src/node_modules/http/http_server.js) via their `routeAsync()` methods, then turn around and call the appropriate methods on [HomePageController](src/www/home_page/home_page_controller.js) and [Rot13Controller](src/rot13_service/rot13_controller.js). However, because the pattern is spread across multiple classes, it's not very clear in the code.
 
 #### [Grow Evolutionary Seeds](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#grow-seeds)
 
@@ -239,21 +247,26 @@ This program doesn’t use any third-party logic libraries.
 
 #### [Infrastructure Wrappers](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#infrastructure-wrappers)
 
+There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.js), [HttpServer](src/node_modules/http/http_server.js), [HttpRequest](src/node_modules/http/http_request.js), [Clock](src/node_modules/infrastructure/clock.js), [CommandLine](src/node_modules/infrastructure/command_line.js), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.js) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers that use the low-level infrastructure wrappers. (`Log` uses `CommandLine` and `Rot13Client` uses `HttpClient`.)  
 
 #### [Narrow Integration Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-integration-tests)
 
+The low-level infrastructure wrappers mentioned above all have narrow integration tests.
 
 #### [Paranoic Telemetry](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#paranoic-telemetry)
 
+The [HomePageController](src/www/home_page/home_page_controller.js) [Rot13Client](src/www/infrastructure/rot13_client.js) collectively implement Paranoid Telemetry. Rot13Client checks the ROT-13 microservice response for any unexpected behavior, and throws an exception if it finds any. HomePageController handles exceptions thrown by Rot13Client and additionally handles slow responses.
 
 
 ### Nullability Patterns
 
 #### [Nullables](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#nullables)
 
+Because there's so little logic, nearly every class has some sort of dependency on infrastructure, and the ones that do are all nullable.
 
 #### [Embedded Stub](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#embedded-stub)
 
+The low-level infrastructure wrappers (listed above) all have embedded stubs.
 
 #### [Thin Wrapper](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#thin-wrapper)
 
@@ -261,29 +274,29 @@ The code is written in JavaScript, so Thin Wrappers aren't needed.
 
 #### [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses)
 
+Most of the infrastructure wrappers (listed above) have configurable responses. [UuidGenerator](src/www/infrastructure/uuid_generator.js) and [HttpClient](src/node_modules/http/http_client.js) in particular support multiple different responses.
 
 #### [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking)
 
+Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.js), [CommandLine](src/node_modules/infrastructure/command_line.js), [Log](src/node_modules/infrastructure/command_line.js), [GenericRouter](src/node_modules/http/generic_router.js), and [Rot13Client](src/www/infrastructure/rot13_client.js).
 
 #### [Behavior Simulation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#behavior-simulation)
 
-This code doesn’t respond to events from external systems, so Behavior Simulation isn't needed.
+[HttpServer](src/node_modules/http/http_server.js) allows callers to simulate HTTP requests.
 
 #### [Fake It Once You Make It](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#fake-it)
 
+[Log](src/node_modules/infrastructure/log.js), [HomePageController](src/www/home_page/home_page_controller.js), and [Rot13Client](src/www/infrastructure/rot13_client.js) all use nullable dependencies to implement their code and tests. Of the production implementations, Rot13Client is the most interesting, because it has configurable responses.
 
 ### Legacy Code Patterns
 
 The code was a green-field project, so the legacy code patterns weren't needed.
 
 
-
-
-
 License
 -------
 
-Copyright (c) 2020-2022 Titanium I.T. LLC
+Copyright (c) 2020-2023 Titanium I.T. LLC
 
 The code in this repository is licensed for use in James Shore's training
 courses only. Participants in those courses may make copies for their own
