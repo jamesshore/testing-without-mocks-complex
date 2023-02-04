@@ -62,11 +62,13 @@ The service has one endpoint:
   * `text` the text to transform
   * E.g., `{ "text": "hello" }`
 * Success Response:
-	* Status: 200 OK
-	* Headers: `content-type: application/json`
-	* Body: JSON object containing one field:
-		* `transformed` the transformed text
-		* E.g., `{ "transformed": "uryyb" }`
+  * Status: 200 OK
+  * Headers: 
+    * `content-type: application/json`
+    * `x-correlation-id` the correlation ID to use in logs
+  * Body: JSON object containing one field:
+    * `transformed` the transformed text
+    * E.g., `{ "transformed": "uryyb" }`
 * Failure Response
 	* Status: 4xx (depending on nature of error)
 	* Headers: `content-type: application/json`
@@ -77,25 +79,28 @@ The service has one endpoint:
 You can make requests to the service directly using your favorite HTTP client. For example, [httpie](https://httpie.org/):
 
 ```sh
-~ % http post :5011/rot13/transform content-type:application/json text=hello -v
+~ % http post :5011/rot13/transform content-type:application/json x-correlation-id:my-id text=hello -v
 POST /rot13/transform HTTP/1.1
 Accept: application/json, */*;q=0.5
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
 Content-Length: 17
 Host: localhost:5011
-User-Agent: HTTPie/2.1.0
+User-Agent: HTTPie/3.2.1
 content-type: application/json
+x-correlation-id: my-id
 
 {
     "text": "hello"
 }
 
+
 HTTP/1.1 200 OK
 Connection: keep-alive
 Content-Length: 23
-Content-Type: application/json
-Date: Tue, 30 Jun 2020 01:14:15 GMT
+Date: Sat, 04 Feb 2023 08:33:00 GMT
+Keep-Alive: timeout=5
+content-type: application/json
 
 {
     "transformed": "uryyb"
