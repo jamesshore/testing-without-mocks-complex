@@ -108,11 +108,12 @@ Date: Tue, 30 Jun 2020 01:14:15 GMT
 The source code is in the `src/` directory. Test files start with an underscore and are in the same directories as production code.
 
 * **[src/](src/): Source code**
-  * [all_servers.js](src/all_servers.js): Parse command-line and start servers.
-  * [serve.js](src/serve.js): Program entry point. Just launches [all_servers.js](src/all_servers.js).
+  * [all_servers.js](src/all_servers.js) ([tests](src/_all_servers.js)): Parse command-line and start servers.
+  * [serve.js](src/serve.js) (no tests)): Program entry point. Just launches [all_servers.js](src/all_servers.js).
+  * [_smoke_test.js](src/_smoke_test.js): End-to-end smoke test for both servers.
   * **[node_modules/](src/node_modules): Code shared by both servers (*not* third-party code)**
     * **[http/](src/node_modules/http): HTTP infrastructure wrappers**
-      * [generic_router.js](src/node_modules/http/generic_router.js) A utility for converting [HttpRequest](src/node_modules/http/http_request.js)s to method calls.
+      * [generic_router.js](src/node_modules/http/generic_router.js) ([tests](src/node_modules/http/_generic_router_test.js)) A utility for converting [HttpRequest](src/node_modules/http/http_request.js)s to method calls.
       * [http_client.js](src/node_modules/http/http_client.js) Makes HTTP requests.
       * [http_request.js](src/node_modules/http/http_request.js) Server-side HTTP request received from the client.
       * [http_response.js](src/node_modules/http/http_response.js) Server-side HTTP response to be sent to the client.
