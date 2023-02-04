@@ -20,15 +20,9 @@ module.exports = class HomePageController {
 		return new HomePageController(Rot13Client.create(), Clock.create());
 	}
 
-	static createNull({
-		rot13Client = Rot13Client.createNull(),
-		clock = Clock.createNull(),
-	} = {}) {
-		ensure.signature(arguments, [[ undefined, {
-			rot13Client: [ undefined, Rot13Client ],
-			clock: [ undefined, Clock ],
-		}]]);
-		return new HomePageController(rot13Client, clock);
+	static createNull() {
+		ensure.signature(arguments, []);
+		return new HomePageController(Rot13Client.createNull(), Clock.createNull());
 	}
 
 	constructor(rot13Client, clock) {

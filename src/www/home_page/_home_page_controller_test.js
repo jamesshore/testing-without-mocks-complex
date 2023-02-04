@@ -154,7 +154,7 @@ describe("Home Page Controller", () => {
 async function getAsync() {
 	ensure.signature(arguments, []);
 
-	const controller = HomePageController.createNull();
+	const controller = new HomePageController(Rot13Client.createNull(), Clock.createNull());
 	const response = await controller.getAsync(HttpRequest.createNull(), WwwConfig.createTestInstance());
 
 	return { response };
@@ -196,7 +196,7 @@ function post({
 	const request = HttpRequest.createNull({ body });
 	const config = WwwConfig.createTestInstance({ rot13ServicePort, log, correlationId });
 
-	const controller = HomePageController.createNull({ rot13Client, clock });
+	const controller = new HomePageController(rot13Client, clock);
 	const responsePromise = controller.postAsync(request, config);
 
 	return {
