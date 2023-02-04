@@ -103,7 +103,7 @@ Date: Tue, 30 Jun 2020 01:14:15 GMT
 ```
 
 
-## Finding Your Way Around
+## Source Code Overview
 
 The source code is in the `src/` directory. Test files start with an underscore and are in the same directories as production code.
 
