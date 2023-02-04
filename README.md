@@ -108,41 +108,42 @@ Date: Tue, 30 Jun 2020 01:14:15 GMT
 The source code is in the `src/` directory. Test files start with an underscore and are in the same directories as production code.
 
 * **[src/](src/): Source code**
-  * [all_servers.js](src/all_servers.js): Parse command-line and start servers.
+  * [all_servers.js](src/all_servers.js) [(tests)](src/_all_servers_test.js): Parse command-line and start servers.
   * [serve.js](src/serve.js): Program entry point. Just launches [all_servers.js](src/all_servers.js).
+  * [_smoke_test.js](src/_smoke_test.js): End-to-end smoke test for both servers.
   * **[node_modules/](src/node_modules): Code shared by both servers (*not* third-party code)**
     * **[http/](src/node_modules/http): HTTP infrastructure wrappers**
-      * [generic_router.js](src/node_modules/http/generic_router.js) A utility for converting [HttpRequest](src/node_modules/http/http_request.js)s to method calls.
-      * [http_client.js](src/node_modules/http/http_client.js) Makes HTTP requests.
-      * [http_request.js](src/node_modules/http/http_request.js) Server-side HTTP request received from the client.
-      * [http_response.js](src/node_modules/http/http_response.js) Server-side HTTP response to be sent to the client.
-      * [http_server.js](src/node_modules/http/http_server.js) An HTTP server.
+      * [generic_router.js](src/node_modules/http/generic_router.js) [(tests)](src/node_modules/http/_generic_router_test.js) A utility for converting [HttpRequest](src/node_modules/http/http_request.js)s to method calls.
+      * [http_client.js](src/node_modules/http/http_client.js) [(tests)](src/node_modules/http/_http_client_test.js): Makes HTTP requests.
+      * [http_request.js](src/node_modules/http/http_request.js) [(tests)](src/node_modules/http/_http_request_test.js): Server-side HTTP request received from the client.
+      * [http_response.js](src/node_modules/http/http_response.js) [(tests)](src/node_modules/http/_http_response_test.js): Server-side HTTP response to be sent to the client.
+      * [http_server.js](src/node_modules/http/http_server.js) [(tests)](src/node_modules/http/_http_server_test.js): An HTTP server.
     * **[infrastructure/](src/node_modules/infrastructure): Other shared infrastructure wrappers**
-      * [clock.js](src/node_modules/infrastructure/clock.js): Current time, timeouts, etc.
-      * [command_line.js](src/node_modules/infrastructure/command_line.js): Command-line I/O.
-      * [log.js](src/node_modules/infrastructure/log.js): Logger.
+      * [clock.js](src/node_modules/infrastructure/clock.js) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
+      * [command_line.js](src/node_modules/infrastructure/command_line.js) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
+      * [log.js](src/node_modules/infrastructure/log.js) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
     * **[util/](src/node_modules/util): Miscellaneous libraries**
-      * [assert.js](src/node_modules/util/assert.js): Assertion library used by tests.
-      * [configurable_responses.js](src/node_modules/util/configurable_responses.js): Utility library for implementing [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses) pattern.
-      * [ensure.js](src/node_modules/util/ensure.js): Runtime assertions for production code. Most notably used for runtime type checking of method signatures.
-      * [output_tracker.js](src/node_modules/util/output_tracker.js): Utility library for implementing [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking) pattern.
+      * [assert.js](src/node_modules/util/assert.js) [(tests)](/src/node_modules/util/_assert_test.js): Assertion library used by tests.
+      * [configurable_responses.js](src/node_modules/util/configurable_responses.js) [(tests)](/src/node_modules/util/_configurable_responses_test.js): Utility library for implementing [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses) pattern.
+      * [ensure.js](src/node_modules/util/ensure.js) [(tests)](src/node_modules/util/_ensure_test.js): Runtime assertions for production code. Most notably used for runtime type checking of method signatures.
+      * [output_tracker.js](src/node_modules/util/output_tracker.js) [(tests)](/src/node_modules/util/_output_tracker_test.js): Utility library for implementing [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking) pattern.
       * [test_helper.js](src/node_modules/util/test_helper.js): Utility library for implementing integration tests.
-      * [type.js](src/node_modules/util/type.js): Runtime type checker.
+      * [type.js](src/node_modules/util/type.js) [(tests)](/src/node_modules/util/_type_test.js): Runtime type checker.
   * **[rot13_service/](src/rot13_service): ROT-13 microservice**
-    * [rot13_controller.js](src/rot13_service/rot13_controller.js): Controller for `/rot13/transform` endpoint.
-    * [rot13_logic.js](src/rot13_service/rot13_logic.js): ROT-13 encoder.
-    * [rot13_router.js](src/rot13_service/rot13_router.js): Entry point into ROT-13 microservice.
-    * [rot13_view.js](src/rot13_service/rot13_view.js): Renderer for ROT-13 microservice's responses.
+    * [rot13_controller.js](src/rot13_service/rot13_controller.js) [(tests)](/src/rot13_service/_rot13_controller_test.js): Controller for `/rot13/transform` endpoint.
+    * [rot13_logic.js](src/rot13_service/rot13_logic.js) [(tests)](src/rot13_service/_rot13_logic_test.js): ROT-13 encoder.
+    * [rot13_router.js](src/rot13_service/rot13_router.js) [(tests)](src/rot13_service/_rot13_router_test.js): Entry point into ROT-13 microservice.
+    * [rot13_view.js](src/rot13_service/rot13_view.js) [(tests)](src/rot13_service/_rot13_view_test.js): Renderer for ROT-13 microservice's responses.
   * **[www/](src/www): Front-end website**
     * [www_config.js](src/www/www_config.js): Configuration used by all front-end website routes.
-    * [www_router.js](src/www/www_router.js): Entry point into front-end website.
-    * [www_view.js](src/www/www_view.js): Generic renderer for front-end website’s responses.
+    * [www_router.js](src/www/www_router.js) [(tests)](src/www/_www_router_test.js): Entry point into front-end website.
+    * [www_view.js](src/www/www_view.js) [(tests)](src/www/_www_view_test.js): Generic renderer for front-end website’s responses.
     * **[home_page/](src/www/home_page): Front-end '/' endpoint**
-      * [home_page_controller.js](src/www/home_page/home_page_controller.js): Controller for `/` endpoint.
-      * [home_page_view.js](src/www/home_page/home_page_view.js): Renderer for `/` responses.
+      * [home_page_controller.js](src/www/home_page/home_page_controller.js) [(tests)](src/www/home_page/_home_page_controller_test.js): Controller for `/` endpoint.
+      * [home_page_view.js](src/www/home_page/home_page_view.js) [(tests)](src/www/home_page/_home_page_view_test.js): Renderer for `/` responses.
     * **[infrastructure/](src/www/infrastructure): Front-end-specific infrastructure wrappers**
-      * [rot13_client.js](src/www/infrastructure/rot13_client.js): Client for ROT-13 microservice.
-      * [uuid_generator.js](src/www/infrastructure/uuid_generator.js): Create random unique identifiers (UUIDs).
+      * [rot13_client.js](src/www/infrastructure/rot13_client.js) [(tests)](src/www/infrastructure/_rot13_client_test.js): Client for ROT-13 microservice.
+      * [uuid_generator.js](src/www/infrastructure/uuid_generator.js) [(tests)](src/www/infrastructure/_uuid_generator_test.js): Create random unique identifiers (UUIDs).
 
 Third-party modules are in the top-level `node_modules/` directory (not to be confused with `src/node_modules`). The following modules are used by the production code:
 
