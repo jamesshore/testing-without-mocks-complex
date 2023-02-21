@@ -1,13 +1,13 @@
 // Copyright Titanium I.T. LLC.
-const assert = require("util/assert.cjs");
-const ensure = require("util/ensure.cjs");
-const AllServers = require("./all_servers.cjs");
-const CommandLine = require("infrastructure/command_line.cjs");
-const HttpServer = require("http/http_server.cjs");
-const HttpRequest = require("http/http_request.cjs");
-const Log = require("infrastructure/log.cjs");
-const WwwRouter = require("./www/www_router.cjs");
-const Rot13Router = require("./rot13_service/rot13_router.cjs");
+import assert from "util/assert.cjs";
+import ensure from "util/ensure.cjs";
+import AllServers from "./all_servers.cjs";
+import CommandLine from "infrastructure/command_line.cjs";
+import HttpServer from "http/http_server.cjs";
+import HttpRequest from "http/http_request.cjs";
+import Log from "infrastructure/log.cjs";
+import WwwRouter from "./www/www_router.cjs";
+import Rot13Router from "./rot13_service/rot13_router.cjs";
 
 const VALID_ARGS = [ "1000", "2000" ];
 
