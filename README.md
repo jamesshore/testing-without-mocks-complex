@@ -144,7 +144,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
     * [www_router.js](src/www/www_router.js) [(tests)](src/www/_www_router_test.js): Entry point into front-end website.
     * [www_view.js](src/www/www_view.cjs) [(tests)](src/www/_www_view_test.js): Generic renderer for front-end website’s responses.
     * **[home_page/](src/www/home_page): Front-end '/' endpoint**
-      * [home_page_controller.js](src/www/home_page/home_page_controller.cjs) [(tests)](src/www/home_page/_home_page_controller_test.js): Controller for `/` endpoint.
+      * [home_page_controller.js](src/www/home_page/home_page_controller.js) [(tests)](src/www/home_page/_home_page_controller_test.js): Controller for `/` endpoint.
       * [home_page_view.js](src/www/home_page/home_page_view.cjs) [(tests)](src/www/home_page/_home_page_view_test.js): Renderer for `/` responses.
     * **[infrastructure/](src/www/infrastructure): Front-end-specific infrastructure wrappers**
       * [rot13_client.js](src/www/infrastructure/rot13_client.cjs) [(tests)](src/www/infrastructure/_rot13_client_test.js): Client for ROT-13 microservice.
@@ -231,7 +231,7 @@ The code is infrastructure-heavy, with almost no logic, so the A-Frame Architect
 
 #### [Traffic Cop](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#traffic-cop)
 
-The [WwwRouter](src/www/www_router.js) and [Rot13Router](src/rot13_service/rot13_router.cjs) routers are traffic cops. They receive events from the [HttpServer](src/node_modules/http/http_server.cjs) via their `routeAsync()` methods, then turn around and call the appropriate methods on [HomePageController](src/www/home_page/home_page_controller.cjs) and [Rot13Controller](src/rot13_service/rot13_controller.cjs). However, because the pattern is spread across multiple classes, it's not very clear in the code.
+The [WwwRouter](src/www/www_router.js) and [Rot13Router](src/rot13_service/rot13_router.cjs) routers are traffic cops. They receive events from the [HttpServer](src/node_modules/http/http_server.cjs) via their `routeAsync()` methods, then turn around and call the appropriate methods on [HomePageController](src/www/home_page/home_page_controller.js) and [Rot13Controller](src/rot13_service/rot13_controller.cjs). However, because the pattern is spread across multiple classes, it's not very clear in the code.
 
 #### [Grow Evolutionary Seeds](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#grow-seeds)
 
@@ -261,7 +261,7 @@ The low-level infrastructure wrappers (mentioned above) all have narrow integrat
 
 #### [Paranoic Telemetry](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#paranoic-telemetry)
 
-[HomePageController](src/www/home_page/home_page_controller.cjs) and [Rot13Client](src/www/infrastructure/rot13_client.cjs) collectively implement Paranoid Telemetry. Rot13Client checks the ROT-13 microservice response for any unexpected behavior, and throws an exception if it finds any. HomePageController handles exceptions thrown by Rot13Client and additionally handles slow responses.
+[HomePageController](src/www/home_page/home_page_controller.js) and [Rot13Client](src/www/infrastructure/rot13_client.cjs) collectively implement Paranoid Telemetry. Rot13Client checks the ROT-13 microservice response for any unexpected behavior, and throws an exception if it finds any. HomePageController handles exceptions thrown by Rot13Client and additionally handles slow responses.
 
 
 ### Nullability Patterns
@@ -292,7 +292,7 @@ Several classes support output tracking: [HttpClient](src/node_modules/http/http
 
 #### [Fake It Once You Make It](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#fake-it)
 
-[Log](src/node_modules/infrastructure/log.cjs), [HomePageController](src/www/home_page/home_page_controller.cjs), and [Rot13Client](src/www/infrastructure/rot13_client.cjs) all use nullable dependencies to implement their code and tests. Of the production implementations, Rot13Client is the most interesting, because it has configurable responses.
+[Log](src/node_modules/infrastructure/log.cjs), [HomePageController](src/www/home_page/home_page_controller.js), and [Rot13Client](src/www/infrastructure/rot13_client.cjs) all use nullable dependencies to implement their code and tests. Of the production implementations, Rot13Client is the most interesting, because it has configurable responses.
 
 ### Legacy Code Patterns
 

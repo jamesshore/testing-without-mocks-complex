@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
 import assert from "util/assert.cjs";
 import ensure from "util/ensure.cjs";
-import HomePageController from "./home_page/home_page_controller.cjs";
+import { HomePageController } from "./home_page/home_page_controller.js";
 import HttpRequest from "http/http_request.cjs";
 import { WwwRouter } from "./www_router.js";
 import WwwConfig from "./www_config.cjs";
