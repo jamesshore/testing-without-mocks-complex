@@ -1,9 +1,9 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure.cjs");
-const Log = require("infrastructure/log.cjs");
+import ensure from "util/ensure.cjs";
+import Log from "infrastructure/log.cjs";
 
 /** Configuration used by all website routes */
-module.exports = class WwwConfig {
+export class WwwConfig {
 
 	static create(log, rot13ServicePort, correlationId) {
 		ensure.signature(arguments, [ Log, Number, String ]);
@@ -43,4 +43,4 @@ module.exports = class WwwConfig {
 		return this._correlationId;
 	}
 
-};
+}

@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
-const assert = require("util/assert.cjs");
-const UuidGenerator = require("./uuid_generator.cjs");
+import assert from "util/assert.cjs";
+import { UuidGenerator } from "./uuid_generator.js";
 
 describe("UUID factory", () => {
 

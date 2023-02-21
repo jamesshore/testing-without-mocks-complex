@@ -1,14 +1,14 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure.cjs");
-const assert = require("util/assert.cjs");
-const HomePageController = require("./home_page/home_page_controller.cjs");
-const HttpRequest = require("http/http_request.cjs");
-const WwwRouter = require("./www_router.cjs");
-const WwwConfig = require("./www_config.cjs");
-const wwwView = require("./www_view.cjs");
-const HttpServer = require("http/http_server.cjs");
-const Log = require("infrastructure/log.cjs");
-const UuidGenerator = require("./infrastructure/uuid_generator.cjs");
+import assert from "util/assert.cjs";
+import ensure from "util/ensure.cjs";
+import { HomePageController } from "./home_page/home_page_controller.js";
+import HttpRequest from "http/http_request.cjs";
+import { WwwRouter } from "./www_router.js";
+import { WwwConfig } from "./www_config.js";
+import * as wwwView from "./www_view.js";
+import HttpServer from "http/http_server.cjs";
+import Log from "infrastructure/log.cjs";
+import { UuidGenerator } from "./infrastructure/uuid_generator.js";
 
 const IRRELEVANT_PORT = 42;
 

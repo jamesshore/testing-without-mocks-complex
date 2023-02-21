@@ -1,9 +1,9 @@
 // Copyright Titanium I.T. LLC.
-const HttpResponse = require("http/http_response.cjs");
-const wwwView = require("../www_view.cjs");
+import HttpResponse from "http/http_response.cjs";
+import * as wwwView from "../www_view.js";
 
 /** Home page response */
-exports.homePage = function(text = "") {
+export function homePage(text = "") {
 	const body = `
 		<p>Enter text to translate:</p>
 		<form method="post">
@@ -16,4 +16,4 @@ exports.homePage = function(text = "") {
 		status: 200,
 		body: wwwView.pageTemplate("ROT-13 Translator", body),
 	});
-};
+}

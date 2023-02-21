@@ -1,14 +1,13 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure.cjs");
-const HttpRequest = require("http/http_request.cjs");
-const HttpResponse = require("http/http_response.cjs");
-const GenericRouter = require("http/generic_router.cjs");
-const Rot13Controller = require("./rot13_controller.cjs");
-const Log = require("infrastructure/log.cjs");
-const rot13View = require("./rot13_view.cjs");
+import ensure from "util/ensure.cjs";
+import HttpRequest from "http/http_request.cjs";
+import GenericRouter from "http/generic_router.cjs";
+import { Rot13Controller } from "./rot13_controller.js";
+import Log from "infrastructure/log.cjs";
+import * as rot13View from "./rot13_view.js";
 
 /** Router for ROT-13 service */
-module.exports = class Rot13Router {
+export class Rot13Router {
 
 	static create(log) {
 		ensure.signature(arguments, [ Log ]);
@@ -51,7 +50,7 @@ module.exports = class Rot13Router {
 		return await this._router.routeAsync(request, log);
 	}
 
-};
+}
 
 function errorHandler(status, error, request) {
 	ensure.signature(arguments, [ Number, String, HttpRequest ]);

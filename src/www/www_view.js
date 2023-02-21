@@ -1,8 +1,8 @@
 // Copyright Titanium I.T. LLC.
-const HttpResponse = require("http/http_response.cjs");
+import HttpResponse from "http/http_response.cjs";
 
 /** Overall HTML template for website */
-exports.pageTemplate = function(title, body) {
+export function pageTemplate(title, body) {
 	return `
 		<html lang="en">
 		<head>
@@ -11,15 +11,15 @@ exports.pageTemplate = function(title, body) {
 		<body>${body}</body>
 		</html>
 	`;
-};
+}
 
 /** Error page response */
-exports.errorPage = function(status, message) {
+export function errorPage(status, message) {
 	const title = `${status}: ${message}`;
 	const body = `<p>${message}</p>`;
 
 	return HttpResponse.createHtmlResponse({
 		status,
-		body: exports.pageTemplate(title, body),
+		body: pageTemplate(title, body),
 	});
-};
+}

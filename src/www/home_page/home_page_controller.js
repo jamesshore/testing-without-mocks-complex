@@ -1,17 +1,17 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure.cjs");
-const homePageView = require("./home_page_view.cjs");
-const Rot13Client = require("../infrastructure/rot13_client.cjs");
-const HttpRequest = require("http/http_request.cjs");
-const WwwConfig = require("../www_config.cjs");
-const Clock = require("infrastructure/clock.cjs");
+import ensure from "util/ensure.cjs";
+import * as homePageView from "./home_page_view.js";
+import { Rot13Client } from "../infrastructure/rot13_client.js";
+import HttpRequest from "http/http_request.cjs";
+import { WwwConfig } from "../www_config.js";
+import Clock from "infrastructure/clock.cjs";
 
 const ENDPOINT = "/";
 const INPUT_FIELD_NAME = "text";
 const TIMEOUT_IN_MS = 5000;
 
 /** Endpoints for / (home page) */
-module.exports = class HomePageController {
+export class HomePageController {
 
 	static create() {
 		ensure.signature(arguments, []);
@@ -50,7 +50,7 @@ module.exports = class HomePageController {
 		return homePageView.homePage(output);
 	}
 
-};
+}
 
 function parseBody(body, log) {
 	try {

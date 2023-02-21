@@ -1,8 +1,7 @@
 // Copyright Titanium I.T. LLC.
-const assert = require("util/assert.cjs");
-const rot13View = require("./rot13_view.cjs");
-const HttpResponse = require("http/http_response.cjs");
-const rot13Logic = require("./rot13_logic.cjs");
+import assert from "util/assert.cjs";
+import * as rot13View from "./rot13_view.js";
+import HttpResponse from "http/http_response.cjs";
 
 describe("ROT-13 View", () => {
 

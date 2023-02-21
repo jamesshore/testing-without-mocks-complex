@@ -1,9 +1,9 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure.cjs");
-const uuid = require("uuid");
-const ConfigurableResponses = require("util/configurable_responses.cjs");
+import ensure from "util/ensure.cjs";
+import * as uuid from "uuid";
+import ConfigurableResponses from "util/configurable_responses.cjs";
 
-module.exports = class UuidGenerator {
+export class UuidGenerator {
 
 	static create() {
 		ensure.signature(arguments, []);
@@ -29,7 +29,7 @@ module.exports = class UuidGenerator {
 		return this._uuid.v4();
 	}
 
-};
+}
 
 
 class StubbedUuid {

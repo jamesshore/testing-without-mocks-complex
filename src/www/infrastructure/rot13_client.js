@@ -1,9 +1,9 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure.cjs");
-const type = require("util/type.cjs");
-const HttpClient = require("http/http_client.cjs");
-const OutputTracker = require("util/output_tracker.cjs");
-const EventEmitter = require("events");
+import ensure from "util/ensure.cjs";
+import type from "util/type.cjs";
+import HttpClient from "http/http_client.cjs";
+import OutputTracker from "util/output_tracker.cjs";
+import EventEmitter from "events";
 
 const HOST = "localhost";
 const TRANSFORM_ENDPOINT = "/rot13/transform";
@@ -11,7 +11,7 @@ const RESPONSE_TYPE = { transformed: String };
 const REQUEST_EVENT = "request";
 
 /** Client for ROT-13 service */
-module.exports = class Rot13Client {
+export class Rot13Client {
 
 	static create() {
 		ensure.signature(arguments, []);
@@ -101,7 +101,7 @@ module.exports = class Rot13Client {
 		return parsedBody.transformed;
 	}
 
-};
+}
 
 
 function throwError(message, port, response) {
