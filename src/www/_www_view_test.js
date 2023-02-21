@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
-const assert = require("util/assert.cjs");
-const wwwView = require("./www_view.cjs");
+import assert from "util/assert.cjs";
+import * as wwwView from "./www_view.js";
 
 describe("WWW View", () => {
 

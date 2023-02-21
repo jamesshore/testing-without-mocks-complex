@@ -142,7 +142,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
   * **[www/](src/www): Front-end website**
     * [www_config.js](src/www/www_config.js): Configuration used by all front-end website routes.
     * [www_router.js](src/www/www_router.js) [(tests)](src/www/_www_router_test.js): Entry point into front-end website.
-    * [www_view.js](src/www/www_view.cjs) [(tests)](src/www/_www_view_test.js): Generic renderer for front-end website’s responses.
+    * [www_view.js](src/www/www_view.js) [(tests)](src/www/_www_view_test.js): Generic renderer for front-end website’s responses.
     * **[home_page/](src/www/home_page): Front-end '/' endpoint**
       * [home_page_controller.js](src/www/home_page/home_page_controller.js) [(tests)](src/www/home_page/_home_page_controller_test.js): Controller for `/` endpoint.
       * [home_page_view.js](src/www/home_page/home_page_view.js) [(tests)](src/www/home_page/_home_page_view_test.js): Renderer for `/` responses.

@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
 import HttpResponse from "http/http_response.cjs";
-import wwwView from "../www_view.cjs";
+import * as wwwView from "../www_view.js";
 
 /** Home page response */
 export function homePage(text = "") {
