@@ -221,21 +221,13 @@ The following tests use Collaborator-Based Isolation to prevent changes in depen
 The code is infrastructure-heavy, with almost no logic, so the A-Frame Architecture pattern doesn’t apply to most of the code. However, the ROT-13 service has a small A-Frame Architecture:
 
 * The *Application/UI* layer is represented by [Rot13Router](src/rot13_service/rot13_router.js) and [Rot13Controller](src/rot13_service/rot13_controller.js).
-<<<<<<< Updated upstream
-* The *Logic* layer is represented by [Rot13Logic](src/rot13_service/rot13_logic.cjs) and [Rot13View](src/rot13_service/rot13_view.js).
-=======
-* The *Logic* layer is represented by [Rot13Logic](src/rot13_service/rot13_logic.js) and [Rot13View](src/rot13_service/rot13_view.cjs).
->>>>>>> Stashed changes
+* The *Logic* layer is represented by [Rot13Logic](src/rot13_service/rot13_logic.js) and [Rot13View](src/rot13_service/rot13_view.js).
 * The *Infrastructure* layer is represented by [HttpServer](src/node_modules/http/http_server.js), [HttpRequest](src/node_modules/http/http_request.js), and [HttpResponse](src/node_modules/http/http_response.js).
 * There is no *Values* layer.
 
 #### [Logic Sandwich](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#logic-sandwich)
 
-<<<<<<< Updated upstream
-[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.js), calls [Rot13Logic](src/rot13_service/rot13_logic.cjs), renders it with [Rot13View](src/rot13_service/rot13_view.js), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.js) (which is then served by [HttpServer](src/node_modules/http/http_server.js)).
-=======
-[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.js), calls [Rot13Logic](src/rot13_service/rot13_logic.js), renders it with [Rot13View](src/rot13_service/rot13_view.cjs), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.js) (which is then served by [HttpServer](src/node_modules/http/http_server.js)).
->>>>>>> Stashed changes
+[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.js), calls [Rot13Logic](src/rot13_service/rot13_logic.js), renders it with [Rot13View](src/rot13_service/rot13_view.js), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.js) (which is then served by [HttpServer](src/node_modules/http/http_server.js)).
 
 #### [Traffic Cop](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#traffic-cop)
 
