@@ -128,7 +128,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
       * [command_line.js](src/node_modules/infrastructure/command_line.mjs) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
       * [log.js](src/node_modules/infrastructure/log.mjs) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
     * **[util/](src/node_modules/util): Miscellaneous libraries**
-      * [assert.js](src/node_modules/util/assert.cjs) [(tests)](/src/node_modules/util/_assert_test.js): Assertion library used by tests.
+      * [assert.js](src/node_modules/util/assert.mjs) [(tests)](/src/node_modules/util/_assert_test.js): Assertion library used by tests.
       * [configurable_responses.js](src/node_modules/util/configurable_responses.mjs) [(tests)](/src/node_modules/util/_configurable_responses_test.js): Utility library for implementing [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses) pattern.
       * [ensure.js](src/node_modules/util/ensure.mjs) [(tests)](src/node_modules/util/_ensure_test.js): Runtime assertions for production code. Most notably used for runtime type checking of method signatures.
       * [output_tracker.js](src/node_modules/util/output_tracker.mjs) [(tests)](/src/node_modules/util/_output_tracker_test.js): Utility library for implementing [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking) pattern.

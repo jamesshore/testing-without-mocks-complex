@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.cjs";
+import assert from "util/assert.mjs";
 import * as rot13Logic from "./rot13_logic.js";
 
 describe("ROT-13 Logic", () => {

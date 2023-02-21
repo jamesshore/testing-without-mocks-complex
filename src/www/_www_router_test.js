@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.cjs";
+import assert from "util/assert.mjs";
 import * as ensure from "util/ensure.mjs";
 import { HomePageController } from "./home_page/home_page_controller.js";
 import { HttpRequest } from "http/http_request.mjs";

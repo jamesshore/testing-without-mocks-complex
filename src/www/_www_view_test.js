@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.cjs";
+import assert from "util/assert.mjs";
 import * as wwwView from "./www_view.js";
 
 describe("WWW View", () => {

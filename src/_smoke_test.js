@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.cjs";
+import assert from "util/assert.mjs";
 import { forkModule, requestAsync } from "util/test_helper.mjs";
 import { pathToFile } from "util/module_paths.mjs";
 // dependency_analysis: ./serve.js

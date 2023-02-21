@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.cjs";
+import assert from "util/assert.mjs";
 import * as ensure from "util/ensure.mjs";
 import { AllServers } from "./all_servers.js";
 import { CommandLine } from "infrastructure/command_line.mjs";
