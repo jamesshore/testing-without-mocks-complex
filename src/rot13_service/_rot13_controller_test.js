@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
 import assert from "util/assert.cjs";
-import rot13Logic from "./rot13_logic.cjs";
+import * as rot13Logic from "./rot13_logic.js";
 import { Rot13Controller } from "./rot13_controller.js";
 import HttpRequest from "http/http_request.cjs";
 import * as rot13View from "./rot13_view.js";

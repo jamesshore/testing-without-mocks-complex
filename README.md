@@ -136,7 +136,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
       * [type.js](src/node_modules/util/type.cjs) [(tests)](/src/node_modules/util/_type_test.js): Runtime type checker.
   * **[rot13_service/](src/rot13_service): ROT-13 microservice**
     * [rot13_controller.js](src/rot13_service/rot13_controller.js) [(tests)](/src/rot13_service/_rot13_controller_test.js): Controller for `/rot13/transform` endpoint.
-    * [rot13_logic.js](src/rot13_service/rot13_logic.cjs) [(tests)](src/rot13_service/_rot13_logic_test.js): ROT-13 encoder.
+    * [rot13_logic.js](src/rot13_service/rot13_logic.js) [(tests)](src/rot13_service/_rot13_logic_test.js): ROT-13 encoder.
     * [rot13_router.js](src/rot13_service/rot13_router.js) [(tests)](src/rot13_service/_rot13_router_test.js): Entry point into ROT-13 microservice.
     * [rot13_view.js](src/rot13_service/rot13_view.js) [(tests)](src/rot13_service/_rot13_view_test.js): Renderer for ROT-13 microservice's responses.
   * **[www/](src/www): Front-end website**
@@ -221,13 +221,21 @@ The following tests use Collaborator-Based Isolation to prevent changes in depen
 The code is infrastructure-heavy, with almost no logic, so the A-Frame Architecture pattern doesn’t apply to most of the code. However, the ROT-13 service has a small A-Frame Architecture:
 
 * The *Application/UI* layer is represented by [Rot13Router](src/rot13_service/rot13_router.js) and [Rot13Controller](src/rot13_service/rot13_controller.js).
+<<<<<<< Updated upstream
 * The *Logic* layer is represented by [Rot13Logic](src/rot13_service/rot13_logic.cjs) and [Rot13View](src/rot13_service/rot13_view.js).
+=======
+* The *Logic* layer is represented by [Rot13Logic](src/rot13_service/rot13_logic.js) and [Rot13View](src/rot13_service/rot13_view.cjs).
+>>>>>>> Stashed changes
 * The *Infrastructure* layer is represented by [HttpServer](src/node_modules/http/http_server.cjs), [HttpRequest](src/node_modules/http/http_request.cjs), and [HttpResponse](src/node_modules/http/http_response.cjs).
 * There is no *Values* layer.
 
 #### [Logic Sandwich](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#logic-sandwich)
 
+<<<<<<< Updated upstream
 [Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.cjs), calls [Rot13Logic](src/rot13_service/rot13_logic.cjs), renders it with [Rot13View](src/rot13_service/rot13_view.js), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.cjs) (which is then served by [HttpServer](src/node_modules/http/http_server.cjs)).
+=======
+[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.cjs), calls [Rot13Logic](src/rot13_service/rot13_logic.js), renders it with [Rot13View](src/rot13_service/rot13_view.cjs), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.cjs) (which is then served by [HttpServer](src/node_modules/http/http_server.cjs)).
+>>>>>>> Stashed changes
 
 #### [Traffic Cop](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#traffic-cop)
 
@@ -242,7 +250,7 @@ The code was built evolutionarily, but there's no way to easily see it.
 
 #### [Easily-Visible Behavior](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#visible-behavior)
 
-The one Logic layer function, [Rot13Logic.transform()](src/rot13_service/rot13_logic.cjs), is a pure function. Other classes expose their state as needed to make testing easy.
+The one Logic layer function, [Rot13Logic.transform()](src/rot13_service/rot13_logic.js), is a pure function. Other classes expose their state as needed to make testing easy.
 
 #### [Testable Libraries](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#testable-libraries)
 
