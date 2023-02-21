@@ -4,7 +4,7 @@ import assert from "util/assert.cjs";
 import { Rot13Router } from "./rot13_router.js";
 import HttpServer from "http/http_server.cjs";
 import HttpRequest from "http/http_request.cjs";
-import Rot13Controller from "./rot13_controller.cjs";
+import { Rot13Controller } from "./rot13_controller.js";
 import HttpResponse from "http/http_response.cjs";
 import Log from "infrastructure/log.cjs";
 import rot13View from "./rot13_view.cjs";

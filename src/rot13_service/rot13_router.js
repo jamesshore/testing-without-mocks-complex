@@ -2,7 +2,7 @@
 import ensure from "util/ensure.cjs";
 import HttpRequest from "http/http_request.cjs";
 import GenericRouter from "http/generic_router.cjs";
-import Rot13Controller from "./rot13_controller.cjs";
+import { Rot13Controller } from "./rot13_controller.js";
 import Log from "infrastructure/log.cjs";
 import rot13View from "./rot13_view.cjs";
 

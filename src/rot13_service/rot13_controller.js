@@ -1,13 +1,12 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure.cjs");
-const rot13Logic = require("./rot13_logic.cjs");
-const HttpResponse = require("http/http_response.cjs");
-const rot13View = require("./rot13_view.cjs");
+import ensure from "util/ensure.cjs";
+import rot13Logic from "./rot13_logic.cjs";
+import rot13View from "./rot13_view.cjs";
 
 const REQUEST_TYPE = { text: String };
 
 /** Endpoint for /rot13/transform */
-module.exports = class Rot13Controller {
+export class Rot13Controller {
 
 	static create() {
 		return new Rot13Controller();
@@ -35,4 +34,4 @@ module.exports = class Rot13Controller {
 		}
 	}
 
-};
+}
