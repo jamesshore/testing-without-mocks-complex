@@ -7,7 +7,7 @@ import * as homePageView from "./home_page_view.js";
 import { Rot13Client } from "../infrastructure/rot13_client.js";
 import { HomePageController } from "./home_page_controller.js";
 import { Log } from "infrastructure/log.mjs";
-import Clock from "infrastructure/clock.cjs";
+import { Clock } from "infrastructure/clock.mjs";
 
 const IRRELEVANT_PORT = 42;
 const IRRELEVANT_INPUT = "irrelevant_input";

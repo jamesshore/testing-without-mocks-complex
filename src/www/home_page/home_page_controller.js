@@ -4,7 +4,7 @@ import * as homePageView from "./home_page_view.js";
 import { Rot13Client } from "../infrastructure/rot13_client.js";
 import { HttpRequest } from "http/http_request.mjs";
 import { WwwConfig } from "../www_config.js";
-import Clock from "infrastructure/clock.cjs";
+import { Clock } from "infrastructure/clock.mjs";
 
 const ENDPOINT = "/";
 const INPUT_FIELD_NAME = "text";

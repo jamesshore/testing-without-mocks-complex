@@ -124,7 +124,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
       * [http_response.js](src/node_modules/http/http_response.mjs) [(tests)](src/node_modules/http/_http_response_test.js): Server-side HTTP response to be sent to the client.
       * [http_server.js](src/node_modules/http/http_server.mjs) [(tests)](src/node_modules/http/_http_server_test.js): An HTTP server.
     * **[infrastructure/](src/node_modules/infrastructure): Other shared infrastructure wrappers**
-      * [clock.js](src/node_modules/infrastructure/clock.cjs) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
+      * [clock.js](src/node_modules/infrastructure/clock.mjs) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
       * [command_line.js](src/node_modules/infrastructure/command_line.cjs) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
       * [log.js](src/node_modules/infrastructure/log.mjs) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
     * **[util/](src/node_modules/util): Miscellaneous libraries**
@@ -152,7 +152,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
 
 Third-party modules are in the top-level `node_modules/` directory (not to be confused with `src/node_modules`). The following modules are used by the production code:
 
-* `@sinonjs/fake-timers`: Used to make [Clock](src/node_modules/infrastructure/clock.cjs) Nullable.
+* `@sinonjs/fake-timers`: Used to make [Clock](src/node_modules/infrastructure/clock.mjs) Nullable.
 * `uuid`: Wrapped by [UuidGenerator](src/www/infrastructure/uuid_generator.js), which is used to create correlation IDs.
 
 The remaining modules are used by the build and tests:
@@ -261,7 +261,7 @@ This program doesn’t use any third-party logic libraries.
 
 #### [Infrastructure Wrappers](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#infrastructure-wrappers)
 
-There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.mjs), [HttpServer](src/node_modules/http/http_server.mjs), [HttpRequest](src/node_modules/http/http_request.mjs), [Clock](src/node_modules/infrastructure/clock.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.mjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
+There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.mjs), [HttpServer](src/node_modules/http/http_server.mjs), [HttpRequest](src/node_modules/http/http_request.mjs), [Clock](src/node_modules/infrastructure/clock.mjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.mjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
 
 #### [Narrow Integration Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-integration-tests)
 
