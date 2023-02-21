@@ -5,9 +5,9 @@
 // Thanks to Davide Alberto Molin for inspiring this code.
 // See https://www.letscodejavascript.com/v3/comments/live/7 for details.
 
-"use strict";
+import { checkNodeVersion } from "../util/node_version_checker.js";
 
-require("../util/node_version_checker").check();
+checkNodeVersion();
 
 const gaze = require("gaze");
 const pathLib = require("path");

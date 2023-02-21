@@ -7,6 +7,7 @@
   },
   "description": "",
   "main": "index.js",
+  "type": "module",
   "dependencies": {
     "@sinonjs/fake-timers": "^10.0.2",
     "uuid": "^9.0.0"

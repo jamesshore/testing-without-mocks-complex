@@ -1,7 +1,6 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
 
-const pathLib = require("path");
+import pathLib from "path";
 
 // Matches 'require("file")' and detects if it has '//' in front.
 const REQUIRE_REGEX = /(\/\/)?.*?\brequire\s*?\(["'](.*?)["']/;
@@ -9,7 +8,7 @@ const REQUIRE_REGEX = /(\/\/)?.*?\brequire\s*?\(["'](.*?)["']/;
 // Matches '// dependency_analysis: file'. For manually specifying dependencies that don't need require(). One per line.
 const COMMENT_REGEX = /\/\/?\s*?dependency_analysis:\s*(.*?)\s*$/;
 
-module.exports = class DependencyAnalysis {
+export default class DependencyAnalysis {
 
 	constructor(build, rootDir, eligibleFiles) {
 		this._build = build;
@@ -44,7 +43,7 @@ module.exports = class DependencyAnalysis {
 		return result;
 	}
 
-};
+}
 
 async function isCachedAnalysisOutdated(self, file) {
 	const analysis = await self._analysisCache[file];

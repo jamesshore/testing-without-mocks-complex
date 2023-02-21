@@ -1,39 +1,51 @@
 // Copyright (c) 2015-2018 Titanium I.T. LLC. All rights reserved. For license, see "README" or "LICENSE" file.
-"use strict";
 
-const glob = require("glob");
+import glob from "glob";
 
-exports.generatedDir = "generated";
-exports.incrementalDir = `${exports.generatedDir}/incremental`;
+export const generatedDir = "generated";
+export const incrementalDir = `${generatedDir}/incremental`;
 
-exports.watchFiles = memoizedDeglob([
+export const watchFiles = memoizedDeglob([
 	"build/**/*",
 	"src/**/*",
 ]);
 
-exports.watchRestartFiles = memoizedDeglob([
+export const watchRestartFiles = memoizedDeglob([
 	"build/**/*",
+	"package.json",
+	"tsconfig.json",
+	"*.cmd",
+	"*.sh",
 ], [
 	"build/node_modules/**/*",
 ]);
 
-exports.lintFiles = memoizedDeglob([
+export const lintFiles = memoizedDeglob([
 	"*.js",
 	"build/**/*.js",
 	"src/**/*.js",
+	"src/**/*.ts",
+], [
+	"build/util/node_version_checker.js",   // ESLint doesn't yet support import assertions
 ]);
 
-exports.testFiles = memoizedDeglob([
+export const testFiles = memoizedDeglob([
 	"build/**/_*_test.js",
-	"src/**/_*_test.js",
-	"src/**/_*_test.js",
+	"generated/typescript/**/_*_test.js",
+	"generated/typescript/**/_*_test.ts",
 ]);
 
-exports.testDependencies = memoizedDeglob([
+export const testDependencies = memoizedDeglob([
 	"build/**/*.js",
-	"src/**/*.js",
+	"generated/typescript/**/*.js",
+	"generated/typescript/**/*.ts",
 ], [
 	"build/util/dependency_analysis.js",
+]);
+
+export const compilerDependencies = memoizedDeglob([
+	"src/**/*.js",
+	"src/**/*.ts",
 ]);
 
 

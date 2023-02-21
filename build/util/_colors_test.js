@@ -1,8 +1,7 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
 
-const assert = require("./assert");
-const colors = require("./colors");
+import assert from "./assert.js";
+import colors from "./colors.js";
 
 describe("Colors", () => {
 

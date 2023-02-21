@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
 
-module.exports = {
-	integration: "integration",
+export default {
+	integration: "javascript",
+	typescript: "typescript",
 	dev: "dev",
 };
