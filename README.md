@@ -141,7 +141,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
     * [rot13_view.js](src/rot13_service/rot13_view.cjs) [(tests)](src/rot13_service/_rot13_view_test.js): Renderer for ROT-13 microservice's responses.
   * **[www/](src/www): Front-end website**
     * [www_config.js](src/www/www_config.cjs): Configuration used by all front-end website routes.
-    * [www_router.js](src/www/www_router.cjs) [(tests)](src/www/_www_router_test.js): Entry point into front-end website.
+    * [www_router.js](src/www/www_router.js) [(tests)](src/www/_www_router_test.js): Entry point into front-end website.
     * [www_view.js](src/www/www_view.cjs) [(tests)](src/www/_www_view_test.js): Generic renderer for front-end website’s responses.
     * **[home_page/](src/www/home_page): Front-end '/' endpoint**
       * [home_page_controller.js](src/www/home_page/home_page_controller.cjs) [(tests)](src/www/home_page/_home_page_controller_test.js): Controller for `/` endpoint.
@@ -231,7 +231,7 @@ The code is infrastructure-heavy, with almost no logic, so the A-Frame Architect
 
 #### [Traffic Cop](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#traffic-cop)
 
-The [WwwRouter](src/www/www_router.cjs) and [Rot13Router](src/rot13_service/rot13_router.cjs) routers are traffic cops. They receive events from the [HttpServer](src/node_modules/http/http_server.cjs) via their `routeAsync()` methods, then turn around and call the appropriate methods on [HomePageController](src/www/home_page/home_page_controller.cjs) and [Rot13Controller](src/rot13_service/rot13_controller.cjs). However, because the pattern is spread across multiple classes, it's not very clear in the code.
+The [WwwRouter](src/www/www_router.js) and [Rot13Router](src/rot13_service/rot13_router.cjs) routers are traffic cops. They receive events from the [HttpServer](src/node_modules/http/http_server.cjs) via their `routeAsync()` methods, then turn around and call the appropriate methods on [HomePageController](src/www/home_page/home_page_controller.cjs) and [Rot13Controller](src/rot13_service/rot13_controller.cjs). However, because the pattern is spread across multiple classes, it's not very clear in the code.
 
 #### [Grow Evolutionary Seeds](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#grow-seeds)
 

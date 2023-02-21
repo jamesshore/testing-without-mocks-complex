@@ -1,15 +1,15 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure.cjs");
-const HttpRequest = require("http/http_request.cjs");
-const HomePageController = require("./home_page/home_page_controller.cjs");
-const wwwView = require("./www_view.cjs");
-const GenericRouter = require("http/generic_router.cjs");
-const WwwConfig = require("./www_config.cjs");
-const Log = require("infrastructure/log.cjs");
-const UuidGenerator = require("./infrastructure/uuid_generator.cjs");
+import ensure from "util/ensure.cjs";
+import HttpRequest from "http/http_request.cjs";
+import HomePageController from "./home_page/home_page_controller.cjs";
+import wwwView from "./www_view.cjs";
+import GenericRouter from "http/generic_router.cjs";
+import WwwConfig from "./www_config.cjs";
+import Log from "infrastructure/log.cjs";
+import UuidGenerator from "./infrastructure/uuid_generator.cjs";
 
 /** Router for user-facing website */
-module.exports = class WwwRouter {
+export class WwwRouter {
 
 	static create(log, rot13ServicePort) {
 		ensure.signature(arguments, [ Log, Number ]);
@@ -71,7 +71,7 @@ module.exports = class WwwRouter {
 		return await this._router.routeAsync(request, log, config);
 	}
 
-};
+}
 
 function errorHandler(status, errorMessage, request) {
 	ensure.signature(arguments, [ Number, String, HttpRequest ]);

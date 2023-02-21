@@ -6,7 +6,7 @@ import CommandLine from "infrastructure/command_line.cjs";
 import HttpServer from "http/http_server.cjs";
 import HttpRequest from "http/http_request.cjs";
 import Log from "infrastructure/log.cjs";
-import WwwRouter from "./www/www_router.cjs";
+import { WwwRouter } from "./www/www_router.js";
 import Rot13Router from "./rot13_service/rot13_router.cjs";
 
 const VALID_ARGS = [ "1000", "2000" ];
