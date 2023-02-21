@@ -4,7 +4,7 @@ import ensure from "util/ensure.cjs";
 import { HomePageController } from "./home_page/home_page_controller.js";
 import HttpRequest from "http/http_request.cjs";
 import { WwwRouter } from "./www_router.js";
-import WwwConfig from "./www_config.cjs";
+import { WwwConfig } from "./www_config.js";
 import wwwView from "./www_view.cjs";
 import HttpServer from "http/http_server.cjs";
 import Log from "infrastructure/log.cjs";

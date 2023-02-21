@@ -140,7 +140,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
     * [rot13_router.js](src/rot13_service/rot13_router.cjs) [(tests)](src/rot13_service/_rot13_router_test.js): Entry point into ROT-13 microservice.
     * [rot13_view.js](src/rot13_service/rot13_view.cjs) [(tests)](src/rot13_service/_rot13_view_test.js): Renderer for ROT-13 microservice's responses.
   * **[www/](src/www): Front-end website**
-    * [www_config.js](src/www/www_config.cjs): Configuration used by all front-end website routes.
+    * [www_config.js](src/www/www_config.js): Configuration used by all front-end website routes.
     * [www_router.js](src/www/www_router.js) [(tests)](src/www/_www_router_test.js): Entry point into front-end website.
     * [www_view.js](src/www/www_view.cjs) [(tests)](src/www/_www_view_test.js): Generic renderer for front-end website’s responses.
     * **[home_page/](src/www/home_page): Front-end '/' endpoint**
@@ -199,7 +199,7 @@ None of the classes do any significant work in their constructors. The servers h
 
 #### [Parameterless Instantiation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#instantiation)
 
-Every class can be instantiated without providing any parameters. It doesn't make sense for [WwwConfig](src/www/www_config.cjs) to be instantiated without parameters, so it provides a `createTestInstance()` method for use by tests. It has optional defaults.
+Every class can be instantiated without providing any parameters. It doesn't make sense for [WwwConfig](src/www/www_config.js) to be instantiated without parameters, so it provides a `createTestInstance()` method for use by tests. It has optional defaults.
 
 #### [Signature Shielding](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#sig-shielding)
 

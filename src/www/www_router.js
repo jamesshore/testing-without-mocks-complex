@@ -4,7 +4,7 @@ import HttpRequest from "http/http_request.cjs";
 import { HomePageController } from "./home_page/home_page_controller.js";
 import wwwView from "./www_view.cjs";
 import GenericRouter from "http/generic_router.cjs";
-import WwwConfig from "./www_config.cjs";
+import { WwwConfig } from "./www_config.js";
 import Log from "infrastructure/log.cjs";
 import UuidGenerator from "./infrastructure/uuid_generator.cjs";
 
