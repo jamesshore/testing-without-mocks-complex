@@ -2,7 +2,7 @@
 import ensure from "util/ensure.cjs";
 import CommandLine from "infrastructure/command_line.cjs";
 import { HttpServer } from "http/http_server.mjs";
-import Log from "infrastructure/log.cjs";
+import { Log } from "infrastructure/log.mjs";
 import { WwwRouter } from "./www/www_router.js";
 import { Rot13Router } from "./rot13_service/rot13_router.js";
 

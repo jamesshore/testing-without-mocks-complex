@@ -126,7 +126,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
     * **[infrastructure/](src/node_modules/infrastructure): Other shared infrastructure wrappers**
       * [clock.js](src/node_modules/infrastructure/clock.cjs) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
       * [command_line.js](src/node_modules/infrastructure/command_line.cjs) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
-      * [log.js](src/node_modules/infrastructure/log.cjs) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
+      * [log.js](src/node_modules/infrastructure/log.mjs) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
     * **[util/](src/node_modules/util): Miscellaneous libraries**
       * [assert.js](src/node_modules/util/assert.cjs) [(tests)](/src/node_modules/util/_assert_test.js): Assertion library used by tests.
       * [configurable_responses.js](src/node_modules/util/configurable_responses.cjs) [(tests)](/src/node_modules/util/_configurable_responses_test.js): Utility library for implementing [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses) pattern.
@@ -261,7 +261,7 @@ This program doesn’t use any third-party logic libraries.
 
 #### [Infrastructure Wrappers](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#infrastructure-wrappers)
 
-There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.mjs), [HttpServer](src/node_modules/http/http_server.mjs), [HttpRequest](src/node_modules/http/http_request.mjs), [Clock](src/node_modules/infrastructure/clock.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.cjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
+There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.mjs), [HttpServer](src/node_modules/http/http_server.mjs), [HttpRequest](src/node_modules/http/http_request.mjs), [Clock](src/node_modules/infrastructure/clock.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.mjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
 
 #### [Narrow Integration Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-integration-tests)
 
@@ -300,7 +300,7 @@ Several classes support output tracking: [HttpClient](src/node_modules/http/http
 
 #### [Fake It Once You Make It](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#fake-it)
 
-[Log](src/node_modules/infrastructure/log.cjs), [HomePageController](src/www/home_page/home_page_controller.js), and [Rot13Client](src/www/infrastructure/rot13_client.js) all use nullable dependencies to implement their code and tests. Of the production implementations, Rot13Client is the most interesting, because it has configurable responses.
+[Log](src/node_modules/infrastructure/log.mjs), [HomePageController](src/www/home_page/home_page_controller.js), and [Rot13Client](src/www/infrastructure/rot13_client.js) all use nullable dependencies to implement their code and tests. Of the production implementations, Rot13Client is the most interesting, because it has configurable responses.
 
 ### Legacy Code Patterns
 
