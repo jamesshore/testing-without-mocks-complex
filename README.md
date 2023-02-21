@@ -148,12 +148,12 @@ The source code is in the `src/` directory. Test files start with an underscore 
       * [home_page_view.js](src/www/home_page/home_page_view.js) [(tests)](src/www/home_page/_home_page_view_test.js): Renderer for `/` responses.
     * **[infrastructure/](src/www/infrastructure): Front-end-specific infrastructure wrappers**
       * [rot13_client.js](src/www/infrastructure/rot13_client.js) [(tests)](src/www/infrastructure/_rot13_client_test.js): Client for ROT-13 microservice.
-      * [uuid_generator.js](src/www/infrastructure/uuid_generator.cjs) [(tests)](src/www/infrastructure/_uuid_generator_test.js): Create random unique identifiers (UUIDs).
+      * [uuid_generator.js](src/www/infrastructure/uuid_generator.js) [(tests)](src/www/infrastructure/_uuid_generator_test.js): Create random unique identifiers (UUIDs).
 
 Third-party modules are in the top-level `node_modules/` directory (not to be confused with `src/node_modules`). The following modules are used by the production code:
 
 * `@sinonjs/fake-timers`: Used to make [Clock](src/node_modules/infrastructure/clock.cjs) Nullable.
-* `uuid`: Wrapped by [UuidGenerator](src/www/infrastructure/uuid_generator.cjs), which is used to create correlation IDs.
+* `uuid`: Wrapped by [UuidGenerator](src/www/infrastructure/uuid_generator.js), which is used to create correlation IDs.
 
 The remaining modules are used by the build and tests:
 
@@ -253,7 +253,7 @@ This program doesn’t use any third-party logic libraries.
 
 #### [Infrastructure Wrappers](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#infrastructure-wrappers)
 
-There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.cjs), [HttpServer](src/node_modules/http/http_server.cjs), [HttpRequest](src/node_modules/http/http_request.cjs), [Clock](src/node_modules/infrastructure/clock.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.cjs) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.cjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
+There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.cjs), [HttpServer](src/node_modules/http/http_server.cjs), [HttpRequest](src/node_modules/http/http_request.cjs), [Clock](src/node_modules/infrastructure/clock.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.cjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
 
 #### [Narrow Integration Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-integration-tests)
 
@@ -280,7 +280,7 @@ The code is written in JavaScript, so thin wrappers aren't needed.
 
 #### [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses)
 
-Most of the infrastructure wrappers (listed above) have configurable responses. [UuidGenerator](src/www/infrastructure/uuid_generator.cjs) and [HttpClient](src/node_modules/http/http_client.cjs) in particular support multiple different responses.
+Most of the infrastructure wrappers (listed above) have configurable responses. [UuidGenerator](src/www/infrastructure/uuid_generator.js) and [HttpClient](src/node_modules/http/http_client.cjs) in particular support multiple different responses.
 
 #### [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking)
 

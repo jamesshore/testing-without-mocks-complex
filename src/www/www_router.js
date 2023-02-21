@@ -6,7 +6,7 @@ import * as wwwView from "./www_view.js";
 import GenericRouter from "http/generic_router.cjs";
 import { WwwConfig } from "./www_config.js";
 import Log from "infrastructure/log.cjs";
-import UuidGenerator from "./infrastructure/uuid_generator.cjs";
+import { UuidGenerator } from "./infrastructure/uuid_generator.js";
 
 /** Router for user-facing website */
 export class WwwRouter {

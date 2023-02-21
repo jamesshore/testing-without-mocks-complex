@@ -8,7 +8,7 @@ import { WwwConfig } from "./www_config.js";
 import * as wwwView from "./www_view.js";
 import HttpServer from "http/http_server.cjs";
 import Log from "infrastructure/log.cjs";
-import UuidGenerator from "./infrastructure/uuid_generator.cjs";
+import { UuidGenerator } from "./infrastructure/uuid_generator.js";
 
 const IRRELEVANT_PORT = 42;
 
