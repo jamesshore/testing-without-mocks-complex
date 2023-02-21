@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.mjs";
+import * as ensure from "util/ensure.js";
 import * as uuid from "uuid";
-import { ConfigurableResponses } from "util/configurable_responses.mjs";
+import { ConfigurableResponses } from "util/configurable_responses.js";
 
 export class UuidGenerator {
 

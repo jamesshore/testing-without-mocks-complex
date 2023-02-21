@@ -1,9 +1,9 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.mjs";
-import { HttpRequest } from "http/http_request.mjs";
-import { GenericRouter } from "http/generic_router.mjs";
+import * as ensure from "util/ensure.js";
+import { HttpRequest } from "http/http_request.js";
+import { GenericRouter } from "http/generic_router.js";
 import { Rot13Controller } from "./rot13_controller.js";
-import { Log } from "infrastructure/log.mjs";
+import { Log } from "infrastructure/log.js";
 import * as rot13View from "./rot13_view.js";
 
 /** Router for ROT-13 service */

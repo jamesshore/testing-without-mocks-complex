@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import { HttpResponse } from "http/http_response.mjs";
+import { HttpResponse } from "http/http_response.js";
 
 /** Overall HTML template for website */
 export function pageTemplate(title, body) {

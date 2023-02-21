@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import { HttpResponse } from "http/http_response.mjs";
+import { HttpResponse } from "http/http_response.js";
 import * as wwwView from "../www_view.js";
 
 /** Home page response */

@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.mjs";
+import * as ensure from "util/ensure.js";
 
 /** ROT-13 transformation logic */
 export function transform(input) {

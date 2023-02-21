@@ -1,11 +1,11 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.mjs";
-import { HttpRequest } from "http/http_request.mjs";
+import * as ensure from "util/ensure.js";
+import { HttpRequest } from "http/http_request.js";
 import { HomePageController } from "./home_page/home_page_controller.js";
 import * as wwwView from "./www_view.js";
-import { GenericRouter } from "http/generic_router.mjs";
+import { GenericRouter } from "http/generic_router.js";
 import { WwwConfig } from "./www_config.js";
-import { Log } from "infrastructure/log.mjs";
+import { Log } from "infrastructure/log.js";
 import { UuidGenerator } from "./infrastructure/uuid_generator.js";
 
 /** Router for user-facing website */

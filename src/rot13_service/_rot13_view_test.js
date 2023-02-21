@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.mjs";
+import assert from "util/assert.js";
 import * as rot13View from "./rot13_view.js";
-import { HttpResponse } from "http/http_response.mjs";
+import { HttpResponse } from "http/http_response.js";
 
 describe("ROT-13 View", () => {
 

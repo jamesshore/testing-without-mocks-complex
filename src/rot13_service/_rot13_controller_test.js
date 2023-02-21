@@ -1,8 +1,8 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.mjs";
+import assert from "util/assert.js";
 import * as rot13Logic from "./rot13_logic.js";
 import { Rot13Controller } from "./rot13_controller.js";
-import { HttpRequest } from "http/http_request.mjs";
+import { HttpRequest } from "http/http_request.js";
 import * as rot13View from "./rot13_view.js";
 
 const VALID_HEADERS = { "content-type": "application/json" };
