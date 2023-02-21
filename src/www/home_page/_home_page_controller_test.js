@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
 import assert from "util/assert.cjs";
-import ensure from "util/ensure.cjs";
+import * as ensure from "util/ensure.mjs";
 import { HttpRequest } from "http/http_request.mjs";
 import { WwwConfig } from "../www_config.js";
 import * as homePageView from "./home_page_view.js";

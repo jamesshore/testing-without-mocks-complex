@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import ensure from "util/ensure.cjs";
+import * as ensure from "util/ensure.mjs";
 import * as homePageView from "./home_page_view.js";
 import { Rot13Client } from "../infrastructure/rot13_client.js";
 import { HttpRequest } from "http/http_request.mjs";

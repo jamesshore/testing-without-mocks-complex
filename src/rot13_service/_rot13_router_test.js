@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import ensure from "util/ensure.cjs";
+import * as ensure from "util/ensure.mjs";
 import assert from "util/assert.cjs";
 import { Rot13Router } from "./rot13_router.js";
 import { HttpServer } from "http/http_server.mjs";

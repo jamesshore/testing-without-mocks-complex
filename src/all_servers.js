@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import ensure from "util/ensure.cjs";
+import * as ensure from "util/ensure.mjs";
 import { CommandLine } from "infrastructure/command_line.mjs";
 import { HttpServer } from "http/http_server.mjs";
 import { Log } from "infrastructure/log.mjs";
