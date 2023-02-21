@@ -2,7 +2,7 @@
 import ensure from "util/ensure.cjs";
 import type from "util/type.cjs";
 import { HttpClient } from "http/http_client.mjs";
-import OutputTracker from "util/output_tracker.cjs";
+import { OutputTracker } from "util/output_tracker.mjs";
 import EventEmitter from "events";
 
 const HOST = "localhost";
