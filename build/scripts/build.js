@@ -5,12 +5,14 @@ import DependencyAnalysis from "../util/dependency_analysis.js";
 import * as paths from "../config/paths.js";
 import * as lint from "../util/lint_runner.js";
 import lintConfig from "../config/eslint.conf.js";
-import shell from "shelljs"; shell.config.fatal = true;
+import shell from "shelljs";
 import { runMochaAsync } from "../util/mocha_runner.js";
 import mochaConfig from "../config/mocha.conf.js";
 import Colors from "../util/colors.js";
 import { pathToFile } from "../util/module_paths.js";
 import * as sh from "../util/sh.js";
+
+shell.config.fatal = true;
 
 const successColor = Colors.brightGreen;
 const failureColor = Colors.brightRed;
@@ -80,10 +82,21 @@ build.incrementalTask("test", paths.testDependencies(), async () => {
 });
 
 build.incrementalTask("compile", paths.compilerDependencies(), async () => {
-	console.log("Compiling: .");
+	process.stdout.write("Compiling: .");
 
 	const { code } = await sh.runInteractive("node_modules/.bin/tsc", []);
 	if (code !== 0) throw new Error("Compile failed");
+	copyPackageJsonFiles();
+	process.stdout.write("\n");
+
+	function copyPackageJsonFiles() {
+		shell.rm("-rf", `${paths.typescriptDir}/**/*package.json`);
+		paths.sourcePackages().forEach(packageJson => {
+			process.stdout.write(".");
+			const relativePath = build.rootRelativePath(paths.srcDir, packageJson);
+			shell.cp(packageJson, `${paths.typescriptDir}/${relativePath}`);
+		});
+	}
 });
 
 

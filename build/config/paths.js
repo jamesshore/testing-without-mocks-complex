@@ -1,9 +1,10 @@
-// Copyright (c) 2015-2018 Titanium I.T. LLC. All rights reserved. For license, see "README" or "LICENSE" file.
-
+// Copyright Titanium I.T. LLC. All rights reserved. For license, see "README" or "LICENSE" file.
 import glob from "glob";
 
+export const srcDir = "src";
 export const generatedDir = "generated";
 export const incrementalDir = `${generatedDir}/incremental`;
+export const typescriptDir = `${generatedDir}/typescript`;
 
 export const watchFiles = memoizedDeglob([
 	"build/**/*",
@@ -31,6 +32,18 @@ export const lintFiles = memoizedDeglob([
 	"build/util/node_version_checker.js",   // ESLint doesn't yet support import assertions
 ]);
 
+export const sourcePackages = memoizedDeglob([
+	"src/**/package.json",
+]);
+
+export const compilerDependencies = memoizedDeglob([
+	...sourcePackages(),
+	"src/**/*.js",
+	"src/**/*.cjs",
+	"src/**/*.mjs",
+	"src/**/*.ts",
+]);
+
 export const testFiles = memoizedDeglob([
 	"build/**/_*_test.js",
 	"generated/typescript/**/_*_test.js",
@@ -41,19 +54,9 @@ export const testFiles = memoizedDeglob([
 
 export const testDependencies = memoizedDeglob([
 	"build/**/*.js",
-	"src/**/*.js",
-	"src/**/*.cjs",
-	"src/**/*.mjs",
-	"src/**/*.ts",
+	...compilerDependencies(),
 ], [
 	"build/util/dependency_analysis.js",
-]);
-
-export const compilerDependencies = memoizedDeglob([
-	"src/**/*.js",
-	"src/**/*.cjs",
-	"src/**/*.mjs",
-	"src/**/*.ts",
 ]);
 
 
