@@ -3,7 +3,7 @@ import assert from "util/assert.cjs";
 import ensure from "util/ensure.cjs";
 import { AllServers } from "./all_servers.js";
 import CommandLine from "infrastructure/command_line.cjs";
-import HttpServer from "http/http_server.cjs";
+import { HttpServer } from "http/http_server.mjs";
 import HttpRequest from "http/http_request.cjs";
 import Log from "infrastructure/log.cjs";
 import { WwwRouter } from "./www/www_router.js";

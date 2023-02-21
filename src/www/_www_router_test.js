@@ -6,7 +6,7 @@ import HttpRequest from "http/http_request.cjs";
 import { WwwRouter } from "./www_router.js";
 import { WwwConfig } from "./www_config.js";
 import * as wwwView from "./www_view.js";
-import HttpServer from "http/http_server.cjs";
+import { HttpServer } from "http/http_server.mjs";
 import Log from "infrastructure/log.cjs";
 import { UuidGenerator } from "./infrastructure/uuid_generator.js";
 
