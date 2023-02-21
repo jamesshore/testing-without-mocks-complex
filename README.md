@@ -113,8 +113,8 @@ content-type: application/json
 The source code is in the `src/` directory. Test files start with an underscore and are in the same directories as production code.
 
 * **[src/](src/): Source code**
-  * [all_servers.js](src/all_servers.cjs) [(tests)](src/_all_servers_test.js): Parse command-line and start servers.
-  * [serve.js](src/serve.cjs): Program entry point. Just launches [all_servers.js](src/all_servers.cjs).
+  * [all_servers.js](src/all_servers.js) [(tests)](src/_all_servers_test.js): Parse command-line and start servers.
+  * [serve.js](src/serve.js): Program entry point. Just launches [all_servers.js](src/all_servers.js).
   * [_smoke_test.js](src/_smoke_test.js): End-to-end smoke test for both servers.
   * **[node_modules/](src/node_modules): Code shared by both servers (*not* third-party code)**
     * **[http/](src/node_modules/http): HTTP infrastructure wrappers**

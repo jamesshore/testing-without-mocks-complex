@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
 import assert from "util/assert.cjs";
 import ensure from "util/ensure.cjs";
-import AllServers from "./all_servers.cjs";
+import { AllServers } from "./all_servers.js";
 import CommandLine from "infrastructure/command_line.cjs";
 import HttpServer from "http/http_server.cjs";
 import HttpRequest from "http/http_request.cjs";

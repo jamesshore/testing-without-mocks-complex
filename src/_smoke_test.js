@@ -45,7 +45,7 @@ async function forkAsync() {
 		let stdout = "";
 		const process = testHelper.forkModule(
 			pathToFile(import.meta.url, "."),
-			"./serve.cjs",
+			"./serve.js",
 			{ args: [ WWW_PORT.toString(), ROT13_PORT.toString() ] },
 		);
 

@@ -1,13 +1,13 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure.cjs");
-const CommandLine = require("infrastructure/command_line.cjs");
-const HttpServer = require("http/http_server.cjs");
-const Log = require("infrastructure/log.cjs");
-const WwwRouter = require("./www/www_router.cjs");
-const Rot13Router = require("./rot13_service/rot13_router.cjs");
+import ensure from "util/ensure.cjs";
+import CommandLine from "infrastructure/command_line.cjs";
+import HttpServer from "http/http_server.cjs";
+import Log from "infrastructure/log.cjs";
+import WwwRouter from "./www/www_router.cjs";
+import Rot13Router from "./rot13_service/rot13_router.cjs";
 
 /** Application startup (parse command line and start servers) */
-const AllServers = module.exports = class AllServers {
+export class AllServers {
 
 	static get USAGE() {
 		return "Usage: run [www server port] [rot-13 server port]";
@@ -59,7 +59,7 @@ const AllServers = module.exports = class AllServers {
 		]);
 	}
 
-};
+}
 
 function parseArgs(args) {
 	if (args.length !== 2) throw new Error(`invalid command-line arguments (${AllServers.USAGE})`);
