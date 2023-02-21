@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
 import ensure from "util/ensure.cjs";
-import CommandLine from "infrastructure/command_line.cjs";
+import { CommandLine } from "infrastructure/command_line.mjs";
 import { HttpServer } from "http/http_server.mjs";
 import { Log } from "infrastructure/log.mjs";
 import { WwwRouter } from "./www/www_router.js";

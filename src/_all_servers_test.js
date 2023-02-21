@@ -2,7 +2,7 @@
 import assert from "util/assert.cjs";
 import ensure from "util/ensure.cjs";
 import { AllServers } from "./all_servers.js";
-import CommandLine from "infrastructure/command_line.cjs";
+import { CommandLine } from "infrastructure/command_line.mjs";
 import { HttpServer } from "http/http_server.mjs";
 import { HttpRequest } from "http/http_request.mjs";
 import { Log } from "infrastructure/log.mjs";

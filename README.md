@@ -125,7 +125,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
       * [http_server.js](src/node_modules/http/http_server.mjs) [(tests)](src/node_modules/http/_http_server_test.js): An HTTP server.
     * **[infrastructure/](src/node_modules/infrastructure): Other shared infrastructure wrappers**
       * [clock.js](src/node_modules/infrastructure/clock.mjs) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
-      * [command_line.js](src/node_modules/infrastructure/command_line.cjs) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
+      * [command_line.js](src/node_modules/infrastructure/command_line.mjs) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
       * [log.js](src/node_modules/infrastructure/log.mjs) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
     * **[util/](src/node_modules/util): Miscellaneous libraries**
       * [assert.js](src/node_modules/util/assert.cjs) [(tests)](/src/node_modules/util/_assert_test.js): Assertion library used by tests.
@@ -261,7 +261,7 @@ This program doesn’t use any third-party logic libraries.
 
 #### [Infrastructure Wrappers](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#infrastructure-wrappers)
 
-There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.mjs), [HttpServer](src/node_modules/http/http_server.mjs), [HttpRequest](src/node_modules/http/http_request.mjs), [Clock](src/node_modules/infrastructure/clock.mjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.mjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
+There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.mjs), [HttpServer](src/node_modules/http/http_server.mjs), [HttpRequest](src/node_modules/http/http_request.mjs), [Clock](src/node_modules/infrastructure/clock.mjs), [CommandLine](src/node_modules/infrastructure/command_line.mjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.mjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
 
 #### [Narrow Integration Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-integration-tests)
 
@@ -292,7 +292,7 @@ Most of the infrastructure wrappers (listed above) have configurable responses. 
 
 #### [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking)
 
-Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.mjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), [Log](src/node_modules/infrastructure/command_line.cjs), [GenericRouter](src/node_modules/http/generic_router.mjs), and [Rot13Client](src/www/infrastructure/rot13_client.js).
+Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.mjs), [CommandLine](src/node_modules/infrastructure/command_line.mjs), [Log](src/node_modules/infrastructure/command_line.mjs), [GenericRouter](src/node_modules/http/generic_router.mjs), and [Rot13Client](src/www/infrastructure/rot13_client.js).
 
 #### [Behavior Simulation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#behavior-simulation)
 
