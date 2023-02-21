@@ -4,7 +4,7 @@ import CommandLine from "infrastructure/command_line.cjs";
 import HttpServer from "http/http_server.cjs";
 import Log from "infrastructure/log.cjs";
 import { WwwRouter } from "./www/www_router.js";
-import Rot13Router from "./rot13_service/rot13_router.cjs";
+import { Rot13Router } from "./rot13_service/rot13_router.js";
 
 /** Application startup (parse command line and start servers) */
 export class AllServers {

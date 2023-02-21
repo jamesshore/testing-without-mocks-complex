@@ -1,13 +1,13 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure.cjs");
-const assert = require("util/assert.cjs");
-const Rot13Router = require("./rot13_router.cjs");
-const HttpServer = require("http/http_server.cjs");
-const HttpRequest = require("http/http_request.cjs");
-const Rot13Controller = require("./rot13_controller.cjs");
-const HttpResponse = require("http/http_response.cjs");
-const Log = require("infrastructure/log.cjs");
-const rot13View = require("./rot13_view.cjs");
+import ensure from "util/ensure.cjs";
+import assert from "util/assert.cjs";
+import { Rot13Router } from "./rot13_router.js";
+import HttpServer from "http/http_server.cjs";
+import HttpRequest from "http/http_request.cjs";
+import Rot13Controller from "./rot13_controller.cjs";
+import HttpResponse from "http/http_response.cjs";
+import Log from "infrastructure/log.cjs";
+import rot13View from "./rot13_view.cjs";
 
 const IRRELEVANT_PORT = 42;
 

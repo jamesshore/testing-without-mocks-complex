@@ -137,7 +137,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
   * **[rot13_service/](src/rot13_service): ROT-13 microservice**
     * [rot13_controller.js](src/rot13_service/rot13_controller.cjs) [(tests)](/src/rot13_service/_rot13_controller_test.js): Controller for `/rot13/transform` endpoint.
     * [rot13_logic.js](src/rot13_service/rot13_logic.cjs) [(tests)](src/rot13_service/_rot13_logic_test.js): ROT-13 encoder.
-    * [rot13_router.js](src/rot13_service/rot13_router.cjs) [(tests)](src/rot13_service/_rot13_router_test.js): Entry point into ROT-13 microservice.
+    * [rot13_router.js](src/rot13_service/rot13_router.js) [(tests)](src/rot13_service/_rot13_router_test.js): Entry point into ROT-13 microservice.
     * [rot13_view.js](src/rot13_service/rot13_view.cjs) [(tests)](src/rot13_service/_rot13_view_test.js): Renderer for ROT-13 microservice's responses.
   * **[www/](src/www): Front-end website**
     * [www_config.js](src/www/www_config.js): Configuration used by all front-end website routes.
@@ -220,7 +220,7 @@ The following tests use Collaborator-Based Isolation to prevent changes in depen
 
 The code is infrastructure-heavy, with almost no logic, so the A-Frame Architecture pattern doesn’t apply to most of the code. However, the ROT-13 service has a small A-Frame Architecture:
 
-* The *Application/UI* layer is represented by [Rot13Router](src/rot13_service/rot13_router.cjs) and [Rot13Controller](src/rot13_service/rot13_controller.cjs).
+* The *Application/UI* layer is represented by [Rot13Router](src/rot13_service/rot13_router.js) and [Rot13Controller](src/rot13_service/rot13_controller.cjs).
 * The *Logic* layer is represented by [Rot13Logic](src/rot13_service/rot13_logic.cjs) and [Rot13View](src/rot13_service/rot13_view.cjs).
 * The *Infrastructure* layer is represented by [HttpServer](src/node_modules/http/http_server.cjs), [HttpRequest](src/node_modules/http/http_request.cjs), and [HttpResponse](src/node_modules/http/http_response.cjs).
 * There is no *Values* layer.
@@ -231,7 +231,7 @@ The code is infrastructure-heavy, with almost no logic, so the A-Frame Architect
 
 #### [Traffic Cop](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#traffic-cop)
 
-The [WwwRouter](src/www/www_router.js) and [Rot13Router](src/rot13_service/rot13_router.cjs) routers are traffic cops. They receive events from the [HttpServer](src/node_modules/http/http_server.cjs) via their `routeAsync()` methods, then turn around and call the appropriate methods on [HomePageController](src/www/home_page/home_page_controller.js) and [Rot13Controller](src/rot13_service/rot13_controller.cjs). However, because the pattern is spread across multiple classes, it's not very clear in the code.
+The [WwwRouter](src/www/www_router.js) and [Rot13Router](src/rot13_service/rot13_router.js) routers are traffic cops. They receive events from the [HttpServer](src/node_modules/http/http_server.cjs) via their `routeAsync()` methods, then turn around and call the appropriate methods on [HomePageController](src/www/home_page/home_page_controller.js) and [Rot13Controller](src/rot13_service/rot13_controller.cjs). However, because the pattern is spread across multiple classes, it's not very clear in the code.
 
 #### [Grow Evolutionary Seeds](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#grow-seeds)
 
