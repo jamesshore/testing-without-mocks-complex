@@ -58,7 +58,7 @@ export default class Build {
 			if (!(await this.isAnyModifiedAsync(sourceFiles, taskFile))) return;
 
 			await fn();
-			this.writeDirAndFileAsync(taskFile, "ok");
+			await this.writeDirAndFileAsync(taskFile, "ok");
 		});
 	}
 

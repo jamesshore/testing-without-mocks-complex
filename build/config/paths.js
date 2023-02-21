@@ -39,9 +39,9 @@ export const testFiles = memoizedDeglob([
 
 export const testDependencies = memoizedDeglob([
 	"build/**/*.js",
-	"generated/typescript/**/*.js",
-	"generated/typescript/**/*.cjs",
-	"generated/typescript/**/*.ts",
+	"src/**/*.js",
+	"src/**/*.cjs",
+	"src/**/*.ts",
 ], [
 	"build/util/dependency_analysis.js",
 ]);
