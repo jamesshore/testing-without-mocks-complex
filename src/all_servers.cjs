@@ -1,6 +1,4 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
-
 const ensure = require("util/ensure");
 const CommandLine = require("infrastructure/command_line");
 const HttpServer = require("http/http_server");

@@ -1,6 +1,4 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
-
 const HttpResponse = require("http/http_response");
 
 /** Overall HTML template for website */

@@ -1,6 +1,4 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
-
 const ensure = require("util/ensure");
 const uuid = require("uuid");
 const ConfigurableResponses = require("util/configurable_responses");

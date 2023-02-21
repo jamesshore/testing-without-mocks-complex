@@ -1,6 +1,4 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
-
 const assert = require("util/assert");
 const testHelper = require("util/test_helper");
 // dependency_analysis: ./serve.js

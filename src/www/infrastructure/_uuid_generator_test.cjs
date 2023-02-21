@@ -1,6 +1,4 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
-
 const assert = require("util/assert");
 const UuidGenerator = require("./uuid_generator.cjs");
 

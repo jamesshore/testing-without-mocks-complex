@@ -1,6 +1,4 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
-
 const assert = require("util/assert");
 const rot13View = require("./rot13_view.cjs");
 const HttpResponse = require("http/http_response");

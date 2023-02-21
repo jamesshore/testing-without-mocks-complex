@@ -1,6 +1,4 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
-
 const ensure = require("util/ensure");
 const HttpRequest = require("http/http_request");
 const HttpResponse = require("http/http_response");

@@ -1,6 +1,4 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
-
 const ensure = require("util/ensure");
 const assert = require("util/assert");
 const HomePageController = require("./home_page/home_page_controller.cjs");

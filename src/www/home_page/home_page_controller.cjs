@@ -1,6 +1,4 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
-
 const ensure = require("util/ensure");
 const homePageView = require("./home_page_view.cjs");
 const Rot13Client = require("../infrastructure/rot13_client.cjs");
