@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
-import ensure from "util/ensure.cjs";
-import Log from "infrastructure/log.cjs";
+import * as ensure from "util/ensure.mjs";
+import { Log } from "infrastructure/log.mjs";
 
 /** Configuration used by all website routes */
 export class WwwConfig {

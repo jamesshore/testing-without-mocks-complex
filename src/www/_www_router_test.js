@@ -1,13 +1,13 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.cjs";
-import ensure from "util/ensure.cjs";
+import assert from "util/assert.mjs";
+import * as ensure from "util/ensure.mjs";
 import { HomePageController } from "./home_page/home_page_controller.js";
-import HttpRequest from "http/http_request.cjs";
+import { HttpRequest } from "http/http_request.mjs";
 import { WwwRouter } from "./www_router.js";
 import { WwwConfig } from "./www_config.js";
 import * as wwwView from "./www_view.js";
-import HttpServer from "http/http_server.cjs";
-import Log from "infrastructure/log.cjs";
+import { HttpServer } from "http/http_server.mjs";
+import { Log } from "infrastructure/log.mjs";
 import { UuidGenerator } from "./infrastructure/uuid_generator.js";
 
 const IRRELEVANT_PORT = 42;

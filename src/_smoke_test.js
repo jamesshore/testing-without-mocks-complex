@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.cjs";
-import testHelper from "util/test_helper.cjs";
+import assert from "util/assert.mjs";
+import { forkModule, requestAsync } from "util/test_helper.mjs";
 import { pathToFile } from "util/module_paths.mjs";
 // dependency_analysis: ./serve.js
 
@@ -16,7 +16,7 @@ describe("Smoke test", function() {
 
 	it("performs end-to-end ROT-13 transform", async () => {
 		await runServersAsync(async () => {
-			const { status, body } = await testHelper.requestAsync({
+			const { status, body } = await requestAsync({
 				port: WWW_PORT,
 				url: "/",
 				method: "POST",
@@ -43,9 +43,8 @@ async function runServersAsync(fnAsync) {
 async function forkAsync() {
 	return await new Promise((resolve, reject) => {
 		let stdout = "";
-		const process = testHelper.forkModule(
-			pathToFile(import.meta.url, "."),
-			"./serve.js",
+		const process = forkModule(
+			pathToFile(import.meta.url, "serve.js"),
 			{ args: [ WWW_PORT.toString(), ROT13_PORT.toString() ] },
 		);
 

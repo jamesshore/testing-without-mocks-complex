@@ -1,9 +1,9 @@
 // Copyright Titanium I.T. LLC.
-import ensure from "util/ensure.cjs";
-import assert from "util/assert.cjs";
-import HttpClient from "http/http_client.cjs";
+import * as ensure from "util/ensure.mjs";
+import assert from "util/assert.mjs";
+import { HttpClient } from "http/http_client.mjs";
 import { Rot13Client } from "./rot13_client.js";
-import testHelper from "util/test_helper.cjs";
+import { ignorePromiseErrorAsync } from "util/test_helper.mjs";
 
 const HOST = "localhost";
 const IRRELEVANT_PORT = 42;
@@ -156,7 +156,7 @@ describe("ROT-13 Service client", () => {
 			};
 
 			cancelFn();
-			await testHelper.ignorePromiseErrorAsync(responsePromise);
+			await ignorePromiseErrorAsync(responsePromise);
 
 			assert.deepEqual(requests.data, [
 				expectedData,

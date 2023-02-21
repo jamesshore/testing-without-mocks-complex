@@ -1,8 +1,8 @@
 // Copyright Titanium I.T. LLC.
-import ensure from "util/ensure.cjs";
-import type from "util/type.cjs";
-import HttpClient from "http/http_client.cjs";
-import OutputTracker from "util/output_tracker.cjs";
+import * as ensure from "util/ensure.mjs";
+import * as type from "util/type.mjs";
+import { HttpClient } from "http/http_client.mjs";
+import { OutputTracker } from "util/output_tracker.mjs";
 import EventEmitter from "events";
 
 const HOST = "localhost";

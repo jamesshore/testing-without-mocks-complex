@@ -118,22 +118,22 @@ The source code is in the `src/` directory. Test files start with an underscore 
   * [_smoke_test.js](src/_smoke_test.js): End-to-end smoke test for both servers.
   * **[node_modules/](src/node_modules): Code shared by both servers (*not* third-party code)**
     * **[http/](src/node_modules/http): HTTP infrastructure wrappers**
-      * [generic_router.js](src/node_modules/http/generic_router.cjs) [(tests)](src/node_modules/http/_generic_router_test.js) A utility for converting [HttpRequest](src/node_modules/http/http_request.cjs)s to method calls.
-      * [http_client.js](src/node_modules/http/http_client.cjs) [(tests)](src/node_modules/http/_http_client_test.js): Makes HTTP requests.
-      * [http_request.js](src/node_modules/http/http_request.cjs) [(tests)](src/node_modules/http/_http_request_test.js): Server-side HTTP request received from the client.
-      * [http_response.js](src/node_modules/http/http_response.cjs) [(tests)](src/node_modules/http/_http_response_test.js): Server-side HTTP response to be sent to the client.
-      * [http_server.js](src/node_modules/http/http_server.cjs) [(tests)](src/node_modules/http/_http_server_test.js): An HTTP server.
+      * [generic_router.js](src/node_modules/http/generic_router.mjs) [(tests)](src/node_modules/http/_generic_router_test.js) A utility for converting [HttpRequest](src/node_modules/http/http_request.mjs)s to method calls.
+      * [http_client.js](src/node_modules/http/http_client.mjs) [(tests)](src/node_modules/http/_http_client_test.js): Makes HTTP requests.
+      * [http_request.js](src/node_modules/http/http_request.mjs) [(tests)](src/node_modules/http/_http_request_test.js): Server-side HTTP request received from the client.
+      * [http_response.js](src/node_modules/http/http_response.mjs) [(tests)](src/node_modules/http/_http_response_test.js): Server-side HTTP response to be sent to the client.
+      * [http_server.js](src/node_modules/http/http_server.mjs) [(tests)](src/node_modules/http/_http_server_test.js): An HTTP server.
     * **[infrastructure/](src/node_modules/infrastructure): Other shared infrastructure wrappers**
-      * [clock.js](src/node_modules/infrastructure/clock.cjs) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
-      * [command_line.js](src/node_modules/infrastructure/command_line.cjs) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
-      * [log.js](src/node_modules/infrastructure/log.cjs) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
+      * [clock.js](src/node_modules/infrastructure/clock.mjs) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
+      * [command_line.js](src/node_modules/infrastructure/command_line.mjs) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
+      * [log.js](src/node_modules/infrastructure/log.mjs) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
     * **[util/](src/node_modules/util): Miscellaneous libraries**
-      * [assert.js](src/node_modules/util/assert.cjs) [(tests)](/src/node_modules/util/_assert_test.js): Assertion library used by tests.
-      * [configurable_responses.js](src/node_modules/util/configurable_responses.cjs) [(tests)](/src/node_modules/util/_configurable_responses_test.js): Utility library for implementing [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses) pattern.
-      * [ensure.js](src/node_modules/util/ensure.cjs) [(tests)](src/node_modules/util/_ensure_test.js): Runtime assertions for production code. Most notably used for runtime type checking of method signatures.
-      * [output_tracker.js](src/node_modules/util/output_tracker.cjs) [(tests)](/src/node_modules/util/_output_tracker_test.js): Utility library for implementing [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking) pattern.
-      * [test_helper.js](src/node_modules/util/test_helper.cjs): Utility library for implementing integration tests.
-      * [type.js](src/node_modules/util/type.cjs) [(tests)](/src/node_modules/util/_type_test.js): Runtime type checker.
+      * [assert.js](src/node_modules/util/assert.mjs) [(tests)](/src/node_modules/util/_assert_test.js): Assertion library used by tests.
+      * [configurable_responses.js](src/node_modules/util/configurable_responses.mjs) [(tests)](/src/node_modules/util/_configurable_responses_test.js): Utility library for implementing [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses) pattern.
+      * [ensure.js](src/node_modules/util/ensure.mjs) [(tests)](src/node_modules/util/_ensure_test.js): Runtime assertions for production code. Most notably used for runtime type checking of method signatures.
+      * [output_tracker.js](src/node_modules/util/output_tracker.mjs) [(tests)](/src/node_modules/util/_output_tracker_test.js): Utility library for implementing [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking) pattern.
+      * [test_helper.js](src/node_modules/util/test_helper.mjs): Utility library for implementing integration tests.
+      * [type.js](src/node_modules/util/type.mjs) [(tests)](/src/node_modules/util/_type_test.js): Runtime type checker.
   * **[rot13_service/](src/rot13_service): ROT-13 microservice**
     * [rot13_controller.js](src/rot13_service/rot13_controller.js) [(tests)](/src/rot13_service/_rot13_controller_test.js): Controller for `/rot13/transform` endpoint.
     * [rot13_logic.js](src/rot13_service/rot13_logic.js) [(tests)](src/rot13_service/_rot13_logic_test.js): ROT-13 encoder.
@@ -152,7 +152,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
 
 Third-party modules are in the top-level `node_modules/` directory (not to be confused with `src/node_modules`). The following modules are used by the production code:
 
-* `@sinonjs/fake-timers`: Used to make [Clock](src/node_modules/infrastructure/clock.cjs) Nullable.
+* `@sinonjs/fake-timers`: Used to make [Clock](src/node_modules/infrastructure/clock.mjs) Nullable.
 * `uuid`: Wrapped by [UuidGenerator](src/www/infrastructure/uuid_generator.js), which is used to create correlation IDs.
 
 The remaining modules are used by the build and tests:
@@ -226,20 +226,20 @@ The code is infrastructure-heavy, with almost no logic, so the A-Frame Architect
 =======
 * The *Logic* layer is represented by [Rot13Logic](src/rot13_service/rot13_logic.js) and [Rot13View](src/rot13_service/rot13_view.cjs).
 >>>>>>> Stashed changes
-* The *Infrastructure* layer is represented by [HttpServer](src/node_modules/http/http_server.cjs), [HttpRequest](src/node_modules/http/http_request.cjs), and [HttpResponse](src/node_modules/http/http_response.cjs).
+* The *Infrastructure* layer is represented by [HttpServer](src/node_modules/http/http_server.mjs), [HttpRequest](src/node_modules/http/http_request.mjs), and [HttpResponse](src/node_modules/http/http_response.mjs).
 * There is no *Values* layer.
 
 #### [Logic Sandwich](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#logic-sandwich)
 
 <<<<<<< Updated upstream
-[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.cjs), calls [Rot13Logic](src/rot13_service/rot13_logic.cjs), renders it with [Rot13View](src/rot13_service/rot13_view.js), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.cjs) (which is then served by [HttpServer](src/node_modules/http/http_server.cjs)).
+[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.mjs), calls [Rot13Logic](src/rot13_service/rot13_logic.cjs), renders it with [Rot13View](src/rot13_service/rot13_view.js), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.mjs) (which is then served by [HttpServer](src/node_modules/http/http_server.mjs)).
 =======
-[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.cjs), calls [Rot13Logic](src/rot13_service/rot13_logic.js), renders it with [Rot13View](src/rot13_service/rot13_view.cjs), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.cjs) (which is then served by [HttpServer](src/node_modules/http/http_server.cjs)).
+[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.mjs), calls [Rot13Logic](src/rot13_service/rot13_logic.js), renders it with [Rot13View](src/rot13_service/rot13_view.cjs), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.mjs) (which is then served by [HttpServer](src/node_modules/http/http_server.mjs)).
 >>>>>>> Stashed changes
 
 #### [Traffic Cop](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#traffic-cop)
 
-The [WwwRouter](src/www/www_router.js) and [Rot13Router](src/rot13_service/rot13_router.js) routers are traffic cops. They receive events from the [HttpServer](src/node_modules/http/http_server.cjs) via their `routeAsync()` methods, then turn around and call the appropriate methods on [HomePageController](src/www/home_page/home_page_controller.js) and [Rot13Controller](src/rot13_service/rot13_controller.js). However, because the pattern is spread across multiple classes, it's not very clear in the code.
+The [WwwRouter](src/www/www_router.js) and [Rot13Router](src/rot13_service/rot13_router.js) routers are traffic cops. They receive events from the [HttpServer](src/node_modules/http/http_server.mjs) via their `routeAsync()` methods, then turn around and call the appropriate methods on [HomePageController](src/www/home_page/home_page_controller.js) and [Rot13Controller](src/rot13_service/rot13_controller.js). However, because the pattern is spread across multiple classes, it's not very clear in the code.
 
 #### [Grow Evolutionary Seeds](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#grow-seeds)
 
@@ -261,7 +261,7 @@ This program doesn’t use any third-party logic libraries.
 
 #### [Infrastructure Wrappers](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#infrastructure-wrappers)
 
-There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.cjs), [HttpServer](src/node_modules/http/http_server.cjs), [HttpRequest](src/node_modules/http/http_request.cjs), [Clock](src/node_modules/infrastructure/clock.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.cjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
+There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.mjs), [HttpServer](src/node_modules/http/http_server.mjs), [HttpRequest](src/node_modules/http/http_request.mjs), [Clock](src/node_modules/infrastructure/clock.mjs), [CommandLine](src/node_modules/infrastructure/command_line.mjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.mjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
 
 #### [Narrow Integration Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-integration-tests)
 
@@ -288,19 +288,19 @@ The code is written in JavaScript, so thin wrappers aren't needed.
 
 #### [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses)
 
-Most of the infrastructure wrappers (listed above) have configurable responses. [UuidGenerator](src/www/infrastructure/uuid_generator.js) and [HttpClient](src/node_modules/http/http_client.cjs) in particular support multiple different responses.
+Most of the infrastructure wrappers (listed above) have configurable responses. [UuidGenerator](src/www/infrastructure/uuid_generator.js) and [HttpClient](src/node_modules/http/http_client.mjs) in particular support multiple different responses.
 
 #### [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking)
 
-Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), [Log](src/node_modules/infrastructure/command_line.cjs), [GenericRouter](src/node_modules/http/generic_router.cjs), and [Rot13Client](src/www/infrastructure/rot13_client.js).
+Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.mjs), [CommandLine](src/node_modules/infrastructure/command_line.mjs), [Log](src/node_modules/infrastructure/command_line.mjs), [GenericRouter](src/node_modules/http/generic_router.mjs), and [Rot13Client](src/www/infrastructure/rot13_client.js).
 
 #### [Behavior Simulation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#behavior-simulation)
 
-[HttpServer](src/node_modules/http/http_server.cjs) allows callers to simulate HTTP requests.
+[HttpServer](src/node_modules/http/http_server.mjs) allows callers to simulate HTTP requests.
 
 #### [Fake It Once You Make It](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#fake-it)
 
-[Log](src/node_modules/infrastructure/log.cjs), [HomePageController](src/www/home_page/home_page_controller.js), and [Rot13Client](src/www/infrastructure/rot13_client.js) all use nullable dependencies to implement their code and tests. Of the production implementations, Rot13Client is the most interesting, because it has configurable responses.
+[Log](src/node_modules/infrastructure/log.mjs), [HomePageController](src/www/home_page/home_page_controller.js), and [Rot13Client](src/www/infrastructure/rot13_client.js) all use nullable dependencies to implement their code and tests. Of the production implementations, Rot13Client is the most interesting, because it has configurable responses.
 
 ### Legacy Code Patterns
 

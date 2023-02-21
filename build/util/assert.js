@@ -1,2 +1,3 @@
-import assert from "../../src/node_modules/util/assert.cjs";
+import assert from "../../src/node_modules/util/assert.mjs";
+
 export default assert;
