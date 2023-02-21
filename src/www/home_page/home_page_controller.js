@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
 import ensure from "util/ensure.cjs";
 import * as homePageView from "./home_page_view.js";
-import Rot13Client from "../infrastructure/rot13_client.cjs";
+import { Rot13Client } from "../infrastructure/rot13_client.js";
 import HttpRequest from "http/http_request.cjs";
 import { WwwConfig } from "../www_config.js";
 import Clock from "infrastructure/clock.cjs";

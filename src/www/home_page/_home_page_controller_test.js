@@ -4,7 +4,7 @@ import ensure from "util/ensure.cjs";
 import HttpRequest from "http/http_request.cjs";
 import { WwwConfig } from "../www_config.js";
 import * as homePageView from "./home_page_view.js";
-import Rot13Client from "../infrastructure/rot13_client.cjs";
+import { Rot13Client } from "../infrastructure/rot13_client.js";
 import { HomePageController } from "./home_page_controller.js";
 import Log from "infrastructure/log.cjs";
 import Clock from "infrastructure/clock.cjs";

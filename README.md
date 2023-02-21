@@ -147,7 +147,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
       * [home_page_controller.js](src/www/home_page/home_page_controller.js) [(tests)](src/www/home_page/_home_page_controller_test.js): Controller for `/` endpoint.
       * [home_page_view.js](src/www/home_page/home_page_view.js) [(tests)](src/www/home_page/_home_page_view_test.js): Renderer for `/` responses.
     * **[infrastructure/](src/www/infrastructure): Front-end-specific infrastructure wrappers**
-      * [rot13_client.js](src/www/infrastructure/rot13_client.cjs) [(tests)](src/www/infrastructure/_rot13_client_test.js): Client for ROT-13 microservice.
+      * [rot13_client.js](src/www/infrastructure/rot13_client.js) [(tests)](src/www/infrastructure/_rot13_client_test.js): Client for ROT-13 microservice.
       * [uuid_generator.js](src/www/infrastructure/uuid_generator.cjs) [(tests)](src/www/infrastructure/_uuid_generator_test.js): Create random unique identifiers (UUIDs).
 
 Third-party modules are in the top-level `node_modules/` directory (not to be confused with `src/node_modules`). The following modules are used by the production code:
@@ -253,7 +253,7 @@ This program doesn’t use any third-party logic libraries.
 
 #### [Infrastructure Wrappers](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#infrastructure-wrappers)
 
-There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.cjs), [HttpServer](src/node_modules/http/http_server.cjs), [HttpRequest](src/node_modules/http/http_request.cjs), [Clock](src/node_modules/infrastructure/clock.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.cjs) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.cjs) and [Rot13Client](src/www/infrastructure/rot13_client.cjs) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
+There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.cjs), [HttpServer](src/node_modules/http/http_server.cjs), [HttpRequest](src/node_modules/http/http_request.cjs), [Clock](src/node_modules/infrastructure/clock.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.cjs) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.cjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
 
 #### [Narrow Integration Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-integration-tests)
 
@@ -261,7 +261,7 @@ The low-level infrastructure wrappers (mentioned above) all have narrow integrat
 
 #### [Paranoic Telemetry](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#paranoic-telemetry)
 
-[HomePageController](src/www/home_page/home_page_controller.js) and [Rot13Client](src/www/infrastructure/rot13_client.cjs) collectively implement Paranoid Telemetry. Rot13Client checks the ROT-13 microservice response for any unexpected behavior, and throws an exception if it finds any. HomePageController handles exceptions thrown by Rot13Client and additionally handles slow responses.
+[HomePageController](src/www/home_page/home_page_controller.js) and [Rot13Client](src/www/infrastructure/rot13_client.js) collectively implement Paranoid Telemetry. Rot13Client checks the ROT-13 microservice response for any unexpected behavior, and throws an exception if it finds any. HomePageController handles exceptions thrown by Rot13Client and additionally handles slow responses.
 
 
 ### Nullability Patterns
@@ -284,7 +284,7 @@ Most of the infrastructure wrappers (listed above) have configurable responses. 
 
 #### [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking)
 
-Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), [Log](src/node_modules/infrastructure/command_line.cjs), [GenericRouter](src/node_modules/http/generic_router.cjs), and [Rot13Client](src/www/infrastructure/rot13_client.cjs).
+Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), [Log](src/node_modules/infrastructure/command_line.cjs), [GenericRouter](src/node_modules/http/generic_router.cjs), and [Rot13Client](src/www/infrastructure/rot13_client.js).
 
 #### [Behavior Simulation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#behavior-simulation)
 
@@ -292,7 +292,7 @@ Several classes support output tracking: [HttpClient](src/node_modules/http/http
 
 #### [Fake It Once You Make It](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#fake-it)
 
-[Log](src/node_modules/infrastructure/log.cjs), [HomePageController](src/www/home_page/home_page_controller.js), and [Rot13Client](src/www/infrastructure/rot13_client.cjs) all use nullable dependencies to implement their code and tests. Of the production implementations, Rot13Client is the most interesting, because it has configurable responses.
+[Log](src/node_modules/infrastructure/log.cjs), [HomePageController](src/www/home_page/home_page_controller.js), and [Rot13Client](src/www/infrastructure/rot13_client.js) all use nullable dependencies to implement their code and tests. Of the production implementations, Rot13Client is the most interesting, because it has configurable responses.
 
 ### Legacy Code Patterns
 
