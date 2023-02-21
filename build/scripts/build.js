@@ -82,19 +82,21 @@ build.incrementalTask("test", paths.testDependencies(), async () => {
 });
 
 build.incrementalTask("compile", paths.compilerDependencies(), async () => {
-	process.stdout.write("Compiling: .");
+	process.stdout.write("Compiling: ");
 
 	const { code } = await sh.runInteractive("node_modules/.bin/tsc", []);
+	process.stdout.write(".");
 	if (code !== 0) throw new Error("Compile failed");
 	copyPackageJsonFiles();
 	process.stdout.write("\n");
 
 	function copyPackageJsonFiles() {
 		shell.rm("-rf", `${paths.typescriptDir}/**/*package.json`);
+		process.stdout.write(".");
 		paths.sourcePackages().forEach(packageJson => {
-			process.stdout.write(".");
 			const relativePath = build.rootRelativePath(paths.srcDir, packageJson);
 			shell.cp(packageJson, `${paths.typescriptDir}/${relativePath}`);
+			process.stdout.write(".");
 		});
 	}
 });
