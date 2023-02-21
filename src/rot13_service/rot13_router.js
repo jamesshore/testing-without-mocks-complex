@@ -4,7 +4,7 @@ import HttpRequest from "http/http_request.cjs";
 import GenericRouter from "http/generic_router.cjs";
 import { Rot13Controller } from "./rot13_controller.js";
 import Log from "infrastructure/log.cjs";
-import rot13View from "./rot13_view.cjs";
+import * as rot13View from "./rot13_view.js";
 
 /** Router for ROT-13 service */
 export class Rot13Router {

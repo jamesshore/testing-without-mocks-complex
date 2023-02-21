@@ -7,7 +7,7 @@ import HttpRequest from "http/http_request.cjs";
 import { Rot13Controller } from "./rot13_controller.js";
 import HttpResponse from "http/http_response.cjs";
 import Log from "infrastructure/log.cjs";
-import rot13View from "./rot13_view.cjs";
+import * as rot13View from "./rot13_view.js";
 
 const IRRELEVANT_PORT = 42;
 

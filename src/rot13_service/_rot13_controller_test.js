@@ -3,7 +3,7 @@ import assert from "util/assert.cjs";
 import rot13Logic from "./rot13_logic.cjs";
 import { Rot13Controller } from "./rot13_controller.js";
 import HttpRequest from "http/http_request.cjs";
-import rot13View from "./rot13_view.cjs";
+import * as rot13View from "./rot13_view.js";
 
 const VALID_HEADERS = { "content-type": "application/json" };
 

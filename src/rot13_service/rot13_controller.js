@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
 import ensure from "util/ensure.cjs";
 import rot13Logic from "./rot13_logic.cjs";
-import rot13View from "./rot13_view.cjs";
+import * as rot13View from "./rot13_view.js";
 
 const REQUEST_TYPE = { text: String };
 

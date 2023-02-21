@@ -1,23 +1,23 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure.cjs");
-const HttpResponse = require("http/http_response.cjs");
+import ensure from "util/ensure.cjs";
+import HttpResponse from "http/http_response.cjs";
 
 /** Success response for ROT-13 server */
-exports.ok = function(transformed) {
+export function ok(transformed) {
 	ensure.signature(arguments, [ String ]);
 
 	return HttpResponse.createJsonResponse({
 		status: 200,
 		body: { transformed },
 	});
-};
+}
 
 /** Error response for ROT-13 server */
-exports.error = function (status, error) {
+export function error(status, error) {
 	ensure.signature(arguments, [ Number, String ]);
 
 	return HttpResponse.createJsonResponse({
 		status,
 		body: { error },
 	});
-};
+}
