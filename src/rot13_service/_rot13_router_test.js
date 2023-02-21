@@ -1,12 +1,12 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.mjs";
-import assert from "util/assert.mjs";
+import * as ensure from "util/ensure.js";
+import assert from "util/assert.js";
 import { Rot13Router } from "./rot13_router.js";
-import { HttpServer } from "http/http_server.mjs";
-import { HttpRequest } from "http/http_request.mjs";
+import { HttpServer } from "http/http_server.js";
+import { HttpRequest } from "http/http_request.js";
 import { Rot13Controller } from "./rot13_controller.js";
-import { HttpResponse } from "http/http_response.mjs";
-import { Log } from "infrastructure/log.mjs";
+import { HttpResponse } from "http/http_response.js";
+import { Log } from "infrastructure/log.js";
 import * as rot13View from "./rot13_view.js";
 
 const IRRELEVANT_PORT = 42;

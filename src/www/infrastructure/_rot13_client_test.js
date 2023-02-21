@@ -1,9 +1,9 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.mjs";
-import assert from "util/assert.mjs";
-import { HttpClient } from "http/http_client.mjs";
+import * as ensure from "util/ensure.js";
+import assert from "util/assert.js";
+import { HttpClient } from "http/http_client.js";
 import { Rot13Client } from "./rot13_client.js";
-import { ignorePromiseErrorAsync } from "util/test_helper.mjs";
+import { ignorePromiseErrorAsync } from "util/test_helper.js";
 
 const HOST = "localhost";
 const IRRELEVANT_PORT = 42;

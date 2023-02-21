@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.mjs";
+import * as ensure from "util/ensure.js";
 import * as rot13Logic from "./rot13_logic.js";
 import * as rot13View from "./rot13_view.js";
 

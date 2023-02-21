@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.mjs";
-import { forkModule, requestAsync } from "util/test_helper.mjs";
-import { pathToFile } from "util/module_paths.mjs";
+import assert from "util/assert.js";
+import { forkModule, requestAsync } from "util/test_helper.js";
+import { pathToFile } from "util/module_paths.js";
 // dependency_analysis: ./serve.js
 
 const STARTUP_TIMEOUT_IN_MS = 2000;

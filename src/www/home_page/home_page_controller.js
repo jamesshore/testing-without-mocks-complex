@@ -1,10 +1,10 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.mjs";
+import * as ensure from "util/ensure.js";
 import * as homePageView from "./home_page_view.js";
 import { Rot13Client } from "../infrastructure/rot13_client.js";
-import { HttpRequest } from "http/http_request.mjs";
+import { HttpRequest } from "http/http_request.js";
 import { WwwConfig } from "../www_config.js";
-import { Clock } from "infrastructure/clock.mjs";
+import { Clock } from "infrastructure/clock.js";
 
 const ENDPOINT = "/";
 const INPUT_FIELD_NAME = "text";

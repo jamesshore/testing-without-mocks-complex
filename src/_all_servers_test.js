@@ -1,11 +1,11 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.mjs";
-import * as ensure from "util/ensure.mjs";
+import assert from "util/assert.js";
+import * as ensure from "util/ensure.js";
 import { AllServers } from "./all_servers.js";
-import { CommandLine } from "infrastructure/command_line.mjs";
-import { HttpServer } from "http/http_server.mjs";
-import { HttpRequest } from "http/http_request.mjs";
-import { Log } from "infrastructure/log.mjs";
+import { CommandLine } from "infrastructure/command_line.js";
+import { HttpServer } from "http/http_server.js";
+import { HttpRequest } from "http/http_request.js";
+import { Log } from "infrastructure/log.js";
 import { WwwRouter } from "./www/www_router.js";
 import { Rot13Router } from "./rot13_service/rot13_router.js";
 

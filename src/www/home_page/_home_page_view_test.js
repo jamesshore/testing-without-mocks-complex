@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.mjs";
+import assert from "util/assert.js";
 import * as homePageView from "./home_page_view.js";
 
 describe("Home Page View", () => {

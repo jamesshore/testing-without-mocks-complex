@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import assert from "util/assert.mjs";
+import assert from "util/assert.js";
 import { UuidGenerator } from "./uuid_generator.js";
 
 describe("UUID factory", () => {
