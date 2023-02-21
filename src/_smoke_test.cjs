@@ -44,7 +44,7 @@ async function forkAsync() {
 		let stdout = "";
 		const process = testHelper.forkModule(
 			__dirname,
-			"./serve.js",
+			"./serve.cjs",
 			{ args: [ WWW_PORT.toString(), ROT13_PORT.toString() ] },
 		);
 
@@ -60,6 +60,10 @@ async function forkAsync() {
 			if (SERVER_STARTED_REGEX.test(stdout)) {
 				return succeed();
 			}
+		});
+
+		process.stderr.on("data", (chunk) => {
+			return fail(new Error(`Unexpected stderr: ${chunk}`));
 		});
 
 		function succeed() {
