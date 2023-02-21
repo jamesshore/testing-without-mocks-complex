@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure");
-const HttpResponse = require("http/http_response");
+const ensure = require("util/ensure.cjs");
+const HttpResponse = require("http/http_response.cjs");
 
 /** Success response for ROT-13 server */
 exports.ok = function(transformed) {

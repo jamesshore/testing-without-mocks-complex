@@ -1,11 +1,11 @@
 // Copyright Titanium I.T. LLC.
-const assert = require("util/assert");
-const ensure = require("util/ensure");
+const assert = require("util/assert.cjs");
+const ensure = require("util/ensure.cjs");
 const AllServers = require("./all_servers.cjs");
-const CommandLine = require("infrastructure/command_line");
-const HttpServer = require("http/http_server");
-const HttpRequest = require("http/http_request");
-const Log = require("infrastructure/log");
+const CommandLine = require("infrastructure/command_line.cjs");
+const HttpServer = require("http/http_server.cjs");
+const HttpRequest = require("http/http_request.cjs");
+const Log = require("infrastructure/log.cjs");
 const WwwRouter = require("./www/www_router.cjs");
 const Rot13Router = require("./rot13_service/rot13_router.cjs");
 

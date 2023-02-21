@@ -1,9 +1,9 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure");
-const assert = require("util/assert");
-const HttpClient = require("http/http_client");
+const ensure = require("util/ensure.cjs");
+const assert = require("util/assert.cjs");
+const HttpClient = require("http/http_client.cjs");
 const Rot13Client = require("./rot13_client.cjs");
-const testHelper = require("util/test_helper");
+const testHelper = require("util/test_helper.cjs");
 
 const HOST = "localhost";
 const IRRELEVANT_PORT = 42;

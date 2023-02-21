@@ -1,13 +1,13 @@
 // Copyright Titanium I.T. LLC.
-const assert = require("util/assert");
-const ensure = require("util/ensure");
-const HttpRequest = require("http/http_request");
+const assert = require("util/assert.cjs");
+const ensure = require("util/ensure.cjs");
+const HttpRequest = require("http/http_request.cjs");
 const WwwConfig = require("../www_config.cjs");
 const homePageView = require("./home_page_view.cjs");
 const Rot13Client = require("../infrastructure/rot13_client.cjs");
 const HomePageController = require("./home_page_controller.cjs");
-const Log = require("infrastructure/log");
-const Clock = require("infrastructure/clock");
+const Log = require("infrastructure/log.cjs");
+const Clock = require("infrastructure/clock.cjs");
 
 const IRRELEVANT_PORT = 42;
 const IRRELEVANT_INPUT = "irrelevant_input";

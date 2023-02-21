@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
-const assert = require("util/assert");
-const testHelper = require("util/test_helper");
+const assert = require("util/assert.cjs");
+const testHelper = require("util/test_helper.cjs");
 // dependency_analysis: ./serve.js
 
 const STARTUP_TIMEOUT_IN_MS = 2000;

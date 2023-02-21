@@ -1,10 +1,10 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure");
-const HttpRequest = require("http/http_request");
-const HttpResponse = require("http/http_response");
-const GenericRouter = require("http/generic_router");
+const ensure = require("util/ensure.cjs");
+const HttpRequest = require("http/http_request.cjs");
+const HttpResponse = require("http/http_response.cjs");
+const GenericRouter = require("http/generic_router.cjs");
 const Rot13Controller = require("./rot13_controller.cjs");
-const Log = require("infrastructure/log");
+const Log = require("infrastructure/log.cjs");
 const rot13View = require("./rot13_view.cjs");
 
 /** Router for ROT-13 service */

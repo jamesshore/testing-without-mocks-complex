@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-const assert = require("util/assert");
+const assert = require("util/assert.cjs");
 const rot13Logic = require("./rot13_logic.cjs");
 
 describe("ROT-13 Logic", () => {

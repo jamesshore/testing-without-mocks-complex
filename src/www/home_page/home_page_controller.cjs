@@ -1,10 +1,10 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure");
+const ensure = require("util/ensure.cjs");
 const homePageView = require("./home_page_view.cjs");
 const Rot13Client = require("../infrastructure/rot13_client.cjs");
-const HttpRequest = require("http/http_request");
+const HttpRequest = require("http/http_request.cjs");
 const WwwConfig = require("../www_config.cjs");
-const Clock = require("infrastructure/clock");
+const Clock = require("infrastructure/clock.cjs");
 
 const ENDPOINT = "/";
 const INPUT_FIELD_NAME = "text";

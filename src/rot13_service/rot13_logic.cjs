@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure");
+const ensure = require("util/ensure.cjs");
 
 /** ROT-13 transformation logic */
 exports.transform = function(input) {

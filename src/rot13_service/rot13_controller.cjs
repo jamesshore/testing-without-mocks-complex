@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure");
+const ensure = require("util/ensure.cjs");
 const rot13Logic = require("./rot13_logic.cjs");
-const HttpResponse = require("http/http_response");
+const HttpResponse = require("http/http_response.cjs");
 const rot13View = require("./rot13_view.cjs");
 
 const REQUEST_TYPE = { text: String };

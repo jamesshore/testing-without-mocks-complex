@@ -1,9 +1,9 @@
 // Copyright Titanium I.T. LLC.
-const assert = require("util/assert");
+const assert = require("util/assert.cjs");
 const rot13Logic = require("./rot13_logic.cjs");
 const Rot13Controller = require("./rot13_controller.cjs");
-const HttpRequest = require("http/http_request");
-const HttpResponse = require("http/http_response");
+const HttpRequest = require("http/http_request.cjs");
+const HttpResponse = require("http/http_response.cjs");
 const rot13View = require("./rot13_view.cjs");
 
 const VALID_HEADERS = { "content-type": "application/json" };

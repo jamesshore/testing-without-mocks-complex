@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure");
+const ensure = require("util/ensure.cjs");
 const uuid = require("uuid");
-const ConfigurableResponses = require("util/configurable_responses");
+const ConfigurableResponses = require("util/configurable_responses.cjs");
 
 module.exports = class UuidGenerator {
 

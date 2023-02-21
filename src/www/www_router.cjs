@@ -1,11 +1,11 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure");
-const HttpRequest = require("http/http_request");
+const ensure = require("util/ensure.cjs");
+const HttpRequest = require("http/http_request.cjs");
 const HomePageController = require("./home_page/home_page_controller.cjs");
 const wwwView = require("./www_view.cjs");
-const GenericRouter = require("http/generic_router");
+const GenericRouter = require("http/generic_router.cjs");
 const WwwConfig = require("./www_config.cjs");
-const Log = require("infrastructure/log");
+const Log = require("infrastructure/log.cjs");
 const UuidGenerator = require("./infrastructure/uuid_generator.cjs");
 
 /** Router for user-facing website */

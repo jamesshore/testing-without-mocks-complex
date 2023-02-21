@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure");
-const Log = require("infrastructure/log");
+const ensure = require("util/ensure.cjs");
+const Log = require("infrastructure/log.cjs");
 
 /** Configuration used by all website routes */
 module.exports = class WwwConfig {

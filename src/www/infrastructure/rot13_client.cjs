@@ -1,8 +1,8 @@
 // Copyright Titanium I.T. LLC.
-const ensure = require("util/ensure");
-const type = require("util/type");
-const HttpClient = require("http/http_client");
-const OutputTracker = require("util/output_tracker");
+const ensure = require("util/ensure.cjs");
+const type = require("util/type.cjs");
+const HttpClient = require("http/http_client.cjs");
+const OutputTracker = require("util/output_tracker.cjs");
 const EventEmitter = require("events");
 
 const HOST = "localhost";

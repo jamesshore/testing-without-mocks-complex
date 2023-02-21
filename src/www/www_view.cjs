@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-const HttpResponse = require("http/http_response");
+const HttpResponse = require("http/http_response.cjs");
 
 /** Overall HTML template for website */
 exports.pageTemplate = function(title, body) {
