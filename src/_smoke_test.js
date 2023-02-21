@@ -1,6 +1,7 @@
 // Copyright Titanium I.T. LLC.
-const assert = require("util/assert.cjs");
-const testHelper = require("util/test_helper.cjs");
+import assert from "util/assert.cjs";
+import testHelper from "util/test_helper.cjs";
+import { pathToFile } from "util/module_paths.mjs";
 // dependency_analysis: ./serve.js
 
 const STARTUP_TIMEOUT_IN_MS = 2000;
@@ -43,7 +44,7 @@ async function forkAsync() {
 	return await new Promise((resolve, reject) => {
 		let stdout = "";
 		const process = testHelper.forkModule(
-			__dirname,
+			pathToFile(import.meta.url, "."),
 			"./serve.cjs",
 			{ args: [ WWW_PORT.toString(), ROT13_PORT.toString() ] },
 		);
