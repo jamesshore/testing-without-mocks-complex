@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
-const assert = require("util/assert.cjs");
-const homePageView = require("./home_page_view.cjs");
+import assert from "util/assert.cjs";
+import * as homePageView from "./home_page_view.js";
 
 describe("Home Page View", () => {
 

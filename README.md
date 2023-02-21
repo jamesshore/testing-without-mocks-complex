@@ -145,7 +145,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
     * [www_view.js](src/www/www_view.cjs) [(tests)](src/www/_www_view_test.js): Generic renderer for front-end website’s responses.
     * **[home_page/](src/www/home_page): Front-end '/' endpoint**
       * [home_page_controller.js](src/www/home_page/home_page_controller.js) [(tests)](src/www/home_page/_home_page_controller_test.js): Controller for `/` endpoint.
-      * [home_page_view.js](src/www/home_page/home_page_view.cjs) [(tests)](src/www/home_page/_home_page_view_test.js): Renderer for `/` responses.
+      * [home_page_view.js](src/www/home_page/home_page_view.js) [(tests)](src/www/home_page/_home_page_view_test.js): Renderer for `/` responses.
     * **[infrastructure/](src/www/infrastructure): Front-end-specific infrastructure wrappers**
       * [rot13_client.js](src/www/infrastructure/rot13_client.cjs) [(tests)](src/www/infrastructure/_rot13_client_test.js): Client for ROT-13 microservice.
       * [uuid_generator.js](src/www/infrastructure/uuid_generator.cjs) [(tests)](src/www/infrastructure/_uuid_generator_test.js): Create random unique identifiers (UUIDs).
