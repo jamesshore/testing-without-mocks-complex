@@ -5,23 +5,22 @@
 // Thanks to Davide Alberto Molin for inspiring this code.
 // See https://www.letscodejavascript.com/v3/comments/live/7 for details.
 
-"use strict";
+import { checkNodeVersion } from "../util/node_version_checker.js";
+import gaze from "gaze";
+import pathLib from "node:path";
+import { spawn } from "node:child_process";
+import * as paths from "../config/paths.js";
+import Colors from "../util/colors.js";
+import { pathToFile } from "../util/module_paths.js";
 
-require("../util/node_version_checker").check();
+checkNodeVersion();
 
-const gaze = require("gaze");
-const pathLib = require("path");
-const spawn = require("child_process").spawn;
-const paths = require("../config/paths");
-const sound = require("sound-play");
-const { cyan, brightRed } = require("../util/colors");
-
-const watchColor = cyan;
-const errorColor = brightRed.inverse;
+const watchColor = Colors.cyan;
+const errorColor = Colors.brightRed.inverse;
 
 const COMMAND = "node";
-const SERVE_JS = "src/serve.js";
-const SERVE_FULL_PATH = pathLib.resolve(__dirname, "../..", SERVE_JS);
+const SERVE_JS = "src/serve.cjs";
+const SERVE_FULL_PATH = pathToFile(import.meta.url, `../../${SERVE_JS}`);
 const COMMAND_ARGS = process.argv.slice(2);
 
 let child = null;

@@ -5,19 +5,17 @@
 // Thanks to Davide Alberto Molin for inspiring this code.
 // See https://www.letscodejavascript.com/v3/comments/live/7 for details.
 
-"use strict";
+import gaze from "gaze";
+import pathLib from "path";
+import * as paths from "../config/paths.js";
+import sound from "sound-play";
+import * as sh from "../util/sh.js";
+import Colors from "../util/colors.js";
+import { pathToFile } from "../util/module_paths.js";
 
-const build = require("./build");
-const gaze = require("gaze");
-const pathLib = require("path");
-const paths = require("../config/paths");
-const sound = require("sound-play");
-const { cyan, brightRed } = require("../util/colors");
-
-const watchColor = cyan;
-const errorColor = brightRed.inverse;
-
-const RESTART_WHEN_MEMORY_USAGE_EXCEEDS_MIB = 512;
+const watchColor = Colors.cyan;
+const errorColor = Colors.brightRed.inverse;
+const buildScript = pathToFile(import.meta.url, "../scripts/run_build.js");
 
 const args = process.argv.slice(2);
 let buildRunning = false;
@@ -62,26 +60,21 @@ async function triggerBuild(event, filepath) {
 }
 
 async function runBuild() {
-	if (process.memoryUsage().rss > RESTART_WHEN_MEMORY_USAGE_EXCEEDS_MIB * 1024 * 1024) {
-		process.stdout.write(watchColor(`Memory usage exceeds ${RESTART_WHEN_MEMORY_USAGE_EXCEEDS_MIB} MiB: `));
-		restart();
-	}
-
 	do {
 		buildQueued = false;
 		buildRunning = true;
 		buildStartedAt = Date.now();
 		console.log(watchColor(`\n\n\n\n*** BUILD> ${args.join(" ")}`));
 
+		const { code } = await shellToBuildAsync(args);
+		alertBuildResult(code);
 
-		global.buildStart = Date.now();
-
-		const buildResult = await build.runAsync(args);
-		alertBuildResult(buildResult);
-
-		flushCaches();
 		buildRunning = false;
 	} while (buildQueued);
+}
+
+async function shellToBuildAsync(args) {
+	return await sh.runInteractive("node", [ "--enable-source-maps", buildScript, ...args ]);
 }
 
 function queueAnotherBuild() {
@@ -97,26 +90,21 @@ function queueAnotherBuild() {
 	}
 }
 
-function alertBuildResult(buildResult) {
-	if (buildResult === null) {
-		playSoundAsync("../sounds/success.wav");
-	}
-	else if (buildResult === "lint") {
-		playSoundAsync("../sounds/lint_error.wav");
-	}
-	else {
-		playSoundAsync("../sounds/fail.wav");
-	}
-}
+function alertBuildResult(exitCode) {
+	playSoundAsync(pathForCode(exitCode));
 
-function flushCaches() {
-	Object.keys(require.cache).forEach((key) => {
-		delete require.cache[key];
-	});
+	function pathForCode(exitCode) {
+		switch (exitCode) {
+			case 0: return "../sounds/success.wav";
+			case 1: return "../sounds/lint_error.wav";
+			case 2: return "../sounds/fail.wav";
+			default: throw new Error(`Unrecognized exit code from build: ${exitCode}`);
+		}
+	}
 }
 
 async function cleanAndRestart(event, filepath) {
-	await build.runAsync([ "clean" ]);
+	await shellToBuildAsync([ "clean" ]);
 	restart();
 }
 
@@ -135,7 +123,7 @@ function logEvent(event, filepath) {
 
 async function playSoundAsync(filename) {
 	try {
-		const path = pathLib.resolve(__dirname, filename);
+		const path = pathToFile(import.meta.url, filename);
 		await sound.play(path, 0.3);
 	}
 	catch (err) {

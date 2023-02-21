@@ -1,15 +1,15 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
 
-const parseArgs = require("minimist");
-const pathLib = require("path");
-const fs = require("fs");
-const promisify = require("util").promisify;
+import parseArgs from "minimist";
+import pathLib from "node:path";
+import fs from "fs";
+import { promisify } from "util";
+
 const statAsync = promisify(fs.stat);
 const writeFileAsync = promisify(fs.writeFile);
 const mkdirAsync = promisify(fs.mkdir);
 
-module.exports = class Build {
+export default class Build {
 
 	constructor({ incrementalDir }) {
 		this._taskFns = {};
@@ -58,7 +58,7 @@ module.exports = class Build {
 			if (!(await this.isAnyModifiedAsync(sourceFiles, taskFile))) return;
 
 			await fn();
-			this.writeDirAndFileAsync(taskFile, "ok");
+			await this.writeDirAndFileAsync(taskFile, "ok");
 		});
 	}
 
@@ -99,7 +99,7 @@ module.exports = class Build {
 		return fullyQualifiedFilename.replace(`${rootDir}/`, "");
 	}
 
-};
+}
 
 function showHelp(taskFns) {
 	const name = pathLib.basename(process.argv[1]).split(".")[0];

@@ -1,12 +1,14 @@
 // Copyright Titanium I.T. LLC. All rights reserved. For license, see "README" or "LICENSE" file.
-"use strict";
 
 const ERROR = "error";
 const IGNORE = "off";
 
-exports.options = {
+export default {
+	"parser": "@typescript-eslint/parser",
+
 	"parserOptions": {
-		"ecmaVersion": 2022
+		"ecmaVersion": 2022,
+		"sourceType": "module",
 	},
 
 	"env": {

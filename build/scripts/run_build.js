@@ -1,9 +1,12 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
 
-const build = require("./build");
+import { checkNodeVersion } from "../util/node_version_checker.js";
+import { runBuildAsync } from "./build.js";
 
-build.runAsync(process.argv.slice(2)).then((failedTask) => {
+checkNodeVersion();
+
+runBuildAsync(process.argv.slice(2)).then((failedTask) => {
 	if (failedTask === null) process.exit(0);
-	else process.exit(1);
+	else if (failedTask === "lint" || failedTask === "compile") process.exit(1);
+	else process.exit(2);
 });

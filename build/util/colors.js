@@ -1,5 +1,4 @@
 // Copyright Titanium I.T. LLC.
-"use strict";
 
 const COLOR_STYLES = {
 	bold: "1;",
@@ -9,7 +8,7 @@ const COLOR_STYLES = {
 	inverse: "7;",
 };
 
-module.exports = {
+export default {
 	// this brute-force approach works better with IDE code completion than building the object at run-time.
 	black: colorFn(30),
 	red: colorFn(31),
