@@ -2,8 +2,7 @@
 import * as ensure from "util/ensure.js";
 import * as type from "util/type.js";
 import { HttpClient } from "http/http_client.js";
-import { OutputTracker } from "util/output_tracker.js";
-import EventEmitter from "events";
+import { OutputListener } from "util/output_listener.js";
 
 const HOST = "localhost";
 const TRANSFORM_ENDPOINT = "/rot13/transform";
@@ -32,7 +31,7 @@ export class Rot13Client {
 		ensure.signature(arguments, [ HttpClient ]);
 
 		this._httpClient = httpClient;
-		this._emitter = new EventEmitter();
+		this._listener = new OutputListener();
 	}
 
 	transform(port, text, correlationId) {
@@ -46,12 +45,12 @@ export class Rot13Client {
 	trackRequests() {
 		ensure.signature(arguments, []);
 
-		return new OutputTracker(this._emitter, REQUEST_EVENT);
+		return this._listener.trackOutput();
 	}
 
 	#performRequest(port, text, correlationId) {
 		const requestData = { port, text, correlationId };
-		this._emitter.emit(REQUEST_EVENT, requestData);
+		this._listener.emit(requestData);
 
 		const { responsePromise, cancelFn: httpCancelFn } = this._httpClient.request({
 			host: HOST,
@@ -71,7 +70,7 @@ export class Rot13Client {
 				`Host: ${HOST}:${port}\n` +
 				`Endpoint: ${TRANSFORM_ENDPOINT}`,
 			);
-			if (cancelled) this._emitter.emit(REQUEST_EVENT, { ...requestData, cancelled: true });
+			if (cancelled) this._listener.emit({ ...requestData, cancelled: true });
 		};
 
 		return { responsePromise, cancelFn };
