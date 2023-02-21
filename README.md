@@ -119,7 +119,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
   * **[node_modules/](src/node_modules): Code shared by both servers (*not* third-party code)**
     * **[http/](src/node_modules/http): HTTP infrastructure wrappers**
       * [generic_router.js](src/node_modules/http/generic_router.cjs) [(tests)](src/node_modules/http/_generic_router_test.js) A utility for converting [HttpRequest](src/node_modules/http/http_request.cjs)s to method calls.
-      * [http_client.js](src/node_modules/http/http_client.cjs) [(tests)](src/node_modules/http/_http_client_test.js): Makes HTTP requests.
+      * [http_client.js](src/node_modules/http/http_client.mjs) [(tests)](src/node_modules/http/_http_client_test.js): Makes HTTP requests.
       * [http_request.js](src/node_modules/http/http_request.cjs) [(tests)](src/node_modules/http/_http_request_test.js): Server-side HTTP request received from the client.
       * [http_response.js](src/node_modules/http/http_response.cjs) [(tests)](src/node_modules/http/_http_response_test.js): Server-side HTTP response to be sent to the client.
       * [http_server.js](src/node_modules/http/http_server.cjs) [(tests)](src/node_modules/http/_http_server_test.js): An HTTP server.
@@ -261,7 +261,7 @@ This program doesn’t use any third-party logic libraries.
 
 #### [Infrastructure Wrappers](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#infrastructure-wrappers)
 
-There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.cjs), [HttpServer](src/node_modules/http/http_server.cjs), [HttpRequest](src/node_modules/http/http_request.cjs), [Clock](src/node_modules/infrastructure/clock.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.cjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
+There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.mjs), [HttpServer](src/node_modules/http/http_server.cjs), [HttpRequest](src/node_modules/http/http_request.cjs), [Clock](src/node_modules/infrastructure/clock.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.cjs) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
 
 #### [Narrow Integration Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-integration-tests)
 
@@ -288,11 +288,11 @@ The code is written in JavaScript, so thin wrappers aren't needed.
 
 #### [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses)
 
-Most of the infrastructure wrappers (listed above) have configurable responses. [UuidGenerator](src/www/infrastructure/uuid_generator.js) and [HttpClient](src/node_modules/http/http_client.cjs) in particular support multiple different responses.
+Most of the infrastructure wrappers (listed above) have configurable responses. [UuidGenerator](src/www/infrastructure/uuid_generator.js) and [HttpClient](src/node_modules/http/http_client.mjs) in particular support multiple different responses.
 
 #### [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking)
 
-Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.cjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), [Log](src/node_modules/infrastructure/command_line.cjs), [GenericRouter](src/node_modules/http/generic_router.cjs), and [Rot13Client](src/www/infrastructure/rot13_client.js).
+Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.mjs), [CommandLine](src/node_modules/infrastructure/command_line.cjs), [Log](src/node_modules/infrastructure/command_line.cjs), [GenericRouter](src/node_modules/http/generic_router.cjs), and [Rot13Client](src/www/infrastructure/rot13_client.js).
 
 #### [Behavior Simulation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#behavior-simulation)
 

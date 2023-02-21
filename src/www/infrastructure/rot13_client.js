@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
 import ensure from "util/ensure.cjs";
 import type from "util/type.cjs";
-import HttpClient from "http/http_client.cjs";
+import { HttpClient } from "http/http_client.mjs";
 import OutputTracker from "util/output_tracker.cjs";
 import EventEmitter from "events";
 

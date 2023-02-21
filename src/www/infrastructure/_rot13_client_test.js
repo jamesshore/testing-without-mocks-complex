@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
 import ensure from "util/ensure.cjs";
 import assert from "util/assert.cjs";
-import HttpClient from "http/http_client.cjs";
+import { HttpClient } from "http/http_client.mjs";
 import { Rot13Client } from "./rot13_client.js";
 import testHelper from "util/test_helper.cjs";
 
