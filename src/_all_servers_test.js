@@ -4,7 +4,7 @@ import ensure from "util/ensure.cjs";
 import { AllServers } from "./all_servers.js";
 import CommandLine from "infrastructure/command_line.cjs";
 import { HttpServer } from "http/http_server.mjs";
-import HttpRequest from "http/http_request.cjs";
+import { HttpRequest } from "http/http_request.mjs";
 import Log from "infrastructure/log.cjs";
 import { WwwRouter } from "./www/www_router.js";
 import { Rot13Router } from "./rot13_service/rot13_router.js";

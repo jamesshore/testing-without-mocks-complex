@@ -1,9 +1,9 @@
 // Copyright Titanium I.T. LLC.
 import ensure from "util/ensure.cjs";
-import HttpRequest from "http/http_request.cjs";
+import { HttpRequest } from "http/http_request.mjs";
 import { HomePageController } from "./home_page/home_page_controller.js";
 import * as wwwView from "./www_view.js";
-import GenericRouter from "http/generic_router.cjs";
+import { GenericRouter } from "http/generic_router.mjs";
 import { WwwConfig } from "./www_config.js";
 import Log from "infrastructure/log.cjs";
 import { UuidGenerator } from "./infrastructure/uuid_generator.js";
