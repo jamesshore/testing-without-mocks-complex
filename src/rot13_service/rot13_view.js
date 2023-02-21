@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
 import ensure from "util/ensure.cjs";
-import HttpResponse from "http/http_response.cjs";
+import { HttpResponse } from "http/http_response.mjs";
 
 /** Success response for ROT-13 server */
 export function ok(transformed) {

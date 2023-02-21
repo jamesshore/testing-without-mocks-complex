@@ -121,7 +121,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
       * [generic_router.js](src/node_modules/http/generic_router.mjs) [(tests)](src/node_modules/http/_generic_router_test.js) A utility for converting [HttpRequest](src/node_modules/http/http_request.mjs)s to method calls.
       * [http_client.js](src/node_modules/http/http_client.mjs) [(tests)](src/node_modules/http/_http_client_test.js): Makes HTTP requests.
       * [http_request.js](src/node_modules/http/http_request.mjs) [(tests)](src/node_modules/http/_http_request_test.js): Server-side HTTP request received from the client.
-      * [http_response.js](src/node_modules/http/http_response.cjs) [(tests)](src/node_modules/http/_http_response_test.js): Server-side HTTP response to be sent to the client.
+      * [http_response.js](src/node_modules/http/http_response.mjs) [(tests)](src/node_modules/http/_http_response_test.js): Server-side HTTP response to be sent to the client.
       * [http_server.js](src/node_modules/http/http_server.mjs) [(tests)](src/node_modules/http/_http_server_test.js): An HTTP server.
     * **[infrastructure/](src/node_modules/infrastructure): Other shared infrastructure wrappers**
       * [clock.js](src/node_modules/infrastructure/clock.cjs) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
@@ -226,15 +226,15 @@ The code is infrastructure-heavy, with almost no logic, so the A-Frame Architect
 =======
 * The *Logic* layer is represented by [Rot13Logic](src/rot13_service/rot13_logic.js) and [Rot13View](src/rot13_service/rot13_view.cjs).
 >>>>>>> Stashed changes
-* The *Infrastructure* layer is represented by [HttpServer](src/node_modules/http/http_server.mjs), [HttpRequest](src/node_modules/http/http_request.mjs), and [HttpResponse](src/node_modules/http/http_response.cjs).
+* The *Infrastructure* layer is represented by [HttpServer](src/node_modules/http/http_server.mjs), [HttpRequest](src/node_modules/http/http_request.mjs), and [HttpResponse](src/node_modules/http/http_response.mjs).
 * There is no *Values* layer.
 
 #### [Logic Sandwich](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#logic-sandwich)
 
 <<<<<<< Updated upstream
-[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.mjs), calls [Rot13Logic](src/rot13_service/rot13_logic.cjs), renders it with [Rot13View](src/rot13_service/rot13_view.js), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.cjs) (which is then served by [HttpServer](src/node_modules/http/http_server.mjs)).
+[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.mjs), calls [Rot13Logic](src/rot13_service/rot13_logic.cjs), renders it with [Rot13View](src/rot13_service/rot13_view.js), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.mjs) (which is then served by [HttpServer](src/node_modules/http/http_server.mjs)).
 =======
-[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.mjs), calls [Rot13Logic](src/rot13_service/rot13_logic.js), renders it with [Rot13View](src/rot13_service/rot13_view.cjs), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.cjs) (which is then served by [HttpServer](src/node_modules/http/http_server.mjs)).
+[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.mjs), calls [Rot13Logic](src/rot13_service/rot13_logic.js), renders it with [Rot13View](src/rot13_service/rot13_view.cjs), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.mjs) (which is then served by [HttpServer](src/node_modules/http/http_server.mjs)).
 >>>>>>> Stashed changes
 
 #### [Traffic Cop](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#traffic-cop)

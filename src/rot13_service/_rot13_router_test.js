@@ -5,7 +5,7 @@ import { Rot13Router } from "./rot13_router.js";
 import { HttpServer } from "http/http_server.mjs";
 import { HttpRequest } from "http/http_request.mjs";
 import { Rot13Controller } from "./rot13_controller.js";
-import HttpResponse from "http/http_response.cjs";
+import { HttpResponse } from "http/http_response.mjs";
 import Log from "infrastructure/log.cjs";
 import * as rot13View from "./rot13_view.js";
 
