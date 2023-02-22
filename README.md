@@ -128,7 +128,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
     * **[infrastructure/](src/node_modules/infrastructure): Other shared infrastructure wrappers**
       * [clock.js](src/node_modules/infrastructure/clock.ts) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
       * [command_line.js](src/node_modules/infrastructure/command_line.ts) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
-      * [log.js](src/node_modules/infrastructure/log.js) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
+      * [log.js](src/node_modules/infrastructure/log.ts) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
     * **[util/](src/node_modules/util): Miscellaneous libraries**
       * [assert.js](src/node_modules/util/assert.ts) [(tests)](/src/node_modules/util/_assert_test.js): Assertion library used by tests.
       * [configurable_responses.js](src/node_modules/util/configurable_responses.ts) [(tests)](/src/node_modules/util/_configurable_responses_test.js): Utility library for implementing [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses) pattern.
@@ -294,7 +294,7 @@ Several classes support output tracking: [HttpClient](src/node_modules/http/http
 
 #### [Fake It Once You Make It](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#fake-it)
 
-[Log](src/node_modules/infrastructure/log.js), [HomePageController](src/www/home_page/home_page_controller.js), and [Rot13Client](src/www/infrastructure/rot13_client.js) all use nullable dependencies to implement their code and tests. Of the production implementations, Rot13Client is the most interesting, because it has configurable responses.
+[Log](src/node_modules/infrastructure/log.ts), [HomePageController](src/www/home_page/home_page_controller.js), and [Rot13Client](src/www/infrastructure/rot13_client.js) all use nullable dependencies to implement their code and tests. Of the production implementations, Rot13Client is the most interesting, because it has configurable responses.
 
 ### Legacy Code Patterns
 
