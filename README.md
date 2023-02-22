@@ -126,7 +126,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
       * [http_server_response.js](src/node_modules/http/http_server_response.js) [(tests)](src/node_modules/http/_http_server_response_test.js): Server-side HTTP response to be sent to the client.
       * [http_server.js](src/node_modules/http/http_server.js) [(tests)](src/node_modules/http/_http_server_test.js): An HTTP server.
     * **[infrastructure/](src/node_modules/infrastructure): Other shared infrastructure wrappers**
-      * [clock.js](src/node_modules/infrastructure/clock.js) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
+      * [clock.js](src/node_modules/infrastructure/clock.ts) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
       * [command_line.js](src/node_modules/infrastructure/command_line.ts) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
       * [log.js](src/node_modules/infrastructure/log.js) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
     * **[util/](src/node_modules/util): Miscellaneous libraries**
@@ -154,7 +154,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
 
 Third-party modules are in the top-level `node_modules/` directory (not to be confused with `src/node_modules`). The following modules are used by the production code:
 
-* `@sinonjs/fake-timers`: Used to make [Clock](src/node_modules/infrastructure/clock.js) Nullable.
+* `@sinonjs/fake-timers`: Used to make [Clock](src/node_modules/infrastructure/clock.ts) Nullable.
 * `uuid`: Wrapped by [UuidGenerator](src/www/infrastructure/uuid_generator.js), which is used to create correlation IDs.
 
 The remaining modules are used by the build and tests:
