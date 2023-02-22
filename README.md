@@ -132,7 +132,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
     * **[util/](src/node_modules/util): Miscellaneous libraries**
       * [assert.js](src/node_modules/util/assert.ts) [(tests)](/src/node_modules/util/_assert_test.js): Assertion library used by tests.
       * [configurable_responses.js](src/node_modules/util/configurable_responses.js) [(tests)](/src/node_modules/util/_configurable_responses_test.js): Utility library for implementing [Configurable Responses](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#configurable-responses) pattern.
-      * [ensure.js](src/node_modules/util/ensure.js) [(tests)](src/node_modules/util/_ensure_test.js): Runtime assertions for production code. Most notably used for runtime type checking of method signatures.
+      * [ensure.js](src/node_modules/util/ensure.ts) [(tests)](src/node_modules/util/_ensure_test.js): Runtime assertions for production code. Most notably used for runtime type checking of method signatures.
       * [output_listener.js](src/node_modules/util/output_listener.js) [(tests)](/src/node_modules/util/_output_listener_test.js): Utility library for implementing [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking) pattern.
       * [test_helper.js](src/node_modules/util/test_helper.js): Utility library for implementing integration tests.
       * [type.js](src/node_modules/util/type.ts) [(tests)](/src/node_modules/util/_type_test.js): Runtime type checker.
