@@ -127,7 +127,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
       * [http_server.js](src/node_modules/http/http_server.js) [(tests)](src/node_modules/http/_http_server_test.js): An HTTP server.
     * **[infrastructure/](src/node_modules/infrastructure): Other shared infrastructure wrappers**
       * [clock.js](src/node_modules/infrastructure/clock.js) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
-      * [command_line.js](src/node_modules/infrastructure/command_line.js) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
+      * [command_line.js](src/node_modules/infrastructure/command_line.ts) [(tests)](src/node_modules/infrastructure/_command_line_test.js): Command-line I/O.
       * [log.js](src/node_modules/infrastructure/log.js) [(tests)](src/node_modules/infrastructure/_log_test.js): Logger.
     * **[util/](src/node_modules/util): Miscellaneous libraries**
       * [assert.js](src/node_modules/util/assert.ts) [(tests)](/src/node_modules/util/_assert_test.js): Assertion library used by tests.
@@ -286,7 +286,7 @@ Most of the infrastructure wrappers (listed above) have configurable responses. 
 
 #### [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking)
 
-Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.js), [CommandLine](src/node_modules/infrastructure/command_line.js), [Log](src/node_modules/infrastructure/command_line.js), [GenericRouter](src/node_modules/http/generic_router.js), and [Rot13Client](src/www/infrastructure/rot13_client.js).
+Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.js), [CommandLine](src/node_modules/infrastructure/command_line.ts), [Log](src/node_modules/infrastructure/command_line.ts), [GenericRouter](src/node_modules/http/generic_router.js), and [Rot13Client](src/www/infrastructure/rot13_client.js).
 
 #### [Behavior Simulation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#behavior-simulation)
 
