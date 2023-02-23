@@ -1,22 +1,23 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.js";
 import { HttpServerRequest } from "http/http_server_request.js";
 import { GenericRouter } from "http/generic_router.js";
 import { Rot13Controller } from "./rot13_controller.js";
 import { Log } from "infrastructure/log.js";
 import * as rot13View from "./rot13_view.js";
+import { Router } from "http/http_server.js";
+import { HttpServerResponse } from "http/http_server_response.js";
 
 /** Router for ROT-13 service */
-export class Rot13Router {
+export class Rot13Router implements Router {
+
+	private readonly _router: GenericRouter<void>;
 
 	/**
 	 * Factory method. Creates the router.
 	 * @param log logger to use for all requests
 	 * @returns {Rot13Router} the router
 	 */
-	static create(log) {
-		ensure.signature(arguments, [ Log ]);
-
+	static create(log: Log): Rot13Router {
 		return new Rot13Router(log);
 	}
 
@@ -27,19 +28,14 @@ export class Rot13Router {
 	 */
 	static createNull({
 		log = Log.createNull(),
-	} = {}) {
-		ensure.signature(arguments, [[ undefined, {
-			log: [ undefined, Log ],
-		}]]);
-
+	}: {
+		log?: Log,
+	} = {}): Rot13Router {
 		return new Rot13Router(log);
 	}
 
 	/** Only for use by tests. (Use a factory method instead.) */
-	constructor(log) {
-		ensure.signature(arguments, [ Log ]);
-
-		this._log = log;
+	constructor(private readonly _log: Log) {
 		this._router = GenericRouter.create(errorHandler, {
 			"/rot13/transform": Rot13Controller.create(),
 		});
@@ -48,18 +44,16 @@ export class Rot13Router {
 	/**
 	 * @returns {*} logger
 	 */
-	get log() {
+	get log(): Log {
 		return this._log;
 	}
-	
+
 	/**
 	 * Process request and return response.
 	 * @param request the request
 	 * @returns {Promise<HttpServerResponse>} the response
 	 */
-	async routeAsync(request) {
-		ensure.signature(arguments, [ HttpServerRequest ]);
-
+	async routeAsync(request: HttpServerRequest): Promise<HttpServerResponse> {
 		const correlationId = request.headers["x-correlation-id"];
 		if (correlationId === undefined) {
 			return rot13View.error(400, "missing x-correlation-id header");
@@ -71,8 +65,6 @@ export class Rot13Router {
 
 }
 
-function errorHandler(status, error, request) {
-	ensure.signature(arguments, [ Number, String, HttpServerRequest ]);
-
+function errorHandler(status: number, error: string, request: HttpServerRequest): HttpServerResponse {
 	return rot13View.error(status, error);
 }

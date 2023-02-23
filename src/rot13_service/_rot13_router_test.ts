@@ -1,13 +1,14 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.js";
 import assert from "util/assert.js";
 import { Rot13Router } from "./rot13_router.js";
 import { HttpServer } from "http/http_server.js";
 import { HttpServerRequest } from "http/http_server_request.js";
 import { Rot13Controller } from "./rot13_controller.js";
 import { HttpServerResponse } from "http/http_server_response.js";
-import { Log } from "infrastructure/log.js";
+import { Log, LogOutput } from "infrastructure/log.js";
 import * as rot13View from "./rot13_view.js";
+import { HttpHeaders } from "http/http_headers.js";
+import { OutputTracker } from "util/output_listener.js";
 
 const IRRELEVANT_PORT = 42;
 
@@ -72,14 +73,15 @@ async function simulateHttpRequestAsync({
 	method = VALID_METHOD,
 	headers = VALID_HEADERS,
 	body = VALID_BODY,
-} = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		url: [ undefined, String ],
-		method: [ undefined, String ],
-		headers: [ undefined, Object ],
-		body : [ undefined, String ],
-	}]]);
-
+}: {
+	url?: string,
+	method?: string,
+	headers?: HttpHeaders,
+	body?: string,
+} = {}): Promise<{
+	response: HttpServerResponse,
+	logOutput: OutputTracker<LogOutput>,
+}> {
 	const log = Log.createNull();
 	const logOutput = log.trackOutput();
 	const router = new Rot13Router(log);
