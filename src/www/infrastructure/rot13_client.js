@@ -7,7 +7,6 @@ import { OutputListener } from "util/output_listener.js";
 const HOST = "localhost";
 const TRANSFORM_ENDPOINT = "/rot13/transform";
 const RESPONSE_TYPE = { transformed: String };
-const REQUEST_EVENT = "request";
 
 /** Client for ROT-13 service */
 export class Rot13Client {

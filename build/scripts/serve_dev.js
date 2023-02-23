@@ -19,7 +19,7 @@ const watchColor = Colors.cyan;
 const errorColor = Colors.brightRed.inverse;
 
 const COMMAND = "node";
-const SERVE_JS = "src/serve.js";
+const SERVE_JS = "generated/typescript/serve.js";
 const SERVE_FULL_PATH = pathToFile(import.meta.url, `../../${SERVE_JS}`);
 const COMMAND_ARGS = process.argv.slice(2);
 
