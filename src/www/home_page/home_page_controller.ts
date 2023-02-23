@@ -1,10 +1,11 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.js";
 import * as homePageView from "./home_page_view.js";
 import { Rot13Client } from "../infrastructure/rot13_client.js";
 import { HttpServerRequest } from "http/http_server_request.js";
 import { WwwConfig } from "../www_config.js";
 import { Clock } from "infrastructure/clock.js";
+import { HttpServerResponse } from "http/http_server_response.js";
+import { Log } from "infrastructure/log.js";
 
 const ENDPOINT = "/";
 const INPUT_FIELD_NAME = "text";
@@ -17,9 +18,7 @@ export class HomePageController {
 	 * Factory method. Creates the controller.
 	 * @returns {HomePageController} the controller
 	 */
-	static create() {
-		ensure.signature(arguments, []);
-
+	static create(): HomePageController {
 		return new HomePageController(Rot13Client.create(), Clock.create());
 	}
 
@@ -27,18 +26,12 @@ export class HomePageController {
 	 * Factory method. Creates a 'nulled' controller that doesn't talk to the ROT-13 service.
 	 * @returns {HomePageController} the nulled instance
 	 */
-	static createNull() {
-		ensure.signature(arguments, []);
-
+	static createNull(): HomePageController {
 		return new HomePageController(Rot13Client.createNull(), Clock.createNull());
 	}
 
 	/** @deprecated Use a factory method instead. */
-	constructor(rot13Client, clock) {
-		ensure.signature(arguments, [ Rot13Client, Clock ]);
-
-		this._rot13Client = rot13Client;
-		this._clock = clock;
+	constructor(private readonly _rot13Client: Rot13Client, private readonly _clock: Clock) {
 	}
 
 	/**
@@ -47,9 +40,7 @@ export class HomePageController {
 	 * @param config configuration for this request
 	 * @returns {HttpServerResponse} HTTP response
 	 */
-	getAsync(request, config) {
-		ensure.signature(arguments, [ HttpServerRequest, WwwConfig ]);
-
+	getAsync(request: HttpServerRequest, config: WwwConfig): HttpServerResponse {
 		return homePageView.homePage();
 	}
 
@@ -59,23 +50,21 @@ export class HomePageController {
 	 * @param config configuration for this request
 	 * @returns {Promise<HttpServerResponse>} HTTP response
 	 */
-	async postAsync(request, config) {
-		ensure.signature(arguments, [ HttpServerRequest, WwwConfig ]);
-
+	async postAsync(request: HttpServerRequest, config: WwwConfig): Promise<HttpServerResponse> {
 		const log = config.log.bind({ endpoint: ENDPOINT, method: "POST" });
 
 		const { input, inputErr } = parseBody(await request.readBodyAsync(), log);
 		if (inputErr !== undefined) return homePageView.homePage();
 
-		const { output, outputErr } = await transformAsync(this._rot13Client, this._clock, log, config, input);
+		const { output, outputErr } = await transformAsync(this._rot13Client, this._clock, log, config, input!);
 		if (outputErr !== undefined) return homePageView.homePage("ROT-13 service failed");
 
-		return homePageView.homePage(output);
+		return homePageView.homePage(output!);
 	}
 
 }
 
-function parseBody(body, log) {
+function parseBody(body: string, log: Log): { input?: string, inputErr?: any } {
 	try {
 		const params = new URLSearchParams(body);
 		const textFields = params.getAll(INPUT_FIELD_NAME);
@@ -95,7 +84,13 @@ function parseBody(body, log) {
 	}
 }
 
-async function transformAsync(rot13Client, clock, log, config, input) {
+async function transformAsync(
+	rot13Client: Rot13Client,
+	clock: Clock,
+	log: Log,
+	config: WwwConfig,
+	input: string,
+): Promise<{ output?: string, outputErr?: any }> {
 	try {
 		const { transformPromise, cancelFn } = rot13Client.transform(config.rot13ServicePort, input, config.correlationId);
 		const output = await clock.timeoutAsync(
@@ -113,7 +108,7 @@ async function transformAsync(rot13Client, clock, log, config, input) {
 	}
 }
 
-function timeout(log, cancelFn) {
+function timeout(log: Log, cancelFn: () => void): string {
 	log.emergency({
 		message: "ROT-13 service timed out",
 		timeoutInMs: TIMEOUT_IN_MS,
