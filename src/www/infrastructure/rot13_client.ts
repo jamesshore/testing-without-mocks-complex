@@ -1,23 +1,37 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.js";
 import * as type from "util/type.js";
-import { HttpClient } from "http/http_client.js";
-import { OutputListener } from "util/output_listener.js";
+import { HttpClient, HttpClientResponse, NulledHttpClientResponse } from "http/http_client.js";
+import { OutputListener, OutputTracker } from "util/output_listener.js";
 
 const HOST = "localhost";
 const TRANSFORM_ENDPOINT = "/rot13/transform";
 const RESPONSE_TYPE = { transformed: String };
 
+export interface Rot13ClientOutput {
+	port: number,
+	text: string,
+	correlationId: string,
+	cancelled?: boolean,
+}
+
+export type NulledRot13ClientResponses = NulledRot13ClientResponse[];
+
+export interface NulledRot13ClientResponse {
+	response?: string,
+	error?: string,
+	hang?: boolean,
+}
+
 /** Client for ROT-13 service */
 export class Rot13Client {
+
+	private readonly _listener: OutputListener<Rot13ClientOutput>;
 
 	/**
 	 * Factory method. Creates the client.
 	 * @returns {Rot13Client} the client
 	 */
-	static create() {
-		ensure.signature(arguments, []);
-		
+	static create(): Rot13Client {
 		return new Rot13Client(HttpClient.create());
 	}
 
@@ -31,9 +45,7 @@ export class Rot13Client {
 	 * @param [options[].hang] if true, the simulated request never returns
 	 * @returns {Rot13Client} the nulled client
 	 */
-	static createNull(options) {
-		ensure.signature(arguments, [ [ undefined, Array ] ]);
-
+	static createNull(options?: NulledRot13ClientResponses) {
 		const httpClient = HttpClient.createNull({
 			[TRANSFORM_ENDPOINT]: nulledHttpResponses(options),
 		});
@@ -41,10 +53,7 @@ export class Rot13Client {
 	}
 
 	/** @deprecated Use a factory method instead. */
-	constructor(httpClient) {
-		ensure.signature(arguments, [ HttpClient ]);
-
-		this._httpClient = httpClient;
+	constructor(private readonly _httpClient: HttpClient) {
 		this._listener = new OutputListener();
 	}
 
@@ -56,9 +65,14 @@ export class Rot13Client {
 	 * @returns {{transformPromise: Promise<string>, cancelFn: () => void}} the response promise and
 	 * cancellation function
 	 */
-	transform(port, text, correlationId) {
-		ensure.signature(arguments, [ Number, String, String ]);
-
+	transform(
+		port: number,
+		text: string,
+		correlationId: string,
+	): {
+		transformPromise: Promise<string>,
+		cancelFn: () => void
+	} {
 		const { responsePromise, cancelFn } = this.#performRequest(port, text, correlationId);
 		const transformPromise = this.#parseResponseAsync(responsePromise, port);
 		return { transformPromise, cancelFn };
@@ -68,13 +82,18 @@ export class Rot13Client {
 	 * Track requests made to the ROT-13 service.
 	 * @returns {OutputTracker} the request tracker
 	 */
-	trackRequests() {
-		ensure.signature(arguments, []);
-
+	trackRequests(): OutputTracker<Rot13ClientOutput> {
 		return this._listener.trackOutput();
 	}
 
-	#performRequest(port, text, correlationId) {
+	#performRequest(
+		port: number,
+		text: string,
+		correlationId: string,
+	): {
+		responsePromise: Promise<HttpClientResponse>,
+		cancelFn: () => void,
+	} {
 		const requestData = { port, text, correlationId };
 		this._listener.emit(requestData);
 
@@ -102,7 +121,7 @@ export class Rot13Client {
 		return { responsePromise, cancelFn };
 	}
 
-	async #parseResponseAsync(responsePromise, port) {
+	async #parseResponseAsync(responsePromise: Promise<HttpClientResponse>, port: number): Promise<string> {
 		const response = await responsePromise;
 		if (response.status !== 200) {
 			throwError("Unexpected status from ROT-13 service", port, response);
@@ -129,7 +148,7 @@ export class Rot13Client {
 }
 
 
-function throwError(message, port, response) {
+function throwError(message: string, port: number, response: HttpClientResponse): never {
 	throw new Error(
 `${message}
 Host: ${HOST}:${port}
@@ -140,7 +159,7 @@ Body: ${response.body}`
 	);
 }
 
-function nulledHttpResponses(responses = [ {} ]) {
+function nulledHttpResponses(responses: NulledRot13ClientResponses = [ {} ]): NulledHttpClientResponse[] {
 	return responses.map((response) => nulledHttpResponse(response));
 }
 
@@ -148,13 +167,7 @@ function nulledHttpResponse({
 	response = "Null Rot13Client response",
 	error,
 	hang = false,
-} = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		response: [ undefined, String ],
-		error: [ undefined, String ],
-		hang: [ undefined, Boolean ],
-	}]]);
-
+}: NulledRot13ClientResponse = {}): NulledHttpClientResponse {
 	if (error !== undefined) {
 		return {
 			status: 500,
