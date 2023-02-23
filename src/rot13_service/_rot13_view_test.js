@@ -1,12 +1,12 @@
 // Copyright Titanium I.T. LLC.
 import assert from "util/assert.js";
 import * as rot13View from "./rot13_view.js";
-import { HttpResponse } from "http/http_response.js";
+import { HttpServerResponse } from "http/http_server_response.js";
 
 describe("ROT-13 View", () => {
 
 	it("has success response", () => {
-		const expected = HttpResponse.createJsonResponse({
+		const expected = HttpServerResponse.createJsonResponse({
 			status: 200,
 			body: { transformed: "response" }
 		});
@@ -15,7 +15,7 @@ describe("ROT-13 View", () => {
 	});
 
 	it("has error response", () => {
-		const expected = HttpResponse.createJsonResponse({
+		const expected = HttpServerResponse.createJsonResponse({
 			status: 404,
 			body: { error: "not found" }
 		});

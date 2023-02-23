@@ -1,5 +1,5 @@
 // Copyright Titanium I.T. LLC.
-import { HttpResponse } from "http/http_response.js";
+import { HttpServerResponse } from "http/http_server_response.js";
 
 /** Overall HTML template for website */
 export function pageTemplate(title, body) {
@@ -18,7 +18,7 @@ export function errorPage(status, message) {
 	const title = `${status}: ${message}`;
 	const body = `<p>${message}</p>`;
 
-	return HttpResponse.createHtmlResponse({
+	return HttpServerResponse.createHtmlResponse({
 		status,
 		body: pageTemplate(title, body),
 	});

@@ -5,7 +5,7 @@ import { Rot13Router } from "./rot13_router.js";
 import { HttpServer } from "http/http_server.js";
 import { HttpServerRequest } from "http/http_server_request.js";
 import { Rot13Controller } from "./rot13_controller.js";
-import { HttpResponse } from "http/http_response.js";
+import { HttpServerResponse } from "http/http_server_response.js";
 import { Log } from "infrastructure/log.js";
 import * as rot13View from "./rot13_view.js";
 
@@ -40,7 +40,7 @@ describe("ROT-13 Router", () => {
 	});
 
 	it("fails fast if requests don't include request ID header", async () => {
-		const expected = HttpResponse.createJsonResponse({
+		const expected = HttpServerResponse.createJsonResponse({
 			status: 400,
 			body: { error: "missing x-correlation-id header" },
 		});
