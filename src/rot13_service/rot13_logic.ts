@@ -1,5 +1,4 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.js";
 
 /** ROT-13 transformation logic */
 
@@ -8,13 +7,11 @@ import * as ensure from "util/ensure.js";
  * @param input the string to transform
  * @returns {string} the transformed string
  */
-export function transform(input) {
-	ensure.signature(arguments, [ String ]);
-
+export function transform(input: string): string {
 	return input.replace(/[A-Za-z]/g, transformLetter);
 }
 
-function transformLetter(letter) {
+function transformLetter(letter: string): string {
 	const rotation = letter.toUpperCase() <= "M" ? 13 : -13;
 	return String.fromCharCode(letter.charCodeAt(0) + rotation);
 }
