@@ -34,10 +34,10 @@ describe("ROT-13 Logic", () => {
 
 });
 
-function assertTransform(input, output) {
+function assertTransform(input: string, output: string): void {
 	assert.equal(rot13Logic.transform(input), output);
 }
 
-function assertNoTransform(input) {
+function assertNoTransform(input: string): void {
 	assert.equal(rot13Logic.transform(input), input);
 }
