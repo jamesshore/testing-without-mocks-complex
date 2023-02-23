@@ -1,13 +1,13 @@
 // Copyright Titanium I.T. LLC.
 import assert from "util/assert.js";
-import * as ensure from "util/ensure.js";
 import { AllServers } from "./all_servers.js";
 import { CommandLine } from "infrastructure/command_line.js";
 import { HttpServer } from "http/http_server.js";
 import { HttpServerRequest } from "http/http_server_request.js";
-import { Log } from "infrastructure/log.js";
+import { Log, LogOutput } from "infrastructure/log.js";
 import { WwwRouter } from "./www/www_router.js";
 import { Rot13Router } from "./rot13_service/rot13_router.js";
+import { OutputTracker } from "util/output_listener.js";
 
 const VALID_ARGS = [ "1000", "2000" ];
 
@@ -86,7 +86,7 @@ describe("All servers", () => {
 			assertLogError(wwwLog, "www", [ "xxx", "1000" ]);
 			assertLogError(rot13Log, "ROT-13", [ "1000", "xxx" ]);
 
-			function assertLogError(logOutput, serverName, args) {
+			function assertLogError(logOutput: OutputTracker<LogOutput>, serverName: string, args: string[]): void {
 				assert.deepEqual(logOutput.data, [{
 					alert: "emergency",
 					message: "startup error",
@@ -103,11 +103,15 @@ describe("All servers", () => {
 
 async function startAsync({
 	args = VALID_ARGS,
-} = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		args: [ undefined, Array ],
-	}]]);
-
+}: {
+	args?: string[]
+} = {}): Promise<{
+	wwwServer: HttpServer,
+	rot13Server: HttpServer,
+	wwwRouter: WwwRouter,
+	rot13Router: Rot13Router,
+	logOutput: OutputTracker<LogOutput>,
+}> {
 	const log = Log.createNull();
 	const logOutput = log.trackOutput();
 
@@ -122,8 +126,8 @@ async function startAsync({
 	return {
 		wwwServer,
 		rot13Server,
-		wwwRouter: servers._wwwRouter,
-		rot13Router: servers._rot13Router,
+		wwwRouter: servers._wwwRouter!,
+		rot13Router: servers._rot13Router!,
 		logOutput,
 	};
 }
