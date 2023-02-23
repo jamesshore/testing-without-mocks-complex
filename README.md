@@ -286,7 +286,7 @@ Most of the infrastructure wrappers (listed above) have configurable responses. 
 
 #### [Output Tracking](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#output-tracking)
 
-Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.ts), [CommandLine](src/node_modules/infrastructure/command_line.ts), [Log](src/node_modules/infrastructure/command_line.ts), [GenericRouter](src/node_modules/http/generic_router.js), and [Rot13Client](src/www/infrastructure/rot13_client.js).
+Several classes support output tracking: [HttpClient](src/node_modules/http/http_client.ts), [CommandLine](src/node_modules/infrastructure/command_line.ts), [Log](src/node_modules/infrastructure/command_line.ts), [GenericRouter](src/node_modules/http/generic_router.ts), and [Rot13Client](src/www/infrastructure/rot13_client.js).
 
 #### [Behavior Simulation](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#behavior-simulation)
 
