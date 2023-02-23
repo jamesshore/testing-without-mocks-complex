@@ -1,14 +1,15 @@
 // Copyright Titanium I.T. LLC.
 import assert from "util/assert.js";
-import * as ensure from "util/ensure.js";
 import { HomePageController } from "./home_page/home_page_controller.js";
 import { HttpServerRequest } from "http/http_server_request.js";
 import { WwwRouter } from "./www_router.js";
 import { WwwConfig } from "./www_config.js";
 import * as wwwView from "./www_view.js";
 import { HttpServer } from "http/http_server.js";
-import { Log } from "infrastructure/log.js";
+import { Log, LogOutput } from "infrastructure/log.js";
 import { UuidGenerator } from "./infrastructure/uuid_generator.js";
+import { HttpServerResponse } from "http/http_server_response.js";
+import { OutputTracker } from "util/output_listener.js";
 
 const IRRELEVANT_PORT = 42;
 
@@ -77,14 +78,16 @@ async function simulateHttpRequestAsync({
 	url = VALID_URL,
 	method = VALID_METHOD,
 	uuid = "irrelevant-uuid",
-} = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		port: [ undefined, Number ],
-		method: [ undefined, String ],
-		url: [ undefined, String ],
-		uuid: [ undefined, String ],
-	}]]);
-
+}: {
+	port?: number,
+	url?: string,
+	method?: string,
+	uuid?: string,
+} = {}): Promise<{
+	response: HttpServerResponse,
+	logOutput: OutputTracker<LogOutput>,
+	context: WwwConfig,
+}> {
 	const { router, log, logOutput } = createRouter({ port, uuid });
 	const requests = router._router.trackRequests();
 
@@ -94,7 +97,7 @@ async function simulateHttpRequestAsync({
 
 	const request = HttpServerRequest.createNull({ url, method });
 	const response = await server.simulateRequestAsync(request);
-	const context = requests.data[0].context;
+	const context = requests.data[0]!.context;
 
 	return { response, logOutput, context };
 }
@@ -102,12 +105,14 @@ async function simulateHttpRequestAsync({
 function createRouter({
 	port = IRRELEVANT_PORT,
 	uuid = "irrelevant-uuid",
-} = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		port: [ undefined, Number ],
-		uuid: [ undefined, String ],
-	}]]);
-
+}: {
+	port?: number,
+	uuid?: string,
+} = {}): {
+	router: WwwRouter,
+	log: Log,
+	logOutput: OutputTracker<LogOutput>,
+} {
 	const log = Log.createNull();
 	const logOutput = log.trackOutput();
 
