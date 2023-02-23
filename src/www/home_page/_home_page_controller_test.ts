@@ -1,13 +1,14 @@
 // Copyright Titanium I.T. LLC.
 import assert from "util/assert.js";
-import * as ensure from "util/ensure.js";
 import { HttpServerRequest } from "http/http_server_request.js";
 import { WwwConfig } from "../www_config.js";
 import * as homePageView from "./home_page_view.js";
-import { Rot13Client } from "../infrastructure/rot13_client.js";
+import { Rot13Client, Rot13ClientOutput } from "../infrastructure/rot13_client.js";
 import { HomePageController } from "./home_page_controller.js";
-import { Log } from "infrastructure/log.js";
+import { Log, LogOutput } from "infrastructure/log.js";
 import { Clock } from "infrastructure/clock.js";
+import { HttpServerResponse } from "http/http_server_response.js";
+import { OutputTracker } from "util/output_listener.js";
 
 const IRRELEVANT_PORT = 42;
 const IRRELEVANT_INPUT = "irrelevant_input";
@@ -137,16 +138,23 @@ describe("Home Page Controller", () => {
 
 });
 
-async function getAsync() {
-	ensure.signature(arguments, []);
-
+async function getAsync(): Promise<{ response: HttpServerResponse }> {
 	const controller = new HomePageController(Rot13Client.createNull(), Clock.createNull());
 	const response = await controller.getAsync(HttpServerRequest.createNull(), WwwConfig.createTestInstance());
 
 	return { response };
 }
 
-async function postAsync(options) {
+interface PostOptions {
+	body?: string,
+	correlationId?: string,
+	rot13ServicePort?: number,
+	rot13Response?: string,
+	rot13Error?: string,
+	rot13Hang?: boolean,
+}
+
+async function postAsync(options: PostOptions) {
 	const { responsePromise, ...remainder } = post(options);
 
 	return {
@@ -162,16 +170,12 @@ function post({
 	rot13Response = "irrelevant_response",
 	rot13Error = undefined,
 	rot13Hang = false,
-} = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		body: [ undefined, String ],
-		correlationId: [ undefined, String ],
-		rot13ServicePort: [ undefined, Number ],
-		rot13Response: [ undefined, String ],
-		rot13Error: [ undefined, String ],
-		rot13Hang: [ undefined, Boolean ],
-	}]]);
-
+}: PostOptions = {}): {
+	responsePromise: Promise<HttpServerResponse>
+	rot13Requests: OutputTracker<Rot13ClientOutput>,
+	logOutput: OutputTracker<LogOutput>,
+	clock: Clock,
+} {
 	const rot13Client = Rot13Client.createNull([{ response: rot13Response, error: rot13Error, hang: rot13Hang }]);
 	const rot13Requests = rot13Client.trackRequests();
 
@@ -193,7 +197,10 @@ function post({
 	};
 }
 
-async function waitForRequestToTimeoutAsync(clock, responsePromise) {
+async function waitForRequestToTimeoutAsync(
+	clock: Clock,
+	responsePromise: Promise<HttpServerResponse>
+): Promise<HttpServerResponse> {
 	await clock.advanceNulledClockUntilTimersExpireAsync();
 	return await responsePromise;
 }
