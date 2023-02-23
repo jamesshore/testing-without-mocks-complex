@@ -1,7 +1,10 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.js";
 import * as uuid from "uuid";
 import { ConfigurableResponses } from "util/configurable_responses.js";
+
+export type NulledUuidGeneratorResponse = string;
+
+export type NulledUuidGeneratorResponses = NulledUuidGeneratorResponse | NulledUuidGeneratorResponse[];
 
 /** Creates unique IDs. */
 export class UuidGenerator {
@@ -10,9 +13,7 @@ export class UuidGenerator {
 	 * Factory method. Creates a generator that returns a unique ID every time it's called.
 	 * @returns {UuidGenerator} the generator
 	 */
-	static create() {
-		ensure.signature(arguments, []);
-
+	static create(): UuidGenerator {
 		return new UuidGenerator(uuid);
 	}
 
@@ -22,36 +23,35 @@ export class UuidGenerator {
 	 * ID, that ID will be returned indefinitely.
 	 * @returns {UuidGenerator} the simulated generator
 	 */
-	static createNull(uuids = uuid.NIL) {
-		ensure.signature(arguments, [[ undefined, String, Array ]]);
-
+	static createNull(uuids: NulledUuidGeneratorResponses = uuid.NIL) {
 		return new UuidGenerator(new StubbedUuid(uuids));
 	}
 
 	/** Only for use by tests. (Use a factory method instead.) */
-	constructor(uuid) {
-		ensure.signatureMinimum(arguments, [{ v4: Function }]);
-
-		this._uuid = uuid;
+	constructor(private readonly _uuid: Uuid) {
 	}
 
 	/**
 	 * Create a unique ID.
 	 * @returns {string} the ID
 	 */
-	generate() {
-		ensure.signature(arguments, []);
-
+	generate(): string {
 		return this._uuid.v4();
 	}
 
 }
 
 
-class StubbedUuid {
+interface Uuid {
+	v4(): string,
+}
 
-	constructor(uuids) {
-		this._responses = ConfigurableResponses.create(uuids, "nulled UUID generator");
+class StubbedUuid implements Uuid {
+
+	private readonly _responses: ConfigurableResponses<NulledUuidGeneratorResponse>;
+
+	constructor(uuids: NulledUuidGeneratorResponses) {
+		this._responses = ConfigurableResponses.create<NulledUuidGeneratorResponse>(uuids, "nulled UUID generator");
 	}
 
 	v4() {
