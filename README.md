@@ -137,7 +137,7 @@ The source code is in the `src/` directory. Test files start with an underscore 
       * [test_helper.js](src/node_modules/util/test_helper.ts): Utility library for implementing integration tests.
       * [type.js](src/node_modules/util/type.ts) [(tests)](/src/node_modules/util/_type_test.js): Runtime type checker.
   * **[rot13_service/](src/rot13_service): ROT-13 microservice**
-    * [rot13_controller.js](src/rot13_service/rot13_controller.js) [(tests)](/src/rot13_service/_rot13_controller_test.js): Controller for `/rot13/transform` endpoint.
+    * [rot13_controller.js](src/rot13_service/rot13_controller.ts) [(tests)](/src/rot13_service/_rot13_controller_test.js): Controller for `/rot13/transform` endpoint.
     * [rot13_logic.js](src/rot13_service/rot13_logic.js) [(tests)](src/rot13_service/_rot13_logic_test.js): ROT-13 encoder.
     * [rot13_router.js](src/rot13_service/rot13_router.js) [(tests)](src/rot13_service/_rot13_router_test.js): Entry point into ROT-13 microservice.
     * [rot13_view.js](src/rot13_service/rot13_view.ts) [(tests)](src/rot13_service/_rot13_view_test.js): Renderer for ROT-13 microservice's responses.
@@ -233,7 +233,7 @@ The code is infrastructure-heavy, with almost no logic, so the A-Frame Architect
 
 #### [Traffic Cop](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#traffic-cop)
 
-The [WwwRouter](src/www/www_router.js) and [Rot13Router](src/rot13_service/rot13_router.js) routers are traffic cops. They receive events from the [HttpServer](src/node_modules/http/http_server.ts) via their `routeAsync()` methods, then turn around and call the appropriate methods on [HomePageController](src/www/home_page/home_page_controller.js) and [Rot13Controller](src/rot13_service/rot13_controller.js). However, because the pattern is spread across multiple classes, it's not very clear in the code.
+The [WwwRouter](src/www/www_router.js) and [Rot13Router](src/rot13_service/rot13_router.js) routers are traffic cops. They receive events from the [HttpServer](src/node_modules/http/http_server.ts) via their `routeAsync()` methods, then turn around and call the appropriate methods on [HomePageController](src/www/home_page/home_page_controller.js) and [Rot13Controller](src/rot13_service/rot13_controller.ts). However, because the pattern is spread across multiple classes, it's not very clear in the code.
 
 #### [Grow Evolutionary Seeds](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#grow-seeds)
 

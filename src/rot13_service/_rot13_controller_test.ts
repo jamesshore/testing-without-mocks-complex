@@ -4,10 +4,14 @@ import * as rot13Logic from "./rot13_logic.js";
 import { Rot13Controller } from "./rot13_controller.js";
 import { HttpServerRequest } from "http/http_server_request.js";
 import * as rot13View from "./rot13_view.js";
+import { HttpHeaders } from "http/http_headers.js";
+import { HttpServerResponse } from "http/http_server_response.js";
 
 const VALID_HEADERS = { "content-type": "application/json" };
 
-function validBody(text) { return { text }; }
+function validBody(text: string): { text: string } {
+	return { text };
+}
 
 describe("ROT-13 Controller", () => {
 
@@ -57,6 +61,9 @@ describe("ROT-13 Controller", () => {
 async function postAsync({
 	headers = VALID_HEADERS,
 	body = { text: "irrelevant-body" },
+}: {
+	headers?: HttpHeaders,
+	body?: any,
 } = {}) {
 	if (typeof body === "object") body = JSON.stringify(body);
 
@@ -66,12 +73,12 @@ async function postAsync({
 	return { response };
 }
 
-function assertOkResponse(response, originalText) {
+function assertOkResponse(response: HttpServerResponse, originalText: string): void {
 	const expectedResponse = rot13View.ok(rot13Logic.transform(originalText));
 
 	assert.deepEqual(response, expectedResponse);
 }
 
-function assertBadRequest(response, error) {
+function assertBadRequest(response: HttpServerResponse, error: string): void {
 	assert.deepEqual(response, rot13View.error(400, error));
 }
