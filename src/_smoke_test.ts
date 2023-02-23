@@ -30,7 +30,7 @@ describe("Smoke test", function() {
 
 });
 
-async function runServersAsync(fnAsync) {
+async function runServersAsync(fnAsync: () => void): Promise<void> {
 	const killFnAsync = await forkAsync();
 	try {
 		await fnAsync();
@@ -40,7 +40,7 @@ async function runServersAsync(fnAsync) {
 	}
 }
 
-async function forkAsync() {
+async function forkAsync(): Promise<() => void> {
 	return await new Promise((resolve, reject) => {
 		let stdout = "";
 		const process = testHelper.forkModule(
@@ -52,7 +52,7 @@ async function forkAsync() {
 			return fail(new Error("Startup timed out"));
 		}, STARTUP_TIMEOUT_IN_MS);
 
-		process.stdout.on("data", (chunk) => {
+		process.stdout!.on("data", (chunk) => {
 			stdout += chunk;
 			if (STARTUP_FAILED_REGEX.test(stdout)) {
 				return fail(new Error("Startup logged emergency"));
@@ -62,24 +62,24 @@ async function forkAsync() {
 			}
 		});
 
-		process.stderr.on("data", (chunk) => {
+		process.stderr!.on("data", (chunk) => {
 			return fail(new Error(`Unexpected stderr: ${chunk}`));
 		});
 
-		function succeed() {
+		function succeed(): void {
 			clearTimeout(timeoutHandle);
-			const killFnAsync = () => new Promise((innerResolve) => kill(innerResolve));
+			const killFnAsync = () => new Promise<void>((innerResolve) => kill(innerResolve));
 			return resolve(killFnAsync);
 		}
 
-		function fail(err) {
+		function fail(err: any): void {
 			kill(() => {
 				err.message += `\nLogs:\n${stdout}`;
 				return reject(err);
 			});
 		}
 
-		function kill(thenFn) {
+		function kill(thenFn: () => void): void {
 			process.kill();
 			process.on("exit", () => thenFn());
 		}
