@@ -1,7 +1,7 @@
 // Copyright Titanium I.T. LLC.
 import assert from "util/assert.js";
 import * as ensure from "util/ensure.js";
-import { HttpRequest } from "http/http_request.js";
+import { HttpServerRequest } from "http/http_server_request.js";
 import { WwwConfig } from "../www_config.js";
 import * as homePageView from "./home_page_view.js";
 import { Rot13Client } from "../infrastructure/rot13_client.js";
@@ -153,7 +153,7 @@ async function getAsync() {
 	ensure.signature(arguments, []);
 
 	const controller = new HomePageController(Rot13Client.createNull(), Clock.createNull());
-	const response = await controller.getAsync(HttpRequest.createNull(), WwwConfig.createTestInstance());
+	const response = await controller.getAsync(HttpServerRequest.createNull(), WwwConfig.createTestInstance());
 
 	return { response };
 }
@@ -191,7 +191,7 @@ function post({
 	const logOutput = log.trackOutput();
 
 	const clock = Clock.createNull();
-	const request = HttpRequest.createNull({ body });
+	const request = HttpServerRequest.createNull({ body });
 	const config = WwwConfig.createTestInstance({ rot13ServicePort, log, correlationId });
 
 	const controller = new HomePageController(rot13Client, clock);

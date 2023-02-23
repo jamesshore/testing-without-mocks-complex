@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
 import * as ensure from "util/ensure.js";
-import { HttpRequest } from "http/http_request.js";
+import { HttpServerRequest } from "http/http_server_request.js";
 import { GenericRouter } from "http/generic_router.js";
 import { Rot13Controller } from "./rot13_controller.js";
 import { Log } from "infrastructure/log.js";
@@ -39,7 +39,7 @@ export class Rot13Router {
 	}
 
 	async routeAsync(request) {
-		ensure.signature(arguments, [ HttpRequest ]);
+		ensure.signature(arguments, [ HttpServerRequest ]);
 
 		const correlationId = request.headers["x-correlation-id"];
 		if (correlationId === undefined) {
@@ -53,7 +53,7 @@ export class Rot13Router {
 }
 
 function errorHandler(status, error, request) {
-	ensure.signature(arguments, [ Number, String, HttpRequest ]);
+	ensure.signature(arguments, [ Number, String, HttpServerRequest ]);
 
 	return rot13View.error(status, error);
 }

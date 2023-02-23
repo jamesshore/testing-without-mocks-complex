@@ -3,7 +3,7 @@ import * as ensure from "util/ensure.js";
 import assert from "util/assert.js";
 import { Rot13Router } from "./rot13_router.js";
 import { HttpServer } from "http/http_server.js";
-import { HttpRequest } from "http/http_request.js";
+import { HttpServerRequest } from "http/http_server_request.js";
 import { Rot13Controller } from "./rot13_controller.js";
 import { HttpResponse } from "http/http_response.js";
 import { Log } from "infrastructure/log.js";
@@ -28,7 +28,7 @@ describe("ROT-13 Router", () => {
 			headers: VALID_HEADERS,
 			body: VALID_BODY,
 		};
-		const expected = await Rot13Controller.create().postAsync(HttpRequest.createNull(requestOptions));
+		const expected = await Rot13Controller.create().postAsync(HttpServerRequest.createNull(requestOptions));
 
 		const { response } = await simulateHttpRequestAsync(requestOptions);
 		assert.deepEqual(response, expected);
@@ -84,7 +84,7 @@ async function simulateHttpRequestAsync({
 	const logOutput = log.trackOutput();
 	const router = new Rot13Router(log);
 
-	const request = HttpRequest.createNull({ url, method, headers, body });
+	const request = HttpServerRequest.createNull({ url, method, headers, body });
 
 	const server = HttpServer.createNull();
 	await server.startAsync(IRRELEVANT_PORT, Log.createNull(), router);
