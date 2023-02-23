@@ -1,5 +1,4 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.js";
 import { HttpServerResponse } from "http/http_server_response.js";
 
 /**
@@ -7,9 +6,7 @@ import { HttpServerResponse } from "http/http_server_response.js";
  * @param transformed the ROT-13 encoded text
  * @returns {HttpServerResponse} response for the server to return
  */
-export function ok(transformed) {
-	ensure.signature(arguments, [ String ]);
-
+export function ok(transformed: string): HttpServerResponse {
 	return HttpServerResponse.createJsonResponse({
 		status: 200,
 		body: { transformed },
@@ -22,9 +19,7 @@ export function ok(transformed) {
  * @param error error description
  * @returns {HttpServerResponse} response for the server to return
  */
-export function error(status, error) {
-	ensure.signature(arguments, [ Number, String ]);
-
+export function error(status: number, error: string): HttpServerResponse {
 	return HttpServerResponse.createJsonResponse({
 		status,
 		body: { error },
