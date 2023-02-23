@@ -2,6 +2,7 @@
 import * as ensure from "util/ensure.js";
 import * as rot13Logic from "./rot13_logic.js";
 import * as rot13View from "./rot13_view.js";
+import { HttpRequest } from "http/http_request.js";
 
 const REQUEST_TYPE = { text: String };
 
@@ -9,10 +10,14 @@ const REQUEST_TYPE = { text: String };
 export class Rot13Controller {
 
 	static create() {
+		ensure.signature(arguments, []);
+
 		return new Rot13Controller();
 	}
 
 	async postAsync(request) {
+		ensure.signatureMinimum(arguments, [ HttpRequest ]);
+
 		const { input, err } = await this.#parseRequestAsync(request);
 		if (err !== undefined) return rot13View.error(400, err);
 
@@ -21,6 +26,8 @@ export class Rot13Controller {
 	}
 
 	async #parseRequestAsync(request) {
+		ensure.signatureMinimum(arguments, [ HttpRequest ]);
+
 		try {
 			if (!request.hasContentType("application/json")) throw new Error("invalid content-type header");
 
