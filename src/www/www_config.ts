@@ -1,5 +1,4 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.js";
 import { Log } from "infrastructure/log.js";
 
 /** Configuration for a request to the user-facing website. */
@@ -12,9 +11,7 @@ export class WwwConfig {
 	 * @param correlationId unique identifier for this request
 	 * @returns {WwwConfig} the configuration
 	 */
-	static create(log, rot13ServicePort, correlationId) {
-		ensure.signature(arguments, [ Log, Number, String ]);
-
+	static create(log: Log, rot13ServicePort: number, correlationId: string): WwwConfig {
 		return new WwwConfig(log, rot13ServicePort, correlationId);
 	}
 
@@ -29,41 +26,40 @@ export class WwwConfig {
 		log = Log.createNull(),
 		rot13ServicePort = 42,
 		correlationId = "nulled-correlation-id"
-	} = {}) {
-		ensure.signature(arguments, [[ undefined, {
-			log: [ undefined, Log ],
-			rot13ServicePort: [ undefined, Number ],
-			correlationId: [ undefined, String ],
-		}]]);
-
+	}: {
+		log?: Log,
+		rot13ServicePort?: number,
+		correlationId?: string,
+	} = {}): WwwConfig {
 		return new WwwConfig(log, rot13ServicePort, correlationId);
 	}
 
 	/** Only for use by tests. (Use a factory method instead.) */
-	constructor(log, rot13ServicePort, correlationId) {
-		this._log = log;
-		this._rot13ServicePort = rot13ServicePort;
-		this._correlationId = correlationId;
+	constructor(
+		private readonly _log: Log,
+		private readonly _rot13ServicePort: number,
+		private readonly _correlationId: string,
+	) {
 	}
 
 	/**
 	 * @returns {Log} logger
 	 */
-	get log() {
+	get log(): Log {
 		return this._log;
 	}
 
 	/**
 	 * @returns {number} port of ROT-13 service
 	 */
-	get rot13ServicePort() {
+	get rot13ServicePort(): number {
 		return this._rot13ServicePort;
 	}
 
 	/**
 	 * @returns {string} unique identifier for this request
 	 */
-	get correlationId() {
+	get correlationId(): string {
 		return this._correlationId;
 	}
 
