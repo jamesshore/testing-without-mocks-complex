@@ -1,9 +1,10 @@
 // Copyright Titanium I.T. LLC.
-import * as ensure from "util/ensure.js";
 import assert from "util/assert.js";
-import { HttpClient } from "http/http_client.js";
-import { Rot13Client } from "./rot13_client.js";
+import { HttpClient, HttpClientOutput } from "http/http_client.js";
+import { Rot13Client, Rot13ClientOutput } from "./rot13_client.js";
 import { ignorePromiseErrorAsync } from "util/test_helper.js";
+import { HttpHeaders } from "http/http_headers.js";
+import { OutputTracker } from "util/output_listener.js";
 
 const HOST = "localhost";
 const IRRELEVANT_PORT = 42;
@@ -226,6 +227,17 @@ describe("ROT-13 Service client", () => {
 
 });
 
+interface TransformOptions {
+	rot13Client?: Rot13Client,
+	port?: number,
+	text?: string,
+	correlationId?: string,
+	rot13ServiceStatus?: number,
+	rot13ServiceHeaders?: HttpHeaders,
+	rot13ServiceBody?: string,
+	rot13ServiceHang?: boolean,
+}
+
 function transform({
 	rot13Client,
 	port = IRRELEVANT_PORT,
@@ -235,18 +247,12 @@ function transform({
 	rot13ServiceHeaders = VALID_ROT13_HEADERS,
 	rot13ServiceBody = VALID_ROT13_BODY,
 	rot13ServiceHang = false,
-} = {}) {
-	ensure.signature(arguments, [[ undefined, {
-		rot13Client: [ undefined, Rot13Client ],
-		port: [ undefined, Number ],
-		text: [ undefined, String ],
-		correlationId: [ undefined, String ],
-		rot13ServiceStatus: [ undefined, Number ],
-		rot13ServiceHeaders: [ undefined, Object ],
-		rot13ServiceBody: [ undefined, String ],
-		rot13ServiceHang: [ undefined, Boolean ],
-	}]]);
-
+}: TransformOptions = {}): {
+	responsePromise: Promise<string>,
+	cancelFn: () => void,
+	rot13Requests: OutputTracker<Rot13ClientOutput>,
+	httpRequests: OutputTracker<HttpClientOutput>,
+} {
 	const httpClient = HttpClient.createNull({
 		"/rot13/transform": [{
 			status: rot13ServiceStatus,
@@ -263,7 +269,7 @@ function transform({
 	return { responsePromise: transformPromise, cancelFn, rot13Requests, httpRequests };
 }
 
-async function transformAsync(options) {
+async function transformAsync(options: TransformOptions) {
 	const { responsePromise, ...results } = transform(options);
 	return { response: await responsePromise, ...results };
 }
@@ -274,15 +280,13 @@ async function assertFailureAsync({
 	rot13ServiceHeaders = VALID_ROT13_HEADERS,
 	rot13ServiceBody = VALID_ROT13_BODY,
 	message,
+}: {
+	rot13Client?: Rot13Client,
+	rot13ServiceStatus?: number,
+	rot13ServiceHeaders?: HttpHeaders,
+	rot13ServiceBody?: string,
+	message: string,
 }) {
-	ensure.signature(arguments, [{
-		rot13Client: [ undefined, Rot13Client ],
-		rot13ServiceStatus: [ undefined, Number ],
-		rot13ServiceHeaders: [ undefined, Object ],
-		rot13ServiceBody: [ undefined, String ],
-		message: String,
-	}]);
-
 	const expectedError =
 		`${message}\n` +
 		`Host: ${HOST}:9999\n` +
