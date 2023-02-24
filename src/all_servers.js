@@ -6,13 +6,18 @@ import { Log } from "infrastructure/log.js";
 import { WwwRouter } from "./www/www_router.js";
 import { Rot13Router } from "./rot13_service/rot13_router.js";
 
-/** Application startup (parse command line and start servers) */
+/** Application startup (parse command line and start servers). */
 export class AllServers {
 
+	/** @deprecated Only for use by tests. */
 	static get USAGE() {
 		return "Usage: run [www server port] [rot-13 server port]";
 	}
 
+	/**
+	 * Factory method. Creates the servers, but doesn't start them.
+	 * @returns {AllServers} the servers
+	 */
 	static create() {
 		ensure.signature(arguments, []);
 
@@ -24,6 +29,7 @@ export class AllServers {
 		);
 	}
 
+	/** @deprecated Use the factory method instead. */
 	constructor(log, commandLine, wwwServer, rot13Server) {
 		ensure.signature(arguments, [ Log, CommandLine, HttpServer, HttpServer ]);
 
@@ -33,6 +39,9 @@ export class AllServers {
 		this._rot13Server = rot13Server;
 	}
 
+	/**
+	 * Parse the command line and start the servers.
+	 */
 	async startAsync() {
 		ensure.signature(arguments, []);
 

@@ -9,12 +9,21 @@ const REQUEST_TYPE = { text: String };
 /** Endpoint for /rot13/transform */
 export class Rot13Controller {
 
+	/**
+	 * Factory method. Creates the controller.
+	 * @returns {Rot13Controller} the controller
+	 */
 	static create() {
 		ensure.signature(arguments, []);
 
 		return new Rot13Controller();
 	}
 
+	/**
+	 * Handle post request
+	 * @param request HTTP request
+	 * @returns {Promise<HttpServerResponse>} HTTP response
+	 */
 	async postAsync(request) {
 		ensure.signatureMinimum(arguments, [ HttpServerRequest ]);
 

@@ -8,9 +8,15 @@ import { WwwConfig } from "./www_config.js";
 import { Log } from "infrastructure/log.js";
 import { UuidGenerator } from "./infrastructure/uuid_generator.js";
 
-/** Router for user-facing website */
+/** Router for the user-facing website. */
 export class WwwRouter {
 
+	/**
+	 * Factory method. Creates the router.
+	 * @param log logger to use for all requests
+	 * @param rot13ServicePort port of the ROT-13 service (host is assumed to be localhost)
+	 * @returns {WwwRouter} the router
+	 */
 	static create(log, rot13ServicePort) {
 		ensure.signature(arguments, [ Log, Number ]);
 
@@ -22,6 +28,13 @@ export class WwwRouter {
 		);
 	}
 
+	/**
+	 * Factory method. Creates a 'nulled' router that doesn't communicate with external systems.
+	 * @param [log] logger to use for all requests
+	 * @param [port] port of the ROT-13 service (host is assumed to be localhost)
+	 * @param [uuids] UUID generator
+	 * @returns {WwwRouter} the nulled instance
+	 */
 	static createNull({
 		log = Log.createNull(),
 		port = 42,
@@ -41,6 +54,7 @@ export class WwwRouter {
 		);
 	}
 
+	/** @deprecated Use a factory method instead. */
 	constructor(log, rot13ServicePort, uuids, homePageController) {
 		ensure.signature(arguments, [ Log, Number, UuidGenerator, HomePageController ]);
 
@@ -53,14 +67,25 @@ export class WwwRouter {
 		});
 	}
 
+	/**
+	 * @returns {Log} logger
+	 */
 	get log() {
 		return this._log;
 	}
 
+	/**
+	 * @returns {number} port of the ROT-13 service
+	 */
 	get rot13ServicePort() {
 		return this._rot13ServicePort;
 	}
 
+	/**
+	 * Process request and return response.
+	 * @param request the request
+	 * @returns {Promise<HttpServerResponse>} the response
+	 */
 	async routeAsync(request) {
 		ensure.signature(arguments, [ HttpServerRequest ]);
 

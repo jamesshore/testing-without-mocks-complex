@@ -2,7 +2,11 @@
 import * as ensure from "util/ensure.js";
 import { HttpServerResponse } from "http/http_server_response.js";
 
-/** Success response for ROT-13 server */
+/**
+ * Create success response for the ROT-13 server.
+ * @param transformed the ROT-13 encoded text
+ * @returns {HttpServerResponse} response for the server to return
+ */
 export function ok(transformed) {
 	ensure.signature(arguments, [ String ]);
 
@@ -12,7 +16,12 @@ export function ok(transformed) {
 	});
 }
 
-/** Error response for ROT-13 server */
+/**
+ * Create error response for the ROT-13 server.
+ * @param status status code
+ * @param error error description
+ * @returns {HttpServerResponse} response for the server to return
+ */
 export function error(status, error) {
 	ensure.signature(arguments, [ Number, String ]);
 

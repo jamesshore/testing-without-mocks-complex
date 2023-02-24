@@ -9,12 +9,22 @@ import * as rot13View from "./rot13_view.js";
 /** Router for ROT-13 service */
 export class Rot13Router {
 
+	/**
+	 * Factory method. Creates the router.
+	 * @param log logger to use for all requests
+	 * @returns {Rot13Router} the router
+	 */
 	static create(log) {
 		ensure.signature(arguments, [ Log ]);
 
 		return new Rot13Router(log);
 	}
 
+	/**
+	 * Factory method. Creates a 'nulled' router that doesn't communicate with external systems.
+	 * @param [log] logger to use for all requests (defaults to a nulled log)
+	 * @returns {Rot13Router} the nulled instance
+	 */
 	static createNull({
 		log = Log.createNull(),
 	} = {}) {
@@ -25,6 +35,7 @@ export class Rot13Router {
 		return new Rot13Router(log);
 	}
 
+	/** @deprecated Use a factory method instead. */
 	constructor(log) {
 		ensure.signature(arguments, [ Log ]);
 
@@ -34,10 +45,18 @@ export class Rot13Router {
 		});
 	}
 
+	/**
+	 * @returns {*} logger
+	 */
 	get log() {
 		return this._log;
 	}
-
+	
+	/**
+	 * Process request and return response.
+	 * @param request the request
+	 * @returns {Promise<HttpServerResponse>} the response
+	 */
 	async routeAsync(request) {
 		ensure.signature(arguments, [ HttpServerRequest ]);
 
