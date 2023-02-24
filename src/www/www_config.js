@@ -19,7 +19,7 @@ export class WwwConfig {
 	}
 
 	/**
-	 * Nulled factory method.
+	 * Test-only factory method.
 	 * @param [log] logger to use for this request
 	 * @param [rot13ServicePort] port of ROT-13 service (host is assumed to be localhost)
 	 * @param [correlationId] unique identifier for this request
@@ -39,7 +39,7 @@ export class WwwConfig {
 		return new WwwConfig(log, rot13ServicePort, correlationId);
 	}
 
-	/** @deprecated Use the factory methods instead. */
+	/** @deprecated Use a factory method instead. */
 	constructor(log, rot13ServicePort, correlationId) {
 		this._log = log;
 		this._rot13ServicePort = rot13ServicePort;
