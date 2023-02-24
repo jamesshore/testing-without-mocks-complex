@@ -19,7 +19,7 @@ export function pageTemplate(title, body) {
 }
 
 /**
- * Error page.
+ * Render error page.
  * @param status error status code
  * @param message error description
  * @returns {HttpServerResponse} error page for server to return
