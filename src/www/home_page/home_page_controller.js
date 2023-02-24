@@ -10,7 +10,7 @@ const ENDPOINT = "/";
 const INPUT_FIELD_NAME = "text";
 const TIMEOUT_IN_MS = 5000;
 
-/** Endpoints for '/' home page. */
+/** Endpoint for '/' home page. */
 export class HomePageController {
 
 	/**
