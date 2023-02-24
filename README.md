@@ -10,6 +10,8 @@ This is an elaborate example of the ideas in James Shore's [Testing Without Mock
 
 For educational purposes, the code is written "close to the metal" with minimal dependencies.
 
+**For JavaScript code, see the 'javascript' branch; for TypeScript code, see the 'typescript' branch.**
+
 
 ## About the Program
 
