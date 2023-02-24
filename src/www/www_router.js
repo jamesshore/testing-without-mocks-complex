@@ -1,6 +1,6 @@
 // Copyright Titanium I.T. LLC.
 import * as ensure from "util/ensure.js";
-import { HttpRequest } from "http/http_request.js";
+import { HttpServerRequest } from "http/http_server_request.js";
 import { HomePageController } from "./home_page/home_page_controller.js";
 import * as wwwView from "./www_view.js";
 import { GenericRouter } from "http/generic_router.js";
@@ -62,7 +62,7 @@ export class WwwRouter {
 	}
 
 	async routeAsync(request) {
-		ensure.signature(arguments, [ HttpRequest ]);
+		ensure.signature(arguments, [ HttpServerRequest ]);
 
 		const correlationId = this._uuids.generate();
 		const log = this._log.bind({ correlationId });
@@ -74,7 +74,7 @@ export class WwwRouter {
 }
 
 function errorHandler(status, errorMessage, request) {
-	ensure.signature(arguments, [ Number, String, HttpRequest ]);
+	ensure.signature(arguments, [ Number, String, HttpServerRequest ]);
 
 	return wwwView.errorPage(status, errorMessage);
 }

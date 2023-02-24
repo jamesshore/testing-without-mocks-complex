@@ -1,12 +1,12 @@
 // Copyright Titanium I.T. LLC.
 import * as ensure from "util/ensure.js";
-import { HttpResponse } from "http/http_response.js";
+import { HttpServerResponse } from "http/http_server_response.js";
 
 /** Success response for ROT-13 server */
 export function ok(transformed) {
 	ensure.signature(arguments, [ String ]);
 
-	return HttpResponse.createJsonResponse({
+	return HttpServerResponse.createJsonResponse({
 		status: 200,
 		body: { transformed },
 	});
@@ -16,7 +16,7 @@ export function ok(transformed) {
 export function error(status, error) {
 	ensure.signature(arguments, [ Number, String ]);
 
-	return HttpResponse.createJsonResponse({
+	return HttpServerResponse.createJsonResponse({
 		status,
 		body: { error },
 	});

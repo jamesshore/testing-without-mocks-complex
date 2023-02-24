@@ -2,7 +2,7 @@
 import assert from "util/assert.js";
 import * as rot13Logic from "./rot13_logic.js";
 import { Rot13Controller } from "./rot13_controller.js";
-import { HttpRequest } from "http/http_request.js";
+import { HttpServerRequest } from "http/http_server_request.js";
 import * as rot13View from "./rot13_view.js";
 
 const VALID_HEADERS = { "content-type": "application/json" };
@@ -60,7 +60,7 @@ async function postAsync({
 } = {}) {
 	if (typeof body === "object") body = JSON.stringify(body);
 
-	const request = HttpRequest.createNull({ headers, body });
+	const request = HttpServerRequest.createNull({ headers, body });
 	const response = await Rot13Controller.create().postAsync(request);
 
 	return { response };

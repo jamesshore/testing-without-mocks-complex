@@ -4,7 +4,7 @@ import * as ensure from "util/ensure.js";
 import { AllServers } from "./all_servers.js";
 import { CommandLine } from "infrastructure/command_line.js";
 import { HttpServer } from "http/http_server.js";
-import { HttpRequest } from "http/http_request.js";
+import { HttpServerRequest } from "http/http_server_request.js";
 import { Log } from "infrastructure/log.js";
 import { WwwRouter } from "./www/www_router.js";
 import { Rot13Router } from "./rot13_service/rot13_router.js";
@@ -25,7 +25,7 @@ describe("All servers", () => {
 		it("routes WWW requests", async () => {
 			const { wwwServer } = await startAsync();
 
-			const request = HttpRequest.createNull({ url: "/", method: "GET" });
+			const request = HttpServerRequest.createNull({ url: "/", method: "GET" });
 
 			const expectedResponse = await WwwRouter.createNull().routeAsync(request);
 			const actualResponse = await wwwServer.simulateRequestAsync(request);
@@ -36,7 +36,7 @@ describe("All servers", () => {
 		it("routes ROT-13 service requests", async () => {
 			const { rot13Server } = await startAsync();
 
-			const request = HttpRequest.createNull({ url: "/rot13/transform", method: "POST" });
+			const request = HttpServerRequest.createNull({ url: "/rot13/transform", method: "POST" });
 
 			const expectedResponse = await Rot13Router.createNull().routeAsync(request);
 			const actualResponse = await rot13Server.simulateRequestAsync(request);

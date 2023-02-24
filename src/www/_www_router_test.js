@@ -2,7 +2,7 @@
 import assert from "util/assert.js";
 import * as ensure from "util/ensure.js";
 import { HomePageController } from "./home_page/home_page_controller.js";
-import { HttpRequest } from "http/http_request.js";
+import { HttpServerRequest } from "http/http_server_request.js";
 import { WwwRouter } from "./www_router.js";
 import { WwwConfig } from "./www_config.js";
 import * as wwwView from "./www_view.js";
@@ -22,7 +22,7 @@ describe("WWW Router", () => {
 			url: VALID_URL,
 			method: VALID_METHOD,
 		};
-		const request = HttpRequest.createNull(requestOptions);
+		const request = HttpServerRequest.createNull(requestOptions);
 		const expected = await HomePageController.createNull().getAsync(request, WwwConfig.createTestInstance());
 
 		const { response } = await simulateHttpRequestAsync(requestOptions);
@@ -92,7 +92,7 @@ async function simulateHttpRequestAsync({
 	await server.startAsync(port, log, router);
 	logOutput.clear();
 
-	const request = HttpRequest.createNull({ url, method });
+	const request = HttpServerRequest.createNull({ url, method });
 	const response = await server.simulateRequestAsync(request);
 	const context = requests.data[0].context;
 

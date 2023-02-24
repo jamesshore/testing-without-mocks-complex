@@ -118,10 +118,10 @@ The source code is in the `src/` directory. Test files start with an underscore 
   * [_smoke_test.js](src/_smoke_test.js): End-to-end smoke test for both servers.
   * **[node_modules/](src/node_modules): Code shared by both servers (*not* third-party code)**
     * **[http/](src/node_modules/http): HTTP infrastructure wrappers**
-      * [generic_router.js](src/node_modules/http/generic_router.js) [(tests)](src/node_modules/http/_generic_router_test.js) A utility for converting [HttpRequest](src/node_modules/http/http_request.js)s to method calls.
+      * [generic_router.js](src/node_modules/http/generic_router.js) [(tests)](src/node_modules/http/_generic_router_test.js) A utility for converting [HttpServerRequest](src/node_modules/http/http_server_request.js)s to method calls.
       * [http_client.js](src/node_modules/http/http_client.js) [(tests)](src/node_modules/http/_http_client_test.js): Makes HTTP requests.
-      * [http_request.js](src/node_modules/http/http_request.js) [(tests)](src/node_modules/http/_http_request_test.js): Server-side HTTP request received from the client.
-      * [http_response.js](src/node_modules/http/http_response.js) [(tests)](src/node_modules/http/_http_response_test.js): Server-side HTTP response to be sent to the client.
+      * [http_request.js](src/node_modules/http/http_server_request.js) [(tests)](src/node_modules/http/_http_request_test.js): Server-side HTTP request received from the client.
+      * [http_server_response.js](src/node_modules/http/http_server_response.js) [(tests)](src/node_modules/http/_http_server_response_test.js): Server-side HTTP response to be sent to the client.
       * [http_server.js](src/node_modules/http/http_server.js) [(tests)](src/node_modules/http/_http_server_test.js): An HTTP server.
     * **[infrastructure/](src/node_modules/infrastructure): Other shared infrastructure wrappers**
       * [clock.js](src/node_modules/infrastructure/clock.js) [(tests)](src/node_modules/infrastructure/_clock_test.js): Current time, timeouts, etc.
@@ -222,12 +222,12 @@ The code is infrastructure-heavy, with almost no logic, so the A-Frame Architect
 
 * The *Application/UI* layer is represented by [Rot13Router](src/rot13_service/rot13_router.js) and [Rot13Controller](src/rot13_service/rot13_controller.js).
 * The *Logic* layer is represented by [Rot13Logic](src/rot13_service/rot13_logic.js) and [Rot13View](src/rot13_service/rot13_view.js).
-* The *Infrastructure* layer is represented by [HttpServer](src/node_modules/http/http_server.js), [HttpRequest](src/node_modules/http/http_request.js), and [HttpResponse](src/node_modules/http/http_response.js).
+* The *Infrastructure* layer is represented by [HttpServer](src/node_modules/http/http_server.js), [HttpServerRequest](src/node_modules/http/http_server_request.js), and [HttpResponse](src/node_modules/http/http_server_response.js).
 * There is no *Values* layer.
 
 #### [Logic Sandwich](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#logic-sandwich)
 
-[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpRequest](src/node_modules/http/http_request.js), calls [Rot13Logic](src/rot13_service/rot13_logic.js), renders it with [Rot13View](src/rot13_service/rot13_view.js), and then writes data by returning a [HttpResponse](src/node_modules/http/http_response.js) (which is then served by [HttpServer](src/node_modules/http/http_server.js)).
+[Rot13Controller.postAsync()](src/rot13_service/rot13_controller.js) is a Logic Sandwich. It reads data from the [HttpServerRequest](src/node_modules/http/http_server_request.js), calls [Rot13Logic](src/rot13_service/rot13_logic.js), renders it with [Rot13View](src/rot13_service/rot13_view.js), and then writes data by returning a [HttpResponse](src/node_modules/http/http_server_response.js) (which is then served by [HttpServer](src/node_modules/http/http_server.js)).
 
 #### [Traffic Cop](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#traffic-cop)
 
@@ -253,7 +253,7 @@ This program doesn’t use any third-party logic libraries.
 
 #### [Infrastructure Wrappers](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#infrastructure-wrappers)
 
-There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.js), [HttpServer](src/node_modules/http/http_server.js), [HttpRequest](src/node_modules/http/http_request.js), [Clock](src/node_modules/infrastructure/clock.js), [CommandLine](src/node_modules/infrastructure/command_line.js), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.js) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
+There are many infrastructure wrappers. [HttpClient](src/node_modules/http/http_client.js), [HttpServer](src/node_modules/http/http_server.js), [HttpServerRequest](src/node_modules/http/http_server_request.js), [Clock](src/node_modules/infrastructure/clock.js), [CommandLine](src/node_modules/infrastructure/command_line.js), and [UuidGenerator](src/www/infrastructure/uuid_generator.js) are all low-level infrastructure wrappers. [Log](src/node_modules/infrastructure/log.js) and [Rot13Client](src/www/infrastructure/rot13_client.js) are high-level infrastructure wrappers. (Log uses CommandLine; Rot13Client uses HttpClient.)  
 
 #### [Narrow Integration Tests](https://www.jamesshore.com/v2/projects/testing-without-mocks/testing-without-mocks#narrow-integration-tests)
 

@@ -2,7 +2,7 @@
 import * as ensure from "util/ensure.js";
 import * as homePageView from "./home_page_view.js";
 import { Rot13Client } from "../infrastructure/rot13_client.js";
-import { HttpRequest } from "http/http_request.js";
+import { HttpServerRequest } from "http/http_server_request.js";
 import { WwwConfig } from "../www_config.js";
 import { Clock } from "infrastructure/clock.js";
 
@@ -31,13 +31,13 @@ export class HomePageController {
 	}
 
 	getAsync(request, config) {
-		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
+		ensure.signature(arguments, [ HttpServerRequest, WwwConfig ]);
 
 		return homePageView.homePage();
 	}
 
 	async postAsync(request, config) {
-		ensure.signature(arguments, [ HttpRequest, WwwConfig ]);
+		ensure.signature(arguments, [ HttpServerRequest, WwwConfig ]);
 
 		const log = config.log.bind({ endpoint: ENDPOINT, method: "POST" });
 
