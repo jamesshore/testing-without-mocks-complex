@@ -10,9 +10,9 @@ import * as rot13View from "./rot13_view.js";
 export class Rot13Router {
 
 	/**
-	 * Factory method.
+	 * Factory method. Creates the router.
 	 * @param log logger to use for all requests
-	 * @returns {Rot13Router} the instance
+	 * @returns {Rot13Router} the router
 	 */
 	static create(log) {
 		ensure.signature(arguments, [ Log ]);
@@ -21,8 +21,8 @@ export class Rot13Router {
 	}
 
 	/**
-	 * Nulled factory method
-	 * @param [log] logger to use for all requests
+	 * Factory method. Creates a 'nulled' router that doesn't communicate with external systems.
+	 * @param [log] logger to use for all requests (defaults to a nulled log)
 	 * @returns {Rot13Router} the nulled instance
 	 */
 	static createNull({

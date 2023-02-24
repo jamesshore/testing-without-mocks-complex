@@ -12,10 +12,10 @@ import { UuidGenerator } from "./infrastructure/uuid_generator.js";
 export class WwwRouter {
 
 	/**
-	 * Factory method.
+	 * Factory method. Creates the router.
 	 * @param log logger to use for all requests
 	 * @param rot13ServicePort port of the ROT-13 service (host is assumed to be localhost)
-	 * @returns {WwwRouter} the instance
+	 * @returns {WwwRouter} the router
 	 */
 	static create(log, rot13ServicePort) {
 		ensure.signature(arguments, [ Log, Number ]);
@@ -29,7 +29,7 @@ export class WwwRouter {
 	}
 
 	/**
-	 * Nulled factory method.
+	 * Factory method. Creates a 'nulled' router that doesn't communicate with external systems.
 	 * @param [log] logger to use for all requests
 	 * @param [port] port of the ROT-13 service (host is assumed to be localhost)
 	 * @param [uuids] UUID generator

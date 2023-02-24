@@ -14,8 +14,8 @@ const TIMEOUT_IN_MS = 5000;
 export class HomePageController {
 
 	/**
-	 * Factory method.
-	 * @returns {HomePageController} the instance
+	 * Factory method. Creates the controller.
+	 * @returns {HomePageController} the controller
 	 */
 	static create() {
 		ensure.signature(arguments, []);
@@ -24,7 +24,7 @@ export class HomePageController {
 	}
 
 	/**
-	 * Nulled factory method.
+	 * Factory method. Creates a 'nulled' controller that doesn't talk to the ROT-13 service.
 	 * @returns {HomePageController} the nulled instance
 	 */
 	static createNull() {

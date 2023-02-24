@@ -10,8 +10,8 @@ const REQUEST_TYPE = { text: String };
 export class Rot13Controller {
 
 	/**
-	 * Factory method.
-	 * @returns {Rot13Controller} the instance
+	 * Factory method. Creates the controller.
+	 * @returns {Rot13Controller} the controller
 	 */
 	static create() {
 		ensure.signature(arguments, []);

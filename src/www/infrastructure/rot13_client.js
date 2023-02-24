@@ -12,8 +12,8 @@ const RESPONSE_TYPE = { transformed: String };
 export class Rot13Client {
 
 	/**
-	 * Factory method.
-	 * @returns {Rot13Client} the instance
+	 * Factory method. Creates the client.
+	 * @returns {Rot13Client} the client
 	 */
 	static create() {
 		ensure.signature(arguments, []);
@@ -22,12 +22,14 @@ export class Rot13Client {
 	}
 
 	/**
-	 * Nulled factory method.
-	 * @param [options] array of responses for nulled instance to return
-	 * @param [options[].response] transformed text
-	 * @param [options[].error] if defined, causes an error to be thrown
-	 * @param [options[].hang] if true, the request never returns
-	 * @returns {Rot13Client} the nulled instance
+	 * Factory method. Creates a 'nulled' client that makes requests to a simulated ROT-13 service rather
+	 * than making real HTTP requests.
+	 * @param [options] Array of simulated responses for nulled instance to return. Each request returns
+	 * the next simulated response in the array.
+	 * @param [options[].response] the transformed text returned by the simulated service
+	 * @param [options[].error] if defined, causes the simulated service to return an error
+	 * @param [options[].hang] if true, the simulated request never returns
+	 * @returns {Rot13Client} the nulled client
 	 */
 	static createNull(options) {
 		ensure.signature(arguments, [ [ undefined, Array ] ]);

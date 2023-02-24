@@ -7,8 +7,8 @@ import { ConfigurableResponses } from "util/configurable_responses.js";
 export class UuidGenerator {
 
 	/**
-	 * Factory method.
-	 * @returns {UuidGenerator} the instance
+	 * Factory method. Creates a generator that returns a unique ID every time it's called.
+	 * @returns {UuidGenerator} the generator
 	 */
 	static create() {
 		ensure.signature(arguments, []);
@@ -17,9 +17,10 @@ export class UuidGenerator {
 	}
 
 	/**
-	 * Nulled factory method.
-	 * @param [uuids] the UUIDs to return; either a single UUID to return indefinitely, or a list of specific UUIDs
-	 * @returns {UuidGenerator} the nulled instance
+	 * Factory method. Creates a simulated generator that returns the specified IDs.
+	 * @param [uuids] The IDs to return. If it's an array, the IDs will be returned in order. If it's a single
+	 * ID, that ID will be returned indefinitely.
+	 * @returns {UuidGenerator} the simulated generator
 	 */
 	static createNull(uuids = uuid.NIL) {
 		ensure.signature(arguments, [[ undefined, String, Array ]]);

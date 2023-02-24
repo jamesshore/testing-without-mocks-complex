@@ -6,11 +6,11 @@ import { Log } from "infrastructure/log.js";
 export class WwwConfig {
 
 	/**
-	 * Factory method.
+	 * Factory method. Creates the configuration.
 	 * @param log logger to use for this request
 	 * @param rot13ServicePort port of ROT-13 service (host is assumed to be localhost)
 	 * @param correlationId unique identifier for this request
-	 * @returns {WwwConfig} the instance
+	 * @returns {WwwConfig} the configuration
 	 */
 	static create(log, rot13ServicePort, correlationId) {
 		ensure.signature(arguments, [ Log, Number, String ]);
@@ -19,11 +19,11 @@ export class WwwConfig {
 	}
 
 	/**
-	 * Test-only factory method.
+	 * Test-only factory method. Creates a configuration with overrideable defaults.
 	 * @param [log] logger to use for this request
 	 * @param [rot13ServicePort] port of ROT-13 service (host is assumed to be localhost)
 	 * @param [correlationId] unique identifier for this request
-	 * @returns {WwwConfig} the nulled instance
+	 * @returns {WwwConfig} the configuration
 	 */
 	static createTestInstance({
 		log = Log.createNull(),

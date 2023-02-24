@@ -15,8 +15,8 @@ export class AllServers {
 	}
 
 	/**
-	 * Factory method.
-	 * @returns {AllServers} the instance
+	 * Factory method. Creates the servers, but doesn't start them.
+	 * @returns {AllServers} the servers
 	 */
 	static create() {
 		ensure.signature(arguments, []);
