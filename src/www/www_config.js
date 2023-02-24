@@ -2,7 +2,7 @@
 import * as ensure from "util/ensure.js";
 import { Log } from "infrastructure/log.js";
 
-/** Configuration for request to user-facing website. */
+/** Configuration for a request to the user-facing website. */
 export class WwwConfig {
 
 	/**
