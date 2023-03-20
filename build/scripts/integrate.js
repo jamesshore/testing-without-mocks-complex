@@ -43,17 +43,17 @@ async function integrateAsync(message) {
 	writeHeader("Validating integration");
 	await validateBuildAsync(branches.integration);
 
-	await rebaseAsync(branches.typescript);
-
-
+	await rebaseAsync(branches.typescript, branches.integration);
+	await rebaseAsync(branches.usingNullablesJs, branches.integration);
+	await rebaseAsync(branches.usingNullablesTs, branches.typescript);
 }
 
-async function rebaseAsync(branch) {
-	writeHeader(`Rebasing ${branch} branch`);
-	await repo.rebaseAsync(branches.typescript, branches.integration);
+async function rebaseAsync(branchFrom, branchTo) {
+	writeHeader(`Rebasing ${branchFrom} branch`);
+	await repo.rebaseAsync(branchFrom, branchTo);
 
-	writeHeader(`Validating ${branch} branch`);
-	await validateBuildAsync(branches.typescript);
+	writeHeader(`Validating ${branchFrom} branch`);
+	await validateBuildAsync(branchFrom);
 }
 
 async function ensureNpmBuildFilesAreIgnored() {
