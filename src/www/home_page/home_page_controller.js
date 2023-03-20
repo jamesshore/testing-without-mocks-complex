@@ -64,7 +64,7 @@ export class HomePageController {
 
 		const log = config.log.bind({ endpoint: ENDPOINT, method: "POST" });
 
-		const { input, inputErr } = parseBody(await request.readBodyAsync(), log);
+		const { input, inputErr } = parseBody(await request.readBodyAsUrlEncodedFormAsync(), log);
 		if (inputErr !== undefined) return homePageView.homePage();
 
 		const { output, outputErr } = await transformAsync(this._rot13Client, this._clock, log, config, input);
@@ -75,12 +75,11 @@ export class HomePageController {
 
 }
 
-function parseBody(body, log) {
+function parseBody(formData, log) {
 	try {
-		const params = new URLSearchParams(body);
-		const textFields = params.getAll(INPUT_FIELD_NAME);
+		const textFields = formData[INPUT_FIELD_NAME];
 
-		if (textFields.length === 0) throw new Error(`'${INPUT_FIELD_NAME}' form field not found`);
+		if (textFields === undefined) throw new Error(`'${INPUT_FIELD_NAME}' form field not found`);
 		if (textFields.length > 1) throw new Error(`multiple '${INPUT_FIELD_NAME}' form fields found`);
 
 		return { input: textFields[0] };
@@ -89,7 +88,7 @@ function parseBody(body, log) {
 		log.monitor({
 			message: "form parse error",
 			error: inputErr.message,
-			body,
+			formData,
 		});
 		return { inputErr };
 	}

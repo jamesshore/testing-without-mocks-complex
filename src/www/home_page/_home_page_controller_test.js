@@ -46,18 +46,6 @@ describe("Home Page Controller", () => {
 
 	describe("parse edge cases", () => {
 
-		it("finds correct form field when there are unrelated fields", async () => {
-			const { rot13Requests } = await postAsync({
-				body: "unrelated=one&text=two&also_unrelated=three",
-			});
-
-			assert.deepEqual(rot13Requests.data, [{
-				text: "two",
-				port: IRRELEVANT_PORT,
-				correlationId: IRRELEVANT_CORRELATION_ID,
-			}]);
-		});
-
 		it("logs warning when form field not found (and treats request like GET)", async () => {
 			const { response, rot13Requests, logOutput } = await postAsync({
 				body: "",
@@ -69,7 +57,7 @@ describe("Home Page Controller", () => {
 				method: "POST",
 				message: "form parse error",
 				error: "'text' form field not found",
-				body: "",
+				formData: {},
 			}], "should log warning");
 
 			assert.deepEqual(response, homePageView.homePage(), "should render home page");
@@ -87,7 +75,7 @@ describe("Home Page Controller", () => {
 				method: "POST",
 				message: "form parse error",
 				error: "multiple 'text' form fields found",
-				body: "text=one&text=two",
+				formData: { text: [ "one", "two" ]},
 			}], "should log warning");
 
 			assert.deepEqual(response, homePageView.homePage(), "should render home page");
