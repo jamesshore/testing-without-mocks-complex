@@ -43,10 +43,16 @@ async function integrateAsync(message) {
 	writeHeader("Validating integration");
 	await validateBuildAsync(branches.integration);
 
-	writeHeader("Rebasing TypeScript branch");
-	await rebaseTypescriptAsync();
+	await rebaseAsync(branches.typescript);
 
-	writeHeader("Validating TypeScript");
+
+}
+
+async function rebaseAsync(branch) {
+	writeHeader(`Rebasing ${branch} branch`);
+	await repo.rebaseAsync(branches.typescript, branches.integration);
+
+	writeHeader(`Validating ${branch} branch`);
 	await validateBuildAsync(branches.typescript);
 }
 
@@ -71,10 +77,6 @@ async function mergeBranchesAsync(message) {
 		await repo.resetToFreshCheckoutAsync();
 		throw new Error("Integration failed");
 	}
-}
-
-async function rebaseTypescriptAsync() {
-	await repo.rebaseAsync(branches.typescript, branches.integration);
 }
 
 async function validateBuildAsync(branch) {
