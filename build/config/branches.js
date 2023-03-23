@@ -7,5 +7,7 @@ export default {
 
 	// training course exercises
 	usingNullablesJs: "using-nullables-js",
+	usingNullablesJsValidation: "using-nullables-js-validate",
 	usingNullablesTs: "using-nullables-ts",
+	usingNullablesTsValidation: "using-nullables-ts-validate",
 };
