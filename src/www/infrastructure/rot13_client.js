@@ -145,7 +145,7 @@ function nulledHttpResponses(responses = [ {} ]) {
 }
 
 function nulledHttpResponse({
-	response = "Null Rot13Client response",
+	response = "Nulled Rot13Client response",
 	error,
 	hang = false,
 } = {}) {

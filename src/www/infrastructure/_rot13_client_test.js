@@ -189,7 +189,7 @@ describe("ROT-13 Service client", () => {
 		it("provides default response", async () => {
 			const rot13Client = Rot13Client.createNull();
 			const { response } = await transformAsync({ rot13Client });
-			assert.equal(response, "Null Rot13Client response");
+			assert.equal(response, "Nulled Rot13Client response");
 		});
 
 		it("can configure multiple responses", async () => {
