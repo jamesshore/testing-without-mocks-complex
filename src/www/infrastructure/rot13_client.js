@@ -45,7 +45,7 @@ export class Rot13Client {
 		ensure.signature(arguments, [ HttpClient ]);
 
 		this._httpClient = httpClient;
-		this._listener = new OutputListener();
+		this._listener = OutputListener.create();
 	}
 
 	/**
