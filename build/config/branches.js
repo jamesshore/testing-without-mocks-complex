@@ -10,4 +10,9 @@ export default {
 	usingNullablesJsValidation: "using-nullables-js-validate",
 	usingNullablesTs: "using-nullables-ts",
 	usingNullablesTsValidation: "using-nullables-ts-validate",
+
+	highLevelInfrastructureJs: "high-level-infrastructure-js",
+	highLevelInfrastructureJsValidation: "high-level-infrastructure-js-validate",
+	highLevelInfrastructureTs: "high-level-infrastructure-ts",
+	highLevelInfrastructureTsValidation: "high-level-infrastructure-ts-validate",
 };
