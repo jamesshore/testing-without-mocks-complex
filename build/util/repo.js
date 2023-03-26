@@ -5,7 +5,12 @@ import * as sh from "./sh.js";
 // Functions to do things to the git repository
 
 export async function runBuildAsync() {
-	await runAsync("./build.sh");
+	if (process.platform === "win32") {
+		await runAsync("build");
+	}
+	else {
+		await runAsync("./build.sh");
+	}
 }
 
 export async function hasUncommittedChangesAsync() {

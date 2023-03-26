@@ -50,13 +50,13 @@ describe("ROT-13 Service client", () => {
 		});
 
 		it("tracks requests", async () => {
-			const { requests } = await transformAsync({
+			const { rot13Requests } = await transformAsync({
 				port: 9999,
 				text: "my text",
 				correlationId: "my-correlation-id"
 			});
 
-			assert.deepEqual(requests.data, [{
+			assert.deepEqual(rot13Requests.data, [{
 				port: 9999,
 				text: "my text",
 				correlationId: "my-correlation-id",
@@ -143,7 +143,7 @@ describe("ROT-13 Service client", () => {
 		});
 
 		it("tracks requests that are cancelled", async () => {
-			const { responsePromise, cancelFn, requests } = transform({
+			const { responsePromise, cancelFn, rot13Requests } = transform({
 				port: 9999,
 				text: "my text",
 				correlationId: "my-correlation-id",
@@ -158,14 +158,14 @@ describe("ROT-13 Service client", () => {
 			cancelFn();
 			await ignorePromiseErrorAsync(responsePromise);
 
-			assert.deepEqual(requests.data, [
+			assert.deepEqual(rot13Requests.data, [
 				expectedData,
 				{ ...expectedData, cancelled: true },
 			], "should track cancellation");
 		});
 
 		it("doesn't track attempted cancellations that don't actually cancel the request", async () => {
-			const { cancelFn, requests } = await transformAsync({   // wait for request to complete
+			const { cancelFn, rot13Requests } = await transformAsync({   // wait for request to complete
 				port: 9999,
 				text: "my text",
 				correlationId: "my-correlation-id",
@@ -174,7 +174,7 @@ describe("ROT-13 Service client", () => {
 
 			cancelFn();
 
-			assert.deepEqual(requests.data, [{
+			assert.deepEqual(rot13Requests.data, [{
 				port: 9999,
 				text: "my text",
 				correlationId: "my-correlation-id",
@@ -189,7 +189,7 @@ describe("ROT-13 Service client", () => {
 		it("provides default response", async () => {
 			const rot13Client = Rot13Client.createNull();
 			const { response } = await transformAsync({ rot13Client });
-			assert.equal(response, "Null Rot13Client response");
+			assert.equal(response, "Nulled Rot13Client response");
 		});
 
 		it("can configure multiple responses", async () => {
@@ -258,9 +258,9 @@ function transform({
 	const httpRequests = httpClient.trackRequests();
 
 	rot13Client = rot13Client ?? new Rot13Client(httpClient);
-	const requests = rot13Client.trackRequests();
+	const rot13Requests = rot13Client.trackRequests();
 	const { transformPromise, cancelFn } = rot13Client.transform(port, text, correlationId);
-	return { responsePromise: transformPromise, cancelFn, requests, httpRequests };
+	return { responsePromise: transformPromise, cancelFn, rot13Requests, httpRequests };
 }
 
 async function transformAsync(options) {

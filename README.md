@@ -60,6 +60,7 @@ The service has one endpoint:
 * Method: `POST`
 * Headers:
 	* `content-type: application/json`
+  * `x-correlation-id` the correlation ID to use in logs
 * Body: JSON object containing one field:
   * `text` the text to transform
   * E.g., `{ "text": "hello" }`
@@ -67,7 +68,6 @@ The service has one endpoint:
   * Status: 200 OK
   * Headers: 
     * `content-type: application/json`
-    * `x-correlation-id` the correlation ID to use in logs
   * Body: JSON object containing one field:
     * `transformed` the transformed text
     * E.g., `{ "transformed": "uryyb" }`

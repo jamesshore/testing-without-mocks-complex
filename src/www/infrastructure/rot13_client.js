@@ -31,11 +31,13 @@ export class Rot13Client {
 	 * @param [options[].hang] if true, the simulated request never returns
 	 * @returns {Rot13Client} the nulled client
 	 */
-	static createNull(options) {
+	static createNull(options = [ {} ]) {
 		ensure.signature(arguments, [ [ undefined, Array ] ]);
 
+		const httpResponses = options.map((response) => nulledHttpResponse(response));
+
 		const httpClient = HttpClient.createNull({
-			[TRANSFORM_ENDPOINT]: nulledHttpResponses(options),
+			[TRANSFORM_ENDPOINT]: httpResponses,
 		});
 		return new Rot13Client(httpClient);
 	}
@@ -45,7 +47,7 @@ export class Rot13Client {
 		ensure.signature(arguments, [ HttpClient ]);
 
 		this._httpClient = httpClient;
-		this._listener = new OutputListener();
+		this._listener = OutputListener.create();
 	}
 
 	/**
@@ -140,12 +142,8 @@ Body: ${response.body}`
 	);
 }
 
-function nulledHttpResponses(responses = [ {} ]) {
-	return responses.map((response) => nulledHttpResponse(response));
-}
-
 function nulledHttpResponse({
-	response = "Null Rot13Client response",
+	response = "Nulled Rot13Client response",
 	error,
 	hang = false,
 } = {}) {

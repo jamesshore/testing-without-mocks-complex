@@ -47,9 +47,13 @@ async function integrateAsync(message) {
 
 	await rebaseAsync(branches.usingNullablesJs, branches.integration);
 	await rebaseAsync(branches.usingNullablesJsValidation, branches.usingNullablesJs);
-
 	await rebaseAsync(branches.usingNullablesTs, branches.typescript);
 	await rebaseAsync(branches.usingNullablesTsValidation, branches.usingNullablesTs);
+
+	await rebaseAsync(branches.highLevelInfrastructureJs, branches.integration);
+	await rebaseAsync(branches.highLevelInfrastructureJsValidation, branches.highLevelInfrastructureJs);
+	await rebaseAsync(branches.highLevelInfrastructureTs, branches.typescript);
+	await rebaseAsync(branches.highLevelInfrastructureTsValidation, branches.highLevelInfrastructureTs);
 }
 
 async function rebaseAsync(branchFrom, branchTo) {
