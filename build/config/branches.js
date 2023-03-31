@@ -15,4 +15,9 @@ export default {
 	highLevelInfrastructureJsValidation: "high-level-infrastructure-js-validate",
 	highLevelInfrastructureTs: "high-level-infrastructure-ts",
 	highLevelInfrastructureTsValidation: "high-level-infrastructure-ts-validate",
+
+	narrowIntegrationTestsJs: "narrow-integration-tests-js",
+	narrowIntegrationTestsJsValidation: "narrow-integration-tests-js-validate",
+	narrowIntegrationTestsTs: "narrow-integration-tests-ts",
+	narrowIntegrationTestsTsValidation: "narrow-integration-tests-ts-validate",
 };

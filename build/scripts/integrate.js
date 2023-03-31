@@ -54,6 +54,11 @@ async function integrateAsync(message) {
 	await rebaseAsync(branches.highLevelInfrastructureJsValidation, branches.highLevelInfrastructureJs);
 	await rebaseAsync(branches.highLevelInfrastructureTs, branches.typescript);
 	await rebaseAsync(branches.highLevelInfrastructureTsValidation, branches.highLevelInfrastructureTs);
+
+	await rebaseAsync(branches.narrowIntegrationTestsJs, branches.integration);
+	await rebaseAsync(branches.narrowIntegrationTestsJsValidation, branches.narrowIntegrationTestsJs);
+	await rebaseAsync(branches.narrowIntegrationTestsTs, branches.typescript);
+	await rebaseAsync(branches.narrowIntegrationTestsTsValidation, branches.narrowIntegrationTestsTs);
 }
 
 async function rebaseAsync(branchFrom, branchTo) {
