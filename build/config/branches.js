@@ -20,4 +20,9 @@ export default {
 	narrowIntegrationTestsJsValidation: "narrow-integration-tests-js-validate",
 	narrowIntegrationTestsTs: "narrow-integration-tests-ts",
 	narrowIntegrationTestsTsValidation: "narrow-integration-tests-ts-validate",
+
+	embeddedStubsJs: "embedded-stubs-js",
+	embeddedStubsJsValidation: "embedded-stubs-js-validate",
+	embeddedStubsTs: "embedded-stubs-ts",
+	embeddedStubsTsValidation: "embedded-stubs-ts-validate",
 };
