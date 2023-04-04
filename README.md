@@ -20,7 +20,7 @@ The program is a ROT-13 encoder. It consists of a web server, which provides the
 To start the servers, run:
 
 * Mac/Linux: `./serve_dev.sh [web_server_port] [rot13_server_port]`
-* Windows: `serve_dev [web_server_port] [rot13_server_port]`
+* Windows: `.\serve_dev.cmd [web_server_port] [rot13_server_port]`
 
 Access the web interface through a browser. For example, if you started the server with `./serve_dev.sh 5010 5011`, you would visit `http://localhost:5010` in your browser.
 
