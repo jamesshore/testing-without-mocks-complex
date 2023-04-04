@@ -25,6 +25,8 @@ async function runAsync() {
 }
 
 async function selfCheckAsync() {
+	await ensureNoChangesAsync();
+
 	const branchNames = Object.values(branches);
 	for (let i = 0; i < branchNames.length; i++) {
 		const branch = branchNames[i];
@@ -46,3 +48,8 @@ async function validateBranchAsync(branch) {
 	}
 }
 
+async function ensureNoChangesAsync() {
+	if (await repo.hasUncommittedChangesAsync()) {
+		throw new Error("Commit or reset changes before running self check");
+	}
+}
