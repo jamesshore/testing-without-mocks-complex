@@ -7,7 +7,7 @@ import Colors from "./colors.js";
 
 export async function runBuildAsync() {
 	if (process.platform === "win32") {
-		await runAsync("build");
+		await runAsync(".\\build.cmd");
 	}
 	else {
 		await runAsync("./build.sh");
