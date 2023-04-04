@@ -15,6 +15,7 @@ import { pathToFile } from "../util/module_paths.js";
 import child_process from "node:child_process";
 
 const TIMEOUT_IN_MS = 5000;
+
 const SUCCESS = 0;
 const LINT_ERROR = 1;
 const FAILURE = 2;
@@ -95,7 +96,7 @@ async function shellToBuildAsync(args) {
 
 	const code = await Promise.race([ spawnPromise, timeoutPromise ]);
 	if (code === TIMEOUT) {
-		console.log(errorColor("  BUILD TIMED OUT  "));
+		console.log("\n" + errorColor("  BUILD TIMED OUT  "));
 		child.kill();
 		await new Promise((resolve, reject) => {
 			child.on("exit", resolve);
