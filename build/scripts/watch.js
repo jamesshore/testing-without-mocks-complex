@@ -15,6 +15,7 @@ import { pathToFile } from "../util/module_paths.js";
 import child_process from "node:child_process";
 
 const TIMEOUT_IN_MS = 5000;
+const PLAY_SOUNDS = true;
 
 const SUCCESS = 0;
 const LINT_ERROR = 1;
@@ -120,7 +121,7 @@ function queueAnotherBuild() {
 }
 
 function alertBuildResult(exitCode) {
-	playSoundAsync(pathForCode(exitCode));
+	if (PLAY_SOUNDS) playSoundAsync(pathForCode(exitCode));
 
 	function pathForCode(exitCode) {
 		switch (exitCode) {
