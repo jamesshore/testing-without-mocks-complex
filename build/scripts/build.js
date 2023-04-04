@@ -84,7 +84,7 @@ build.incrementalTask("test", paths.testDependencies(), async () => {
 build.incrementalTask("compile", paths.compilerDependencies(), async () => {
 	process.stdout.write("Compiling: ");
 
-	const { code } = await sh.runInteractive("node_modules/.bin/tsc", []);
+	const { code } = await sh.runInteractiveAsync("node_modules/.bin/tsc", []);
 	process.stdout.write(".");
 	if (code !== 0) throw new Error("Compile failed");
 	copyPackageJsonFiles();

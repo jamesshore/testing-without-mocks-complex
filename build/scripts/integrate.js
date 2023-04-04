@@ -43,32 +43,44 @@ async function integrateAsync(message) {
 	writeHeader("Validating integration");
 	await validateBuildAsync(branches.integration);
 
-	await rebaseAsync(branches.typescript, branches.integration);
-
-	await rebaseAsync(branches.usingNullablesJs, branches.integration);
-	await rebaseAsync(branches.usingNullablesJsValidation, branches.usingNullablesJs);
-	await rebaseAsync(branches.usingNullablesTs, branches.typescript);
-	await rebaseAsync(branches.usingNullablesTsValidation, branches.usingNullablesTs);
-
-	await rebaseAsync(branches.highLevelInfrastructureJs, branches.integration);
-	await rebaseAsync(branches.highLevelInfrastructureJsValidation, branches.highLevelInfrastructureJs);
-	await rebaseAsync(branches.highLevelInfrastructureTs, branches.typescript);
-	await rebaseAsync(branches.highLevelInfrastructureTsValidation, branches.highLevelInfrastructureTs);
-
-	await rebaseAsync(branches.narrowIntegrationTestsJs, branches.integration);
-	await rebaseAsync(branches.narrowIntegrationTestsJsValidation, branches.narrowIntegrationTestsJs);
-	await rebaseAsync(branches.narrowIntegrationTestsTs, branches.typescript);
-	await rebaseAsync(branches.narrowIntegrationTestsTsValidation, branches.narrowIntegrationTestsTs);
-
-	await rebaseAsync(branches.embeddedStubsJs, branches.narrowIntegrationTestsJsValidation);
-	await rebaseAsync(branches.embeddedStubsJsValidation, branches.embeddedStubsJs);
-	await rebaseAsync(branches.embeddedStubsTs, branches.narrowIntegrationTestsTsValidation);
-	await rebaseAsync(branches.embeddedStubsTsValidation, branches.embeddedStubsTs);
+	writeHeader("Rebasing branches");
+	await rebaseAsync();
 }
 
-async function rebaseAsync(branchFrom, branchTo) {
+async function rebaseAsync() {
+	await rebaseOneBranchAsync(branches.typescript, branches.integration);
+
+	// Exercise branches below.
+
+	await rebaseOneBranchAsync(branches.usingNullablesJs, branches.integration);
+	await rebaseOneBranchAsync(branches.usingNullablesJsValidation, branches.usingNullablesJs);
+	await rebaseOneBranchAsync(branches.usingNullablesTs, branches.typescript);
+	await rebaseOneBranchAsync(branches.usingNullablesTsValidation, branches.usingNullablesTs);
+
+	await rebaseOneBranchAsync(branches.highLevelInfrastructureJs, branches.integration);
+	await rebaseOneBranchAsync(branches.highLevelInfrastructureJsValidation, branches.highLevelInfrastructureJs);
+	await rebaseOneBranchAsync(branches.highLevelInfrastructureTs, branches.typescript);
+	await rebaseOneBranchAsync(branches.highLevelInfrastructureTsValidation, branches.highLevelInfrastructureTs);
+
+	await rebaseOneBranchAsync(branches.narrowIntegrationTestsJs, branches.integration);
+	await rebaseOneBranchAsync(branches.narrowIntegrationTestsJsValidation, branches.narrowIntegrationTestsJs);
+	await rebaseOneBranchAsync(branches.narrowIntegrationTestsTs, branches.typescript);
+	await rebaseOneBranchAsync(branches.narrowIntegrationTestsTsValidation, branches.narrowIntegrationTestsTs);
+
+	await rebaseOneBranchAsync(branches.embeddedStubsJs, branches.narrowIntegrationTestsJsValidation);
+	await rebaseOneBranchAsync(branches.embeddedStubsJsValidation, branches.embeddedStubsJs);
+	await rebaseOneBranchAsync(branches.embeddedStubsTs, branches.narrowIntegrationTestsTsValidation);
+	await rebaseOneBranchAsync(branches.embeddedStubsTsValidation, branches.embeddedStubsTs);
+}
+
+async function rebaseOneBranchAsync(branchFrom, branchTo) {
+	// Branches are rebased interactively because of the number of branches that build on each other. Later
+	// branches tend to run into conflicts found in earlier branches. They can typically be fixed by just removing
+	// the offending commit, because it's already part of the history of the branch that the rebase is building
+	// on top of.
+
 	writeHeader(`Rebasing ${branchFrom} branch`);
-	await repo.rebaseAsync(branchFrom, branchTo);
+	await repo.rebaseInteractiveAsync(branchFrom, branchTo);
 
 	writeHeader(`Validating ${branchFrom} branch`);
 	await validateBuildAsync(branchFrom);

@@ -28,7 +28,7 @@ export function runAsync(command, args) {
 	});
 }
 
-export function runInteractive(command, args) {
+export function runInteractiveAsync(command, args) {
 	return spawnAsync(command, args, { stdio: "inherit" });
 }
 

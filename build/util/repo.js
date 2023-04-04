@@ -1,6 +1,7 @@
 // Copyright Titanium I.T. LLC.
 
 import * as sh from "./sh.js";
+import Colors from "./colors.js";
 
 // Functions to do things to the git repository
 
@@ -52,12 +53,27 @@ export async function rebaseAsync(fromBranch, toBranch) {
 	});
 }
 
+export async function rebaseInteractiveAsync(fromBranch, toBranch) {
+	await runCodeInBranch(fromBranch, async () => {
+		await runInteractiveAsync("git", "rebase", "-i", toBranch);
+	});
+}
+
 export async function rebuildNpmPackagesAsync() {
 	await runAsync("npm", "rebuild");
 }
 
 async function runAsync(command, ...args) {
 	const result = await sh.runAsync(command, args);
+	if (result.code !== 0) throw new Error(`${command} ${args[0]} failed`);
+
+	return result;
+}
+
+async function runInteractiveAsync(command, ...args) {
+	console.log(Colors.cyan(`» ${command} ${args.join(" ")}`));
+
+	const result = await sh.runInteractiveAsync(command, args);
 	if (result.code !== 0) throw new Error(`${command} ${args[0]} failed`);
 
 	return result;
