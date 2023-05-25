@@ -47,7 +47,7 @@ export class HomePageController {
 	 * @param config configuration for this request
 	 * @returns {HttpServerResponse} HTTP response
 	 */
-	getAsync(request, config) {
+	async getAsync(request, config) {
 		ensure.signature(arguments, [ HttpServerRequest, WwwConfig ]);
 
 		return homePageView.homePage();
