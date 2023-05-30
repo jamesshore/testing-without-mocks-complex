@@ -11,7 +11,6 @@ import pathLib from "node:path";
 import { spawn } from "node:child_process";
 import * as paths from "../config/paths.js";
 import Colors from "../util/colors.js";
-import { pathToFile } from "../util/module_paths.js";
 
 checkNodeVersion();
 
@@ -19,8 +18,6 @@ const watchColor = Colors.cyan;
 const errorColor = Colors.brightRed.inverse;
 
 const COMMAND = "node";
-const SERVE_JS = "generated/typescript/serve.js";
-const SERVE_FULL_PATH = pathToFile(import.meta.url, `../../${SERVE_JS}`);
 const COMMAND_ARGS = process.argv.slice(2);
 
 let child = null;
@@ -43,8 +40,8 @@ gaze(paths.watchFiles(), function(err, watcher) {
 function run() {
 	if (child) return;
 
-	console.log(watchColor(`> ${COMMAND} ${SERVE_JS} ${COMMAND_ARGS.join(" ")}`));
-	child = spawn(COMMAND, [ SERVE_FULL_PATH, ...COMMAND_ARGS ], { stdio: "inherit" });
+	console.log(watchColor(`> ${COMMAND} ${(paths.main)} ${COMMAND_ARGS.join(" ")}`));
+	child = spawn(COMMAND, [ paths.main, ...COMMAND_ARGS ], { stdio: "inherit" });
 	child.on("exit", function() {
 		console.log(watchColor(`${COMMAND} exited\n`));
 		child = null;

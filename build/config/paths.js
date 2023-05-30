@@ -1,62 +1,65 @@
 // Copyright Titanium I.T. LLC. All rights reserved. For license, see "README" or "LICENSE" file.
 import glob from "glob";
+import { pathToFile } from "../util/module_paths.js";
 
-export const srcDir = "src";
-export const generatedDir = "generated";
+export const rootDir = pathToFile(import.meta.url, "../..");
+export const buildDir = `${rootDir}/build`;
+export const srcDir = `${rootDir}/src`;
+export const generatedDir = `${rootDir}/generated`;
 export const incrementalDir = `${generatedDir}/incremental`;
 export const typescriptDir = `${generatedDir}/typescript`;
 
+export const main = `${typescriptDir}/serve.js`;
+
 export const watchFiles = memoizedDeglob([
-	"build/**/*",
-	"src/**/*",
+	`${buildDir}/**/*`,
+	`${srcDir}/**/*`,
 ]);
 
 export const watchRestartFiles = memoizedDeglob([
-	"build/**/*",
-	"package.json",
-	"tsconfig.json",
-	"*.cmd",
-	"*.sh",
+	`${buildDir}/**/*`,
+	`${rootDir}/package.json`,
+	`${rootDir}/tsconfig.json`,
+	`${rootDir}/*.cmd`,
+	`${rootDir}/*.sh`,
 ], [
-	"build/node_modules/**/*",
+	`${buildDir}/node_modules/**/*`,
 ]);
 
 export const lintFiles = memoizedDeglob([
-	"*.js",
-	"build/**/*.js",
-	"src/**/*.js",
-	"src/**/*.cjs",
-	"src/**/*.js",
-	"src/**/*.ts",
-], [
-	"build/util/node_version_checker.js",   // ESLint doesn't yet support import assertions
+	`${rootDir}/*.js`,
+	`${buildDir}/**/*.js`,
+	`${srcDir}/**/*.js`,
+	`${srcDir}/**/*.cjs`,
+	`${srcDir}/**/*.js`,
+	`${srcDir}/**/*.ts`,
 ]);
 
 export const sourcePackages = memoizedDeglob([
-	"src/**/package.json",
+	`${srcDir}/**/package.json`,
 ]);
 
 export const compilerDependencies = memoizedDeglob([
 	...sourcePackages(),
-	"src/**/*.js",
-	"src/**/*.cjs",
-	"src/**/*.js",
-	"src/**/*.ts",
+	`${srcDir}/**/*.js`,
+	`${srcDir}/**/*.cjs`,
+	`${srcDir}/**/*.js`,
+	`${srcDir}/**/*.ts`,
 ]);
 
 export const testFiles = memoizedDeglob([
-	"build/**/_*_test.js",
-	"generated/typescript/**/_*_test.js",
-	"generated/typescript/**/_*_test.cjs",
-	"generated/typescript/**/_*_test.js",
-	"generated/typescript/**/_*_test.ts",
+	`${buildDir}/**/_*_test.js`,
+	`${typescriptDir}/**/_*_test.js`,
+	`${typescriptDir}/**/_*_test.cjs`,
+	`${typescriptDir}/**/_*_test.js`,
+	`${typescriptDir}/**/_*_test.ts`,
 ]);
 
 export const testDependencies = memoizedDeglob([
-	"build/**/*.js",
+	`${buildDir}/**/*.js`,
 	...compilerDependencies(),
 ], [
-	"build/util/dependency_analysis.js",
+	`${buildDir}/util/dependency_analysis.js`,
 ]);
 
 
