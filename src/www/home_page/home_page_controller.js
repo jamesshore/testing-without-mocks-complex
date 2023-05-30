@@ -33,7 +33,7 @@ export class HomePageController {
 		return new HomePageController(Rot13Client.createNull(), Clock.createNull());
 	}
 
-	/** @deprecated Use a factory method instead. */
+	/** Only for use by tests. (Use a factory method instead.) */
 	constructor(rot13Client, clock) {
 		ensure.signature(arguments, [ Rot13Client, Clock ]);
 
@@ -47,7 +47,7 @@ export class HomePageController {
 	 * @param config configuration for this request
 	 * @returns {HttpServerResponse} HTTP response
 	 */
-	getAsync(request, config) {
+	async getAsync(request, config) {
 		ensure.signature(arguments, [ HttpServerRequest, WwwConfig ]);
 
 		return homePageView.homePage();

@@ -21,6 +21,4 @@ export function checkNodeVersion() {
 		);
 	}
 
-};
-
-
+}

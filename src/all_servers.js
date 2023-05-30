@@ -9,7 +9,7 @@ import { Rot13Router } from "./rot13_service/rot13_router.js";
 /** Application startup (parse command line and start servers). */
 export class AllServers {
 
-	/** @deprecated Only for use by tests. */
+	/** Only for use by tests. The command-line interface's "usage" string. */
 	static get USAGE() {
 		return "Usage: run [www server port] [rot-13 server port]";
 	}
@@ -29,7 +29,7 @@ export class AllServers {
 		);
 	}
 
-	/** @deprecated Use the factory method instead. */
+	/** Only for use by tests. (Use the factory method instead.) */
 	constructor(log, commandLine, wwwServer, rot13Server) {
 		ensure.signature(arguments, [ Log, CommandLine, HttpServer, HttpServer ]);
 

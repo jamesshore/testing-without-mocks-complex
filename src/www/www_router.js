@@ -54,7 +54,7 @@ export class WwwRouter {
 		);
 	}
 
-	/** @deprecated Use a factory method instead. */
+	/** Only for use by tests. (Use a factory method instead.) */
 	constructor(log, rot13ServicePort, uuids, homePageController) {
 		ensure.signature(arguments, [ Log, Number, UuidGenerator, HomePageController ]);
 
