@@ -42,7 +42,7 @@ export class Rot13Client {
 		return new Rot13Client(httpClient);
 	}
 
-	/** @deprecated Use a factory method instead. */
+	/** Only for use by tests. (Use a factory method instead.) */
 	constructor(httpClient) {
 		ensure.signature(arguments, [ HttpClient ]);
 

@@ -33,7 +33,7 @@ export class HomePageController {
 		return new HomePageController(Rot13Client.createNull(), Clock.createNull());
 	}
 
-	/** @deprecated Use a factory method instead. */
+	/** Only for use by tests. (Use a factory method instead.) */
 	constructor(rot13Client, clock) {
 		ensure.signature(arguments, [ Rot13Client, Clock ]);
 

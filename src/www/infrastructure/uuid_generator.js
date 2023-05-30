@@ -28,7 +28,7 @@ export class UuidGenerator {
 		return new UuidGenerator(new StubbedUuid(uuids));
 	}
 
-	/** @deprecated Use a factory method instead. */
+	/** Only for use by tests. (Use a factory method instead.) */
 	constructor(uuid) {
 		ensure.signatureMinimum(arguments, [{ v4: Function }]);
 

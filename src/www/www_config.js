@@ -39,7 +39,7 @@ export class WwwConfig {
 		return new WwwConfig(log, rot13ServicePort, correlationId);
 	}
 
-	/** @deprecated Use a factory method instead. */
+	/** Only for use by tests. (Use a factory method instead.) */
 	constructor(log, rot13ServicePort, correlationId) {
 		this._log = log;
 		this._rot13ServicePort = rot13ServicePort;

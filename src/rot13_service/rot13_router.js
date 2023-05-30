@@ -35,7 +35,7 @@ export class Rot13Router {
 		return new Rot13Router(log);
 	}
 
-	/** @deprecated Use a factory method instead. */
+	/** Only for use by tests. (Use a factory method instead.) */
 	constructor(log) {
 		ensure.signature(arguments, [ Log ]);
 
