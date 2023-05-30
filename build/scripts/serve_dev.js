@@ -11,6 +11,7 @@ import pathLib from "node:path";
 import { spawn } from "node:child_process";
 import * as paths from "../config/paths.js";
 import Colors from "../util/colors.js";
+import * as repo from "../util/repo.js";
 
 checkNodeVersion();
 
@@ -40,11 +41,16 @@ gaze(paths.watchFiles(), function(err, watcher) {
 function run() {
 	if (child) return;
 
-	console.log(watchColor(`> ${COMMAND} ${(paths.main)} ${COMMAND_ARGS.join(" ")}`));
-	child = spawn(COMMAND, [ paths.main, ...COMMAND_ARGS ], { stdio: "inherit" });
-	child.on("exit", function() {
-		console.log(watchColor(`${COMMAND} exited\n`));
-		child = null;
+	repo.compileAsync().then(() => {
+		console.log(watchColor(`> ${COMMAND} ${(paths.main)} ${COMMAND_ARGS.join(" ")}`));
+		child = spawn(COMMAND, [ paths.main, ...COMMAND_ARGS ], { stdio: "inherit" });
+		child.on("exit", function() {
+			console.log(watchColor(`${COMMAND} exited\n`));
+			child = null;
+		});
+	})
+	.catch((err) => {
+		console.log(errorColor("COMPILE ERROR:", err));
 	});
 }
 

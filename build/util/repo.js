@@ -2,6 +2,7 @@
 
 import * as sh from "./sh.js";
 import Colors from "./colors.js";
+import * as paths from "../config/paths.js";
 
 // Functions to do things to the git repository
 
@@ -12,6 +13,10 @@ export async function runBuildAsync() {
 	else {
 		await runAsync("./build.sh");
 	}
+}
+
+export async function compileAsync() {
+	await runAsync("node", paths.build, "compile");
 }
 
 export async function hasUncommittedChangesAsync() {
