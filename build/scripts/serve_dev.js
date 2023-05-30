@@ -31,9 +31,16 @@ gaze(paths.watchFiles(), function(err, watcher) {
 	}
 	console.log(".\nWill restart server when files change.\n");
 
+	let debounce = false;
 	watcher.on("all", (event, filepath) => {
 		logEvent(event, filepath);
-		kill(run);
+		if (debounce) return;
+
+		debounce = true;
+		setTimeout(() => {
+			debounce = false;
+			kill(run);
+		}, 200);
 	});
 	run();
 });
