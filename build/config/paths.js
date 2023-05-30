@@ -10,6 +10,11 @@ export const incrementalDir = `${generatedDir}/incremental`;
 export const typescriptDir = `${generatedDir}/typescript`;
 
 export const main = `${typescriptDir}/serve.js`;
+export const build = `${buildDir}/scripts/run_build.js`;
+
+export const successSound = `${buildDir}/sounds/success.wav`;
+export const errorSound = `${buildDir}/sounds/lint_error.wav`;
+export const failSound = `${buildDir}/sounds/fail.wav`;
 
 export const watchFiles = memoizedDeglob([
 	`${buildDir}/**/*`,

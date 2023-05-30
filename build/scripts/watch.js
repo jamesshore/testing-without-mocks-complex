@@ -9,9 +9,7 @@ import gaze from "gaze";
 import pathLib from "path";
 import * as paths from "../config/paths.js";
 import sound from "sound-play";
-import * as sh from "../util/sh.js";
 import Colors from "../util/colors.js";
-import { pathToFile } from "../util/module_paths.js";
 import child_process from "node:child_process";
 
 const TIMEOUT_IN_MS = 5000;
@@ -24,9 +22,8 @@ const TIMEOUT = 3;
 
 const watchColor = Colors.cyan;
 const errorColor = Colors.brightRed.inverse;
-const buildScript = pathToFile(import.meta.url, "../scripts/run_build.js");
-
 const args = process.argv.slice(2);
+
 let buildRunning = false;
 let buildQueued = false;
 let buildStartedAt;
@@ -84,7 +81,7 @@ async function runBuild() {
 
 async function shellToBuildAsync(args) {
 	const command = "node";
-	const commandArgs = [ "--enable-source-maps", buildScript, ...args ];
+	const commandArgs = [ "--enable-source-maps", paths.build, ...args ];
 
 	const child = child_process.spawn(command, commandArgs, { stdio: "inherit" });
 	const spawnPromise = new Promise((resolve, reject) => {
@@ -125,11 +122,11 @@ function alertBuildResult(exitCode) {
 
 	function pathForCode(exitCode) {
 		switch (exitCode) {
-			case SUCCESS: return "../sounds/success.wav";
-			case LINT_ERROR: return "../sounds/lint_error.wav";
+			case SUCCESS: return paths.successSound;
+			case LINT_ERROR: return paths.errorSound;
 			case FAILURE:
 			case TIMEOUT:
-				return "../sounds/fail.wav";
+				return paths.failSound;
 			default: throw new Error(`Unrecognized exit code from build: ${exitCode}`);
 		}
 	}
@@ -155,8 +152,7 @@ function logEvent(event, filepath) {
 
 async function playSoundAsync(filename) {
 	try {
-		const path = pathToFile(import.meta.url, filename);
-		await sound.play(path, 0.3);
+		await sound.play(filename, 0.3);
 	}
 	catch (err) {
 		// If something goes wrong, just ignore it
