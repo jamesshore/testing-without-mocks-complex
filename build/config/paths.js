@@ -2,12 +2,14 @@
 import glob from "glob";
 import { pathToFile } from "../util/module_paths.js";
 
+export const DISABLE_COMPILER = true;   // not needed for JavaScript
+
 export const rootDir = pathToFile(import.meta.url, "../..");
 export const buildDir = `${rootDir}/build`;
 export const srcDir = `${rootDir}/src`;
 export const generatedDir = `${rootDir}/generated`;
 export const incrementalDir = `${generatedDir}/incremental`;
-export const typescriptDir = `${generatedDir}/typescript`;
+export const typescriptDir = DISABLE_COMPILER ? srcDir : `${generatedDir}/typescript`;
 
 export const main = `${typescriptDir}/serve.js`;
 export const build = `${buildDir}/scripts/run_build.js`;
