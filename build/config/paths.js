@@ -4,7 +4,7 @@ import { pathToFile } from "../util/module_paths.js";
 
 export const DISABLE_COMPILER = true;   // not needed for JavaScript
 
-export const rootDir = pathToFile(import.meta.url, "../..");
+export const rootDir = ".";   // absolute path causes problems on Windows, so we assume commands running from root dir
 export const buildDir = `${rootDir}/build`;
 export const srcDir = `${rootDir}/src`;
 export const generatedDir = `${rootDir}/generated`;
